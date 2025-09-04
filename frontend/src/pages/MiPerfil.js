@@ -8,31 +8,68 @@ import {
   Button,
   Avatar,
   Grid,
-  Alert,
   CircularProgress,
-  Divider,
+  Paper,
+  Chip,
+  IconButton,
+  InputAdornment,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
-import { PhotoCamera, Save, Lock } from '@mui/icons-material';
-import { getUser, getUserId } from '../services/authService';
+import { 
+  PhotoCamera, 
+  Lock, 
+  Person, 
+  Email, 
+  Phone, 
+  CalendarToday,
+  Visibility,
+  VisibilityOff,
+  Edit,
+  Cancel,
+  CheckCircle,
+  Security,
+  AccountCircle,
+  Work,
+  Badge
+} from '@mui/icons-material';
+import { getUserId } from '../services/authService';
 import { userService, fileService } from '../services/apiService';
+import { getImageUrl } from '../utils/imageUtils';
+import toast from 'react-hot-toast';
 
 const MiPerfil = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [editing, setEditing] = useState(false);
+  const [showPasswords, setShowPasswords] = useState({
+    actual: false,
+    nueva: false,
+    confirmar: false,
+  });
+  const [previewImage, setPreviewImage] = useState('');
   const [formData, setFormData] = useState({
     nombres: '',
+    apellidos: '',
     email: '',
     telefono: '',
     fecha_nacimiento: '',
+    dni: '',
+    direccion: '',
+    genero: '',
+    estado_civil: '',
+    profesion: '',
+    foto: '',
   });
   const [passwordData, setPasswordData] = useState({
     clave_actual: '',
     nueva_clave: '',
     confirmar_clave: '',
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     loadUserData();
@@ -40,72 +77,169 @@ const MiPerfil = () => {
 
   const loadUserData = async () => {
     try {
+      setLoading(true);
       const userId = getUserId();
       const response = await userService.getUserById(userId);
+      
       if (response.success) {
-        setUser(response.user);
+        const userData = response.user;
+        setUser(userData);
         setFormData({
-          nombres: response.user.nombres || '',
-          email: response.user.email || '',
-          telefono: response.user.telefono || '',
-          fecha_nacimiento: response.user.fecha_nacimiento || '',
+          nombres: userData.nombres || '',
+          apellidos: userData.apellidos || '',
+          email: userData.email || '',
+          telefono: userData.telefono || '',
+          fecha_nacimiento: userData.fecha_nacimiento ? userData.fecha_nacimiento.split('T')[0] : '',
+          dni: userData.dni || '',
+          direccion: userData.direccion || '',
+          genero: userData.genero || '',
+          estado_civil: userData.estado_civil || '',
+          profesion: userData.profesion || '',
+          foto: userData.foto || '',
         });
+        
+        // Limpiar preview si hay foto existente
+        if (userData.foto) {
+          setPreviewImage('');
+        }
+      } else {
+        toast.error('Error al cargar los datos del usuario');
       }
     } catch (err) {
-      setError('Error al cargar los datos del usuario');
+      console.error('Error cargando datos del usuario:', err);
+      toast.error('Error al cargar los datos del usuario');
     } finally {
       setLoading(false);
     }
   };
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    setError('');
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+    
+    // Limpiar error del campo específico
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: '',
+      }));
+    }
   };
 
   const handlePasswordChange = (e) => {
-    setPasswordData({
-      ...passwordData,
-      [e.target.name]: e.target.value,
-    });
-    setError('');
+    const { name, value } = e.target;
+    setPasswordData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+    
+    // Limpiar error del campo específico
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: '',
+      }));
+    }
+  };
+
+  const togglePasswordVisibility = (field) => {
+    setShowPasswords(prev => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.nombres.trim()) {
+      newErrors.nombres = 'Los nombres son obligatorios';
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'El email es obligatorio';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'El email no es válido';
+    }
+    
+    if (formData.telefono && !/^[0-9+\-\s()]+$/.test(formData.telefono)) {
+      newErrors.telefono = 'El teléfono no es válido';
+    }
+    
+    if (formData.dni && !/^[0-9]{8}$/.test(formData.dni)) {
+      newErrors.dni = 'El DNI debe tener 8 dígitos';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validatePasswordForm = () => {
+    const newErrors = {};
+    
+    if (!passwordData.clave_actual) {
+      newErrors.clave_actual = 'La contraseña actual es obligatoria';
+    }
+    
+    if (!passwordData.nueva_clave) {
+      newErrors.nueva_clave = 'La nueva contraseña es obligatoria';
+    } else if (passwordData.nueva_clave.length < 6) {
+      newErrors.nueva_clave = 'La contraseña debe tener al menos 6 caracteres';
+    }
+    
+    if (passwordData.nueva_clave !== passwordData.confirmar_clave) {
+      newErrors.confirmar_clave = 'Las contraseñas no coinciden';
+    }
+    
+    setErrors(prev => ({ ...prev, ...newErrors }));
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSaveProfile = async () => {
-    setSaving(true);
-    setError('');
-    setSuccess('');
+    if (!validateForm()) {
+      toast.error('Por favor corrige los errores en el formulario');
+      return;
+    }
 
+    setSaving(true);
     try {
       const userId = getUserId();
       const response = await userService.updateUser(userId, formData);
 
       if (response.success) {
-        setSuccess('Perfil actualizado correctamente');
+        toast.success('Perfil actualizado correctamente');
         setUser(response.user);
+        setEditing(false);
+        setPreviewImage('');
       } else {
-        setError(response.message || 'Error al actualizar el perfil');
+        toast.error(response.message || 'Error al actualizar el perfil');
       }
     } catch (err) {
-      setError('Error al actualizar el perfil');
+      console.error('Error actualizando perfil:', err);
+      toast.error('Error al actualizar el perfil');
     } finally {
       setSaving(false);
     }
   };
 
+  const handleCancelEdit = () => {
+    setEditing(false);
+    setPreviewImage('');
+    setErrors({});
+    // Recargar datos originales
+    loadUserData();
+  };
+
   const handleChangePassword = async () => {
-    if (passwordData.nueva_clave !== passwordData.confirmar_clave) {
-      setError('Las contraseñas no coinciden');
+    if (!validatePasswordForm()) {
+      toast.error('Por favor corrige los errores en el formulario');
       return;
     }
 
     setSaving(true);
-    setError('');
-    setSuccess('');
-
     try {
       const userId = getUserId();
       const response = await userService.updateUser(userId, {
@@ -114,17 +248,19 @@ const MiPerfil = () => {
       });
 
       if (response.success) {
-        setSuccess('Contraseña actualizada correctamente');
+        toast.success('Contraseña actualizada correctamente');
         setPasswordData({
           clave_actual: '',
           nueva_clave: '',
           confirmar_clave: '',
         });
+        setErrors({});
       } else {
-        setError(response.message || 'Error al cambiar la contraseña');
+        toast.error(response.message || 'Error al cambiar la contraseña');
       }
     } catch (err) {
-      setError('Error al cambiar la contraseña');
+      console.error('Error cambiando contraseña:', err);
+      toast.error('Error al cambiar la contraseña');
     } finally {
       setSaving(false);
     }
@@ -134,26 +270,42 @@ const MiPerfil = () => {
     const file = event.target.files[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) { // 5MB
-      setError('La imagen debe ser menor a 5MB');
+    // Validar tipo de archivo
+    if (!file.type.startsWith('image/')) {
+      toast.error('Por favor selecciona un archivo de imagen válido');
       return;
     }
 
-    setSaving(true);
-    setError('');
+    // Validar tamaño (máximo 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('La imagen debe ser menor a 2MB');
+      return;
+    }
 
+    // Crear preview inmediato
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setPreviewImage(e.target.result);
+    };
+    reader.readAsDataURL(file);
+
+    setSaving(true);
     try {
       const response = await fileService.uploadFile(file, 'profile');
       if (response.success) {
-        const userId = getUserId();
-        await userService.updateUser(userId, { foto: response.filename });
-        setSuccess('Foto actualizada correctamente');
-        loadUserData(); // Recargar datos
+        setFormData(prev => ({
+          ...prev,
+          foto: response.filename
+        }));
+        toast.success('Foto subida correctamente');
       } else {
-        setError('Error al subir la foto');
+        toast.error('Error al subir la foto');
+        setPreviewImage('');
       }
     } catch (err) {
-      setError('Error al subir la foto');
+      console.error('Error subiendo foto:', err);
+      toast.error('Error al subir la foto');
+      setPreviewImage('');
     } finally {
       setSaving(false);
     }
@@ -161,48 +313,135 @@ const MiPerfil = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
-        <CircularProgress />
+      <Box sx={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '400px',
+        flexDirection: 'column',
+        gap: 2
+      }}>
+        <CircularProgress size={60} />
+        <Typography variant="h6" color="text.secondary">
+          Cargando perfil...
+        </Typography>
       </Box>
     );
   }
 
   return (
     <Box>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Mi Perfil
-      </Typography>
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-
-      {success && (
-        <Alert severity="success" sx={{ mb: 3 }}>
-          {success}
-        </Alert>
-      )}
+      {/* Header del perfil */}
+      <Paper sx={{ p: 3, mb: 3, borderRadius: 2, boxShadow: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+          <Typography variant="h4" component="h1" color="primary" fontWeight="bold">
+            <Person sx={{ mr: 2, verticalAlign: 'middle' }} />
+            Mi Perfil
+          </Typography>
+          {!editing ? (
+            <Button
+              variant="contained"
+              startIcon={<Edit />}
+              onClick={() => setEditing(true)}
+              sx={{ borderRadius: 2 }}
+            >
+              Editar Perfil
+            </Button>
+          ) : (
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Button
+                variant="outlined"
+                startIcon={<Cancel />}
+                onClick={handleCancelEdit}
+                disabled={saving}
+                sx={{ borderRadius: 2 }}
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={saving ? <CircularProgress size={20} /> : <CheckCircle />}
+                onClick={handleSaveProfile}
+                disabled={saving}
+                sx={{ borderRadius: 2 }}
+              >
+                {saving ? 'Guardando...' : 'Guardar Cambios'}
+              </Button>
+            </Box>
+          )}
+        </Box>
+        
+        {/* Información del rol */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+          <Chip
+            icon={<Badge />}
+            label={user?.rol || 'Usuario'}
+            color="primary"
+            variant="outlined"
+            sx={{ fontWeight: 'bold' }}
+          />
+          <Chip
+            icon={<AccountCircle />}
+            label={user?.activo ? 'Activo' : 'Inactivo'}
+            color={user?.activo ? 'success' : 'error'}
+            variant="filled"
+          />
+        </Box>
+      </Paper>
 
       <Grid container spacing={3}>
         {/* Información del perfil */}
         <Grid item xs={12} md={8}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
+          <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Person sx={{ mr: 1, color: 'primary.main' }} />
                 Información Personal
               </Typography>
 
-              <Grid container spacing={2}>
+              <Grid container spacing={3}>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
-                    label="Nombres Completos"
+                    label="Nombres"
                     name="nombres"
                     value={formData.nombres}
                     onChange={handleInputChange}
-                    margin="normal"
+                    disabled={!editing}
+                    error={!!errors.nombres}
+                    helperText={errors.nombres}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Person color={editing ? 'primary' : 'disabled'} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': { borderRadius: 2 },
+                      '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Apellidos"
+                    name="apellidos"
+                    value={formData.apellidos}
+                    onChange={handleInputChange}
+                    disabled={!editing}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Person color={editing ? 'primary' : 'disabled'} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': { borderRadius: 2 },
+                      '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -213,7 +452,20 @@ const MiPerfil = () => {
                     type="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    margin="normal"
+                    disabled={!editing}
+                    error={!!errors.email}
+                    helperText={errors.email}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Email color={editing ? 'primary' : 'disabled'} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': { borderRadius: 2 },
+                      '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -223,7 +475,43 @@ const MiPerfil = () => {
                     name="telefono"
                     value={formData.telefono}
                     onChange={handleInputChange}
-                    margin="normal"
+                    disabled={!editing}
+                    error={!!errors.telefono}
+                    helperText={errors.telefono}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Phone color={editing ? 'primary' : 'disabled'} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': { borderRadius: 2 },
+                      '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="DNI"
+                    name="dni"
+                    value={formData.dni}
+                    onChange={handleInputChange}
+                    disabled={!editing}
+                    error={!!errors.dni}
+                    helperText={errors.dni}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Badge color={editing ? 'primary' : 'disabled'} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': { borderRadius: 2 },
+                      '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -234,82 +522,188 @@ const MiPerfil = () => {
                     type="date"
                     value={formData.fecha_nacimiento}
                     onChange={handleInputChange}
-                    margin="normal"
+                    disabled={!editing}
                     InputLabelProps={{ shrink: true }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <CalendarToday color={editing ? 'primary' : 'disabled'} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': { borderRadius: 2 },
+                      '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Dirección"
+                    name="direccion"
+                    value={formData.direccion}
+                    onChange={handleInputChange}
+                    disabled={!editing}
+                    multiline
+                    rows={2}
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': { borderRadius: 2 },
+                      '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth disabled={!editing}>
+                    <InputLabel>Género</InputLabel>
+                    <Select
+                      name="genero"
+                      value={formData.genero}
+                      onChange={handleInputChange}
+                      label="Género"
+                      sx={{ borderRadius: 2 }}
+                    >
+                      <MenuItem value="">Seleccionar</MenuItem>
+                      <MenuItem value="Masculino">Masculino</MenuItem>
+                      <MenuItem value="Femenino">Femenino</MenuItem>
+                      <MenuItem value="Otro">Otro</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth disabled={!editing}>
+                    <InputLabel>Estado Civil</InputLabel>
+                    <Select
+                      name="estado_civil"
+                      value={formData.estado_civil}
+                      onChange={handleInputChange}
+                      label="Estado Civil"
+                      sx={{ borderRadius: 2 }}
+                    >
+                      <MenuItem value="">Seleccionar</MenuItem>
+                      <MenuItem value="Soltero">Soltero</MenuItem>
+                      <MenuItem value="Casado">Casado</MenuItem>
+                      <MenuItem value="Divorciado">Divorciado</MenuItem>
+                      <MenuItem value="Viudo">Viudo</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Profesión"
+                    name="profesion"
+                    value={formData.profesion}
+                    onChange={handleInputChange}
+                    disabled={!editing}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Work color={editing ? 'primary' : 'disabled'} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ 
+                      '& .MuiOutlinedInput-root': { borderRadius: 2 },
+                      '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
+                    }}
                   />
                 </Grid>
               </Grid>
-
-              <Box sx={{ mt: 3 }}>
-                <Button
-                  variant="contained"
-                  startIcon={<Save />}
-                  onClick={handleSaveProfile}
-                  disabled={saving}
-                >
-                  {saving ? <CircularProgress size={20} /> : 'Guardar Cambios'}
-                </Button>
-              </Box>
             </CardContent>
           </Card>
         </Grid>
 
         {/* Foto de perfil */}
         <Grid item xs={12} md={4}>
-          <Card>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h6" gutterBottom>
+          <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
+            <CardContent sx={{ textAlign: 'center', p: 3 }}>
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 3 }}>
+                <PhotoCamera sx={{ mr: 1, color: 'primary.main' }} />
                 Foto de Perfil
               </Typography>
 
-              <Box sx={{ mb: 2 }}>
+              <Box sx={{ mb: 3 }}>
                 <Avatar
-                  src={user?.foto ? `/uploads/${user.foto}` : undefined}
-                  sx={{ width: 120, height: 120, mx: 'auto', mb: 2 }}
+                  src={previewImage || (user?.foto ? getImageUrl(user.foto) : undefined)}
+                  sx={{ 
+                    width: 150, 
+                    height: 150, 
+                    mx: 'auto', 
+                    mb: 2,
+                    border: '3px solid',
+                    borderColor: 'primary.main',
+                    boxShadow: 3
+                  }}
                 >
                   {user?.nombres?.charAt(0) || 'U'}
                 </Avatar>
               </Box>
 
-              <input
-                accept="image/*"
-                style={{ display: 'none' }}
-                id="photo-upload"
-                type="file"
-                onChange={handlePhotoUpload}
-              />
-              <label htmlFor="photo-upload">
-                <Button
-                  variant="outlined"
-                  component="span"
-                  startIcon={<PhotoCamera />}
-                  disabled={saving}
-                >
-                  Cambiar Foto
-                </Button>
-              </label>
+              {editing && (
+                <>
+                  <input
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    id="photo-upload"
+                    type="file"
+                    onChange={handlePhotoUpload}
+                  />
+                  <label htmlFor="photo-upload">
+                    <Button
+                      variant="contained"
+                      component="span"
+                      startIcon={saving ? <CircularProgress size={20} /> : <PhotoCamera />}
+                      disabled={saving}
+                      sx={{ borderRadius: 2, mb: 2 }}
+                    >
+                      {saving ? 'Subiendo...' : 'Cambiar Foto'}
+                    </Button>
+                  </label>
+                </>
+              )}
             </CardContent>
           </Card>
         </Grid>
 
         {/* Cambio de contraseña */}
         <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
+          <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
+            <CardContent sx={{ p: 3 }}>
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <Security sx={{ mr: 1, color: 'primary.main' }} />
                 Cambiar Contraseña
               </Typography>
 
-              <Grid container spacing={2}>
+              <Grid container spacing={3}>
                 <Grid item xs={12} sm={4}>
                   <TextField
                     fullWidth
                     label="Contraseña Actual"
                     name="clave_actual"
-                    type="password"
+                    type={showPasswords.actual ? 'text' : 'password'}
                     value={passwordData.clave_actual}
                     onChange={handlePasswordChange}
-                    margin="normal"
+                    error={!!errors.clave_actual}
+                    helperText={errors.clave_actual}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Lock color="primary" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => togglePasswordVisibility('actual')}
+                            edge="end"
+                          >
+                            {showPasswords.actual ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
@@ -317,10 +711,29 @@ const MiPerfil = () => {
                     fullWidth
                     label="Nueva Contraseña"
                     name="nueva_clave"
-                    type="password"
+                    type={showPasswords.nueva ? 'text' : 'password'}
                     value={passwordData.nueva_clave}
                     onChange={handlePasswordChange}
-                    margin="normal"
+                    error={!!errors.nueva_clave}
+                    helperText={errors.nueva_clave}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Lock color="primary" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => togglePasswordVisibility('nueva')}
+                            edge="end"
+                          >
+                            {showPasswords.nueva ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
@@ -328,22 +741,42 @@ const MiPerfil = () => {
                     fullWidth
                     label="Confirmar Contraseña"
                     name="confirmar_clave"
-                    type="password"
+                    type={showPasswords.confirmar ? 'text' : 'password'}
                     value={passwordData.confirmar_clave}
                     onChange={handlePasswordChange}
-                    margin="normal"
+                    error={!!errors.confirmar_clave}
+                    helperText={errors.confirmar_clave}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Lock color="primary" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => togglePasswordVisibility('confirmar')}
+                            edge="end"
+                          >
+                            {showPasswords.confirmar ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
                   />
                 </Grid>
               </Grid>
 
-              <Box sx={{ mt: 3 }}>
+              <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
                 <Button
                   variant="contained"
-                  startIcon={<Lock />}
+                  startIcon={saving ? <CircularProgress size={20} /> : <Lock />}
                   onClick={handleChangePassword}
-                  disabled={saving}
+                  disabled={saving || !passwordData.clave_actual || !passwordData.nueva_clave || !passwordData.confirmar_clave}
+                  sx={{ borderRadius: 2 }}
                 >
-                  {saving ? <CircularProgress size={20} /> : 'Cambiar Contraseña'}
+                  {saving ? 'Cambiando...' : 'Cambiar Contraseña'}
                 </Button>
               </Box>
             </CardContent>
