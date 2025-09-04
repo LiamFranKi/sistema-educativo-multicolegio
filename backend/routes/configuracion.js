@@ -189,6 +189,52 @@ router.put('/colegio', authenticateToken, requireAdmin, [
   }
 });
 
+// PUT /api/configuracion/anio-actual - Actualizar año escolar actual
+router.put('/anio-actual', authenticateToken, requireAdmin, [
+  body('anio').isInt({ min: 2020, max: 2030 }).withMessage('Año debe estar entre 2020 y 2030')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        message: 'Datos de entrada inválidos',
+        errors: errors.array()
+      });
+    }
+
+    const { anio } = req.body;
+
+    // Verificar que el año escolar existe
+    const anioCheck = await query('SELECT id FROM anios_escolares WHERE anio = $1', [anio]);
+    if (anioCheck.rows.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'El año escolar no existe. Primero debe crear el año escolar.'
+      });
+    }
+
+    // Actualizar año actual en configuración
+    await query(
+      'UPDATE configuracion SET valor = $1, updated_at = NOW() WHERE clave = $2',
+      [anio.toString(), 'anio_escolar_actual']
+    );
+
+    res.json({
+      success: true,
+      message: 'Año escolar actual actualizado exitosamente',
+      anio_actual: anio
+    });
+
+  } catch (error) {
+    console.error('Error actualizando año actual:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor'
+    });
+  }
+});
+
 // PUT /api/configuracion/:clave - Actualizar una configuración específica
 router.put('/:clave', authenticateToken, requireAdmin, async (req, res) => {
   try {

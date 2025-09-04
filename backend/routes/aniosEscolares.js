@@ -5,8 +5,8 @@ const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
-// GET /api/anios-escolares - Obtener años escolares
-router.get('/', authenticateToken, async (req, res) => {
+// GET /api/anios-escolares - Obtener años escolares (público para configuración)
+router.get('/', async (req, res) => {
   try {
     const { activo } = req.query;
 
@@ -196,7 +196,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
     const { id } = req.params;
 
     // Verificar si el año escolar existe
-    const anioCheck = await query('SELECT id FROM anios_escolares WHERE id = $1', [id]);
+    const anioCheck = await query('SELECT id, anio FROM anios_escolares WHERE id = $1', [id]);
     if (anioCheck.rows.length === 0) {
       return res.status(404).json({
         success: false,
@@ -204,12 +204,14 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
       });
     }
 
-    // Eliminar año escolar (soft delete - marcar como inactivo)
-    await query('UPDATE anios_escolares SET activo = false, updated_at = NOW() WHERE id = $1', [id]);
+    const anioEliminado = anioCheck.rows[0].anio;
+
+    // Eliminar año escolar permanentemente (hard delete)
+    await query('DELETE FROM anios_escolares WHERE id = $1', [id]);
 
     res.json({
       success: true,
-      message: 'Año escolar eliminado exitosamente'
+      message: `Año escolar ${anioEliminado} eliminado permanentemente`
     });
 
   } catch (error) {

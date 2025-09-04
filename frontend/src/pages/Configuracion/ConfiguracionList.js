@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Paper,
   Typography,
   Button,
   Grid,
@@ -15,8 +14,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Switch,
-  FormControlLabel,
   Alert,
   CircularProgress
 } from '@mui/material';
@@ -27,8 +24,11 @@ import {
   Save as SaveIcon,
   Edit as EditIcon,
   PhotoCamera as PhotoCameraIcon,
-  Info as InfoIcon,
-  Image as ImageIcon
+  Image as ImageIcon,
+  CalendarToday as CalendarIcon,
+  Add as AddIcon,
+  Delete as DeleteIcon,
+  CheckCircle as CheckCircleIcon
 } from '@mui/icons-material';
 import { getUser } from '../../services/authService';
 import { configuracionService } from '../../services/apiService';
@@ -38,18 +38,24 @@ import { getColegioLogoUrl } from '../../utils/imageUtils';
 import toast from 'react-hot-toast';
 
 const ConfiguracionList = () => {
-  const user = getUser();
-  const { colegio, updateColegio } = useConfiguracion();
+  const {
+    colegio,
+    aniosEscolares,
+    updateColegio,
+    createAnioEscolar,
+    updateAnioEscolar,
+    deleteAnioEscolar,
+    setAnioActual
+  } = useConfiguracion();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [configuraciones, setConfiguraciones] = useState({});
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
   const [previewImage, setPreviewImage] = useState('');
 
-  useEffect(() => {
-    loadConfiguraciones();
-  }, []);
+  // Estados para gestión de años escolares
+  const [anioEscolarMode, setAnioEscolarMode] = useState(false);
+  const [nuevoAnio, setNuevoAnio] = useState('');
 
   const loadConfiguraciones = async () => {
     try {
@@ -82,6 +88,10 @@ const ConfiguracionList = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadConfiguraciones();
+  }, []);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -226,6 +236,78 @@ const ConfiguracionList = () => {
       setPreviewImage(colegio.logo);
     } else {
       setPreviewImage('');
+    }
+  };
+
+  // Funciones para gestión de años escolares
+  const handleCrearAnioEscolar = async () => {
+    if (!nuevoAnio || isNaN(nuevoAnio)) {
+      toast.error('Por favor ingrese un año válido');
+      return;
+    }
+
+    const anio = parseInt(nuevoAnio);
+    if (anio < 2020 || anio > 2030) {
+      toast.error('El año debe estar entre 2020 y 2030');
+      return;
+    }
+
+    try {
+      const response = await createAnioEscolar({ anio });
+      if (response.success) {
+        toast.success('Año escolar creado exitosamente');
+        setNuevoAnio('');
+        setAnioEscolarMode(false);
+      } else {
+        toast.error(response.message || 'Error al crear año escolar');
+      }
+    } catch (error) {
+      console.error('Error creando año escolar:', error);
+      toast.error('Error al crear año escolar');
+    }
+  };
+
+  const handleActualizarAnioEscolar = async (id, activo) => {
+    try {
+      const response = await updateAnioEscolar(id, { activo });
+      if (response.success) {
+        toast.success('Año escolar actualizado exitosamente');
+      } else {
+        toast.error(response.message || 'Error al actualizar año escolar');
+      }
+    } catch (error) {
+      console.error('Error actualizando año escolar:', error);
+      toast.error('Error al actualizar año escolar');
+    }
+  };
+
+  const handleEliminarAnioEscolar = async (id) => {
+    if (window.confirm('¿Está seguro de que desea eliminar PERMANENTEMENTE este año escolar? Esta acción no se puede deshacer.')) {
+      try {
+        const response = await deleteAnioEscolar(id);
+        if (response.success) {
+          toast.success('Año escolar eliminado permanentemente');
+        } else {
+          toast.error(response.message || 'Error al eliminar año escolar');
+        }
+      } catch (error) {
+        console.error('Error eliminando año escolar:', error);
+        toast.error('Error al eliminar año escolar');
+      }
+    }
+  };
+
+  const handleSetAnioActual = async (anio) => {
+    try {
+      const response = await setAnioActual(anio);
+      if (response.success) {
+        toast.success(`Año escolar ${anio} establecido como actual`);
+      } else {
+        toast.error(response.message || 'Error al establecer año actual');
+      }
+    } catch (error) {
+      console.error('Error estableciendo año actual:', error);
+      toast.error('Error al establecer año actual');
     }
   };
 
@@ -572,45 +654,152 @@ const ConfiguracionList = () => {
         </CardContent>
       </Card>
 
-      {/* Información del Sistema */}
-      <Card>
+      {/* Gestión de Años Escolares */}
+      <Card sx={{ mb: 3 }}>
         <CardContent>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            <InfoIcon color="primary" />
+            <CalendarIcon color="primary" />
             <Typography variant="h5" component="h2" color="primary">
-              Información del Sistema
+              Gestión de Años Escolares
             </Typography>
+            <Button
+              variant="outlined"
+              startIcon={<AddIcon />}
+              onClick={() => setAnioEscolarMode(!anioEscolarMode)}
+              sx={{ ml: 'auto' }}
+            >
+              {anioEscolarMode ? 'Cancelar' : 'Nuevo Año'}
+            </Button>
           </Box>
 
           <Divider sx={{ mb: 3 }} />
 
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Año Escolar Actual"
-                value={colegio.anio_escolar_actual || '2025'}
-                disabled
-                variant="filled"
-                helperText="Configurado automáticamente"
-              />
-            </Grid>
+          {/* Formulario para crear nuevo año */}
+          {anioEscolarMode && (
+            <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+              <Typography variant="h6" gutterBottom>
+                Crear Nuevo Año Escolar
+              </Typography>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Año"
+                    type="number"
+                    value={nuevoAnio}
+                    onChange={(e) => setNuevoAnio(e.target.value)}
+                    placeholder="2025"
+                    inputProps={{ min: 2020, max: 2030 }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button
+                      variant="contained"
+                      onClick={handleCrearAnioEscolar}
+                      disabled={!nuevoAnio}
+                    >
+                      Crear
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      onClick={() => {
+                        setAnioEscolarMode(false);
+                        setNuevoAnio('');
+                      }}
+                    >
+                      Cancelar
+                    </Button>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
+          )}
 
-            <Grid item xs={12} sm={6}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Chip
-                  label={colegio.sistema_activo ? 'Activo' : 'Inactivo'}
-                  color={colegio.sistema_activo ? 'success' : 'error'}
-                  variant="outlined"
-                />
-                <Typography variant="body2" color="text.secondary">
-                  Estado del Sistema
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
+          {/* Lista de años escolares */}
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Años Escolares Disponibles
+            </Typography>
+            {aniosEscolares.length === 0 ? (
+              <Alert severity="info">
+                No hay años escolares registrados. Cree uno nuevo para comenzar.
+              </Alert>
+            ) : (
+              <Grid container spacing={2}>
+                {aniosEscolares.map((anio) => (
+                  <Grid item xs={12} sm={6} md={4} key={anio.id}>
+                    <Card
+                      variant="outlined"
+                      sx={{
+                        p: 2,
+                        border: anio.anio === colegio.anio_escolar_actual ? '2px solid' : '1px solid',
+                        borderColor: anio.anio === colegio.anio_escolar_actual ? 'primary.main' : 'divider'
+                      }}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="h6">
+                          {anio.anio}
+                        </Typography>
+                        {anio.anio === colegio.anio_escolar_actual && (
+                          <CheckCircleIcon color="primary" />
+                        )}
+                      </Box>
+
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                        <Chip
+                          label={anio.activo ? 'Activo' : 'Inactivo'}
+                          color={anio.activo ? 'success' : 'default'}
+                          size="small"
+                        />
+                        {anio.anio === colegio.anio_escolar_actual && (
+                          <Chip
+                            label="Actual"
+                            color="primary"
+                            size="small"
+                          />
+                        )}
+                      </Box>
+
+                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                        {anio.anio !== colegio.anio_escolar_actual && (
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            onClick={() => handleSetAnioActual(anio.anio)}
+                            disabled={!anio.activo}
+                          >
+                            Establecer Actual
+                          </Button>
+                        )}
+
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          color={anio.activo ? 'warning' : 'success'}
+                          onClick={() => handleActualizarAnioEscolar(anio.id, !anio.activo)}
+                        >
+                          {anio.activo ? 'Desactivar' : 'Activar'}
+                        </Button>
+
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          color="error"
+                          onClick={() => handleEliminarAnioEscolar(anio.id)}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </Button>
+                      </Box>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            )}
+          </Box>
         </CardContent>
       </Card>
+
 
       {/* Botones de Acción */}
       {editMode && (

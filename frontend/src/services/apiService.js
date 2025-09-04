@@ -107,10 +107,13 @@ export const userService = {
 
 // Servicios de años escolares
 export const anioEscolarService = {
-  getAniosEscolares: async (colegioId) => {
-    const response = await api.get('/anios-escolares', {
-      params: { colegio_id: colegioId }
-    });
+  getAniosEscolares: async (params = {}) => {
+    const response = await api.get('/anios-escolares', { params });
+    return response.data;
+  },
+
+  getAnioEscolar: async (id) => {
+    const response = await api.get(`/anios-escolares/${id}`);
     return response.data;
   },
 
@@ -126,6 +129,11 @@ export const anioEscolarService = {
 
   deleteAnioEscolar: async (id) => {
     const response = await api.delete(`/anios-escolares/${id}`);
+    return response.data;
+  },
+
+  setAnioActual: async (anio) => {
+    const response = await api.put('/configuracion/anio-actual', { anio });
     return response.data;
   },
 };

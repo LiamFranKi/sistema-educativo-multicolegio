@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { configuracionService } from '../services/apiService';
+import { configuracionService, anioEscolarService } from '../services/apiService';
 import { getColegioLogoUrl } from '../utils/imageUtils';
 
 const ConfiguracionContext = createContext();
@@ -25,8 +25,10 @@ export const ConfiguracionProvider = ({ children }) => {
     color_secundario: '#424242',
     background_tipo: 'color',
     background_color: '#f5f5f5',
-    background_imagen: null
+    background_imagen: null,
+    anio_escolar_actual: 2025
   });
+  const [aniosEscolares, setAniosEscolares] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const loadColegioData = async () => {
@@ -52,13 +54,25 @@ export const ConfiguracionProvider = ({ children }) => {
           color_secundario: response.colegio.color_secundario || '#424242',
           background_tipo: response.colegio.background_tipo || 'color',
           background_color: response.colegio.background_color || '#f5f5f5',
-          background_imagen: backgroundImageUrl
+          background_imagen: backgroundImageUrl,
+          anio_escolar_actual: response.colegio.anio_escolar_actual || 2025
         });
       }
     } catch (error) {
       console.error('Error cargando datos del colegio:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadAniosEscolares = async () => {
+    try {
+      const response = await anioEscolarService.getAniosEscolares();
+      if (response.success) {
+        setAniosEscolares(response.anios_escolares || []);
+      }
+    } catch (error) {
+      console.error('Error cargando años escolares:', error);
     }
   };
 
@@ -78,15 +92,91 @@ export const ConfiguracionProvider = ({ children }) => {
     });
   };
 
+  const createAnioEscolar = async (anioData) => {
+    try {
+      const response = await anioEscolarService.createAnioEscolar(anioData);
+      if (response.success) {
+        // Actualizar estado local inmediatamente
+        setAniosEscolares(prev => [...prev, response.anio_escolar]);
+        console.log('Año escolar agregado al estado local');
+        return response;
+      }
+      return response;
+    } catch (error) {
+      console.error('Error creando año escolar:', error);
+      throw error;
+    }
+  };
+
+  const updateAnioEscolar = async (id, anioData) => {
+    try {
+      const response = await anioEscolarService.updateAnioEscolar(id, anioData);
+      if (response.success) {
+        // Actualizar estado local inmediatamente
+        setAniosEscolares(prev =>
+          prev.map(anio =>
+            anio.id === id ? { ...anio, ...response.anio_escolar } : anio
+          )
+        );
+        console.log('Año escolar actualizado en el estado local');
+        return response;
+      }
+      return response;
+    } catch (error) {
+      console.error('Error actualizando año escolar:', error);
+      throw error;
+    }
+  };
+
+  const deleteAnioEscolar = async (id) => {
+    try {
+      const response = await anioEscolarService.deleteAnioEscolar(id);
+      if (response.success) {
+        // Actualizar estado local inmediatamente
+        setAniosEscolares(prev => prev.filter(anio => anio.id !== id));
+        console.log('Año escolar eliminado del estado local');
+        return response;
+      }
+      return response;
+    } catch (error) {
+      console.error('Error eliminando año escolar:', error);
+      throw error;
+    }
+  };
+
+  const setAnioActual = async (anio) => {
+    try {
+      const response = await anioEscolarService.setAnioActual(anio);
+      if (response.success) {
+        setColegio(prev => ({
+          ...prev,
+          anio_escolar_actual: anio
+        }));
+        return response;
+      }
+      return response;
+    } catch (error) {
+      console.error('Error estableciendo año actual:', error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     loadColegioData();
+    loadAniosEscolares();
   }, []);
 
   const value = {
     colegio,
+    aniosEscolares,
     loading,
     loadColegioData,
-    updateColegio
+    loadAniosEscolares,
+    updateColegio,
+    createAnioEscolar,
+    updateAnioEscolar,
+    deleteAnioEscolar,
+    setAnioActual
   };
 
   return (
