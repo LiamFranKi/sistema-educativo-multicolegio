@@ -39,7 +39,7 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
 
     // Consulta principal
     const result = await query(
-      `SELECT id, nombres, dni, email, telefono, fecha_nacimiento, foto, rol, activo, created_at, updated_at
+      `SELECT id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, activo, created_at, updated_at
        FROM usuarios ${whereClause}
        ORDER BY created_at DESC
        LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`,
@@ -80,7 +80,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
 
     const result = await query(
-      'SELECT id, nombres, dni, email, telefono, fecha_nacimiento, foto, rol, activo, created_at, updated_at FROM usuarios WHERE id = $1',
+      'SELECT id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, activo, created_at, updated_at FROM usuarios WHERE id = $1',
       [id]
     );
 
@@ -123,7 +123,7 @@ router.post('/', authenticateToken, requireAdmin, [
       });
     }
 
-    const { nombres, dni, email, telefono, fecha_nacimiento, foto, rol, clave } = req.body;
+    const { nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, clave } = req.body;
 
     // Verificar si el DNI ya existe
     const dniCheck = await query('SELECT id FROM usuarios WHERE dni = $1', [dni]);
@@ -148,10 +148,10 @@ router.post('/', authenticateToken, requireAdmin, [
 
     // Crear usuario
     const result = await query(
-      `INSERT INTO usuarios (nombres, dni, email, telefono, fecha_nacimiento, foto, rol, clave, activo, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, true, NOW(), NOW())
-       RETURNING id, nombres, dni, email, telefono, fecha_nacimiento, foto, rol, activo, created_at, updated_at`,
-      [nombres, dni, email, telefono, fecha_nacimiento, foto, rol, hashedPassword]
+      `INSERT INTO usuarios (nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, clave, activo, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, true, NOW(), NOW())
+       RETURNING id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, activo, created_at, updated_at`,
+      [nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, hashedPassword]
     );
 
     res.status(201).json({
@@ -186,7 +186,7 @@ router.put('/:id', authenticateToken, [
     }
 
     const { id } = req.params;
-    const { nombres, email, telefono, fecha_nacimiento, foto } = req.body;
+    const { nombres, apellidos, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto } = req.body;
 
     // Verificar si el usuario existe
     const userCheck = await query('SELECT id FROM usuarios WHERE id = $1', [id]);
@@ -220,14 +220,19 @@ router.put('/:id', authenticateToken, [
     const result = await query(
       `UPDATE usuarios
        SET nombres = COALESCE($1, nombres),
-           email = COALESCE($2, email),
-           telefono = COALESCE($3, telefono),
-           fecha_nacimiento = COALESCE($4, fecha_nacimiento),
-           foto = COALESCE($5, foto),
+           apellidos = COALESCE($2, apellidos),
+           email = COALESCE($3, email),
+           telefono = COALESCE($4, telefono),
+           fecha_nacimiento = COALESCE($5, fecha_nacimiento),
+           direccion = COALESCE($6, direccion),
+           genero = COALESCE($7, genero),
+           estado_civil = COALESCE($8, estado_civil),
+           profesion = COALESCE($9, profesion),
+           foto = COALESCE($10, foto),
            updated_at = NOW()
-       WHERE id = $6
-       RETURNING id, nombres, dni, email, telefono, fecha_nacimiento, foto, rol, activo, created_at, updated_at`,
-      [nombres, email, telefono, fecha_nacimiento, foto, id]
+       WHERE id = $11
+       RETURNING id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, activo, created_at, updated_at`,
+      [nombres, apellidos, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, id]
     );
 
     res.json({
