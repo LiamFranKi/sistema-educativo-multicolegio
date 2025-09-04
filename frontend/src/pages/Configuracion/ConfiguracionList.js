@@ -27,7 +27,8 @@ import {
   Save as SaveIcon,
   Edit as EditIcon,
   PhotoCamera as PhotoCameraIcon,
-  Info as InfoIcon
+  Info as InfoIcon,
+  Image as ImageIcon
 } from '@mui/icons-material';
 import { getUser } from '../../services/authService';
 import { configuracionService } from '../../services/apiService';
@@ -60,7 +61,14 @@ const ConfiguracionList = () => {
 
       if (response.success) {
         updateColegio(response.colegio);
-        setFormData(response.colegio);
+
+        // Inicializar formData con URLs completas para imágenes
+        const formDataWithUrls = {
+          ...response.colegio,
+          logo: response.colegio.logo ? getColegioLogoUrl(response.colegio.logo) : '',
+          background_imagen: response.colegio.background_imagen ? getColegioLogoUrl(response.colegio.background_imagen) : ''
+        };
+        setFormData(formDataWithUrls);
 
         // Cargar imagen de preview si existe logo
         if (response.colegio.logo) {
@@ -115,25 +123,85 @@ const ConfiguracionList = () => {
     }
   };
 
+  const handleBackgroundImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validar tamaño del archivo (máximo 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('La imagen de fondo debe ser menor a 5MB');
+      return;
+    }
+
+    // Validar tipo de archivo
+    if (!file.type.startsWith('image/')) {
+      toast.error('Solo se permiten archivos de imagen');
+      return;
+    }
+
+    try {
+      const response = await fileService.uploadFile(file, 'background');
+
+      if (response.success) {
+        const imageUrl = getColegioLogoUrl(response.filename);
+        console.log('Imagen subida - filename:', response.filename);
+        console.log('Imagen subida - URL construida:', imageUrl);
+        setFormData(prev => ({
+          ...prev,
+          background_imagen: imageUrl
+        }));
+        toast.success('Imagen de fondo subida exitosamente');
+      }
+    } catch (error) {
+      console.error('Error subiendo imagen de fondo:', error);
+      toast.error('Error al subir la imagen de fondo');
+    }
+  };
+
   const handleSave = async () => {
     try {
       setSaving(true);
 
-      const response = await configuracionService.updateColegio(formData);
+      console.log('Datos que se van a enviar:', formData);
+
+      // Preparar datos para envío (convertir URLs completas a filenames)
+      const dataToSend = {
+        ...formData,
+        logo: formData.logo ? formData.logo.split('/').pop() : formData.logo,
+        background_imagen: formData.background_imagen ? formData.background_imagen.split('/').pop() : formData.background_imagen
+      };
+
+      console.log('Datos procesados para envío:', dataToSend);
+
+      const response = await configuracionService.updateColegio(dataToSend);
 
       if (response.success) {
-        // Actualizar el contexto para que el sidebar se actualice automáticamente
+        // Actualizar el contexto con todos los datos guardados
         updateColegio({
           nombre: formData.nombre,
-          logo: formData.logo
+          logo: formData.logo,
+          codigo: formData.codigo,
+          direccion: formData.direccion,
+          telefono: formData.telefono,
+          email: formData.email,
+          director: formData.director,
+          color_primario: formData.color_primario,
+          color_secundario: formData.color_secundario,
+          background_tipo: formData.background_tipo,
+          background_color: formData.background_color,
+          background_imagen: formData.background_imagen
         });
 
-        // Actualizar el estado local con los datos guardados para mostrar cambios inmediatamente
-        setFormData(prev => ({
-          ...prev,
-          ...formData
-        }));
+        // Forzar actualización del contexto para que el login se actualice inmediatamente
+        // Esto asegura que todos los componentes que usan el contexto se re-rendericen
 
+        // Sincronizar formData con los datos actualizados del contexto
+        // Usar los datos que se acaban de guardar, no mezclar con colegio
+        setFormData({
+          ...formData
+        });
+
+        // Salir del modo edición
         setEditMode(false);
         toast.success('Configuración guardada exitosamente');
       }
@@ -146,7 +214,13 @@ const ConfiguracionList = () => {
   };
 
   const handleCancel = () => {
-    setFormData(colegio);
+    // Inicializar formData con URLs completas para imágenes
+    const formDataWithUrls = {
+      ...colegio,
+      logo: colegio.logo ? getColegioLogoUrl(colegio.logo) : '',
+      background_imagen: colegio.background_imagen ? getColegioLogoUrl(colegio.background_imagen) : ''
+    };
+    setFormData(formDataWithUrls);
     setEditMode(false);
     if (colegio.logo) {
       setPreviewImage(colegio.logo);
@@ -381,6 +455,119 @@ const ConfiguracionList = () => {
                 />
               </Box>
             </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+
+      {/* Configuración de Fondo */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+            <ImageIcon color="primary" />
+            <Typography variant="h5" component="h2" color="primary">
+              Configuración de Fondo
+            </Typography>
+          </Box>
+
+          <Divider sx={{ mb: 3 }} />
+
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Tipo de Fondo</InputLabel>
+                <Select
+                  value={editMode ? formData.background_tipo || 'color' : colegio.background_tipo || 'color'}
+                  onChange={(e) => handleInputChange('background_tipo', e.target.value)}
+                  disabled={!editMode}
+                  variant={editMode ? 'outlined' : 'filled'}
+                >
+                  <MenuItem value="color">Color</MenuItem>
+                  <MenuItem value="imagen">Imagen</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            {((editMode ? formData.background_tipo : colegio.background_tipo) === 'color') ? (
+              <Grid item xs={12} sm={6}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 1,
+                      backgroundColor: editMode ? formData.background_color : colegio.background_color,
+                      border: '2px solid #e0e0e0',
+                      cursor: editMode ? 'pointer' : 'default'
+                    }}
+                    onClick={editMode ? () => document.getElementById('background-color-picker').click() : undefined}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Color de Fondo"
+                    value={editMode ? formData.background_color || '#f5f5f5' : colegio.background_color || '#f5f5f5'}
+                    onChange={(e) => handleInputChange('background_color', e.target.value)}
+                    disabled={!editMode}
+                    variant={editMode ? 'outlined' : 'filled'}
+                    type="color"
+                    inputProps={{ id: 'background-color-picker' }}
+                  />
+                </Box>
+              </Grid>
+            ) : (
+              <Grid item xs={12} sm={6}>
+                <Box>
+                  <input
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    id="background-image-upload"
+                    type="file"
+                    onChange={handleBackgroundImageUpload}
+                  />
+                  <label htmlFor="background-image-upload">
+                    <Button
+                      variant="outlined"
+                      component="span"
+                      startIcon={<PhotoCameraIcon />}
+                      disabled={!editMode}
+                      fullWidth
+                    >
+                      Subir Imagen de Fondo
+                    </Button>
+                  </label>
+
+                  {(editMode ? formData.background_imagen : colegio.background_imagen) && (
+                    <Box sx={{ mt: 2, textAlign: 'center' }}>
+                      {(() => {
+                        const imageSrc = editMode ? formData.background_imagen : colegio.background_imagen;
+                        console.log('Vista previa - editMode:', editMode);
+                        console.log('Vista previa - formData.background_imagen:', formData.background_imagen);
+                        console.log('Vista previa - colegio.background_imagen:', colegio.background_imagen);
+                        console.log('Vista previa - imageSrc final:', imageSrc);
+                        return (
+                          <img
+                            src={imageSrc}
+                            alt="Vista previa del fondo"
+                            style={{
+                              maxWidth: '100%',
+                              maxHeight: 150,
+                              borderRadius: 8,
+                              border: '2px solid #e0e0e0'
+                            }}
+                            onError={(e) => {
+                              console.error('Error cargando imagen de vista previa:', e.target.src);
+                              e.target.style.display = 'none';
+                            }}
+                            onLoad={() => {
+                              console.log('Imagen de vista previa cargada correctamente');
+                            }}
+                          />
+                        );
+                      })()}
+                    </Box>
+                  )}
+                </Box>
+              </Grid>
+            )}
           </Grid>
         </CardContent>
       </Card>

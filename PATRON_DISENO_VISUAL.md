@@ -6,11 +6,13 @@
 
 Unificar el diseño visual de todos los componentes reutilizables del sistema para mantener consistencia, mejorar la experiencia de usuario y facilitar el mantenimiento del código.
 
+**NOTA IMPORTANTE:** El sistema incluye temas dinámicos basados en la configuración del colegio, sidebar personalizado con información del usuario, y barra de título mejorada con iconos de notificaciones y cerrar sesión.
+
 ---
 
 ## 🎯 **1. TEMA MATERIAL-UI BASE**
 
-### **Paleta de Colores:**
+### **Paleta de Colores Estática (Fallback):**
 
 ```javascript
 const theme = createTheme({
@@ -49,6 +51,33 @@ const theme = createTheme({
 });
 ```
 
+### **Tema Dinámico (Configuración del Colegio):**
+
+```javascript
+// ThemeContext.js - Tema dinámico basado en configuración
+const createDynamicTheme = (colegio) => {
+  return createTheme({
+    palette: {
+      primary: {
+        main: colegio.color_primario || "#1976d2",
+        light: lighten(colegio.color_primario || "#1976d2", 0.3),
+        dark: darken(colegio.color_primario || "#1976d2", 0.3),
+      },
+      secondary: {
+        main: colegio.color_secundario || "#424242",
+        light: lighten(colegio.color_secundario || "#424242", 0.3),
+        dark: darken(colegio.color_secundario || "#424242", 0.3),
+      },
+      text: {
+        primary: "#212121",
+        secondary: colegio.color_secundario || "#757575", // Color secundario del colegio
+      },
+      // ... resto de colores estáticos
+    },
+  });
+};
+```
+
 ### **Tipografía:**
 
 ```javascript
@@ -73,6 +102,130 @@ shape: {
   borderRadius: 8,          // Radio de bordes estándar
 },
 spacing: 8,                 // Unidad base de espaciado (8px)
+```
+
+---
+
+## 🎨 **1.5. COMPONENTES ESPECÍFICOS DEL SISTEMA**
+
+### **A) Sidebar Personalizado (AdminSidebar.js)**
+
+#### **Estructura Visual:**
+
+```javascript
+// Información del usuario en lugar del colegio
+<Box sx={{ p: 2, textAlign: "center", borderBottom: "1px solid #e0e0e0" }}>
+  <Avatar
+    sx={{
+      width: 120, // 100% más grande que el original (60px)
+      height: 120,
+      mx: "auto",
+      mb: 1,
+      bgcolor: "primary.main",
+    }}
+  >
+    {user?.foto ? (
+      <img
+        src={getImageUrl(user.foto)}
+        alt="Foto del usuario"
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          borderRadius: "50%",
+        }}
+        onError={(e) => {
+          console.error("Error cargando foto de usuario:", e.target.src);
+          e.target.style.display = "none";
+        }}
+      />
+    ) : (
+      <AccountCircleIcon sx={{ fontSize: 60 }} />
+    )}
+  </Avatar>
+  <Typography variant="h6" color="primary" fontWeight="bold">
+    {user?.nombres || "Administrador"}
+  </Typography>
+  <Typography variant="body2" color="text.secondary">
+    Panel Administrativo
+  </Typography>
+</Box>
+```
+
+### **B) Barra de Título Mejorada (AdminLayout.js)**
+
+#### **Estructura Visual:**
+
+```javascript
+<Toolbar>
+  <IconButton
+    color="inherit"
+    aria-label="open drawer"
+    edge="start"
+    onClick={handleDrawerToggle}
+    sx={{ mr: 2, display: { sm: "none" } }}
+  >
+    <MenuIcon />
+  </IconButton>
+  <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+    {colegio.nombre || "Administración del Colegio"}
+  </Typography>
+
+  {/* Iconos de la barra de título */}
+  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+    {/* Icono de Notificaciones */}
+    <IconButton
+      color="inherit"
+      aria-label="notificaciones"
+      sx={{
+        "&:hover": {
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+        },
+      }}
+    >
+      <Badge badgeContent={0} color="error">
+        <NotificationsIcon />
+      </Badge>
+    </IconButton>
+
+    {/* Icono de Cerrar Sesión */}
+    <IconButton
+      color="inherit"
+      aria-label="cerrar sesión"
+      onClick={onLogout}
+      sx={{
+        "&:hover": {
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+        },
+      }}
+    >
+      <LogoutIcon />
+    </IconButton>
+  </Box>
+</Toolbar>
+```
+
+### **C) Página de Login con Tema Dinámico**
+
+#### **Estructura Visual:**
+
+```javascript
+// Aplicación de fondo dinámico
+<Box
+  sx={{
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background:
+      colegio.background_tipo === "imagen"
+        ? `url(${colegio.background_imagen}) center/cover no-repeat`
+        : colegio.background_color ||
+          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  }}
+>
+  {/* Contenido del login con tema dinámico */}
+</Box>
 ```
 
 ---

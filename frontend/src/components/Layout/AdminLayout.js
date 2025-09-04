@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Box, AppBar, Toolbar, IconButton, Typography, useTheme, useMediaQuery } from '@mui/material';
+import { Box, AppBar, Toolbar, IconButton, Typography, useTheme, useMediaQuery, Badge } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useConfiguracion } from '../../contexts/ConfiguracionContext';
 
 // Páginas del Administrador
 import AdminDashboard from '../../pages/Admin/AdminDashboard';
@@ -41,6 +44,7 @@ const AdminLayout = ({ onLogout }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [open, setOpen] = useState(!isMobile); // En móvil empieza cerrado
+  const { colegio } = useConfiguracion(); // Obtener datos del colegio
 
   const handleDrawerToggle = () => {
     setOpen(!open);
@@ -66,9 +70,41 @@ const AdminLayout = ({ onLogout }) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Administración del Colegio
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+            {colegio.nombre || 'Administración del Colegio'}
           </Typography>
+
+          {/* Iconos de la barra de título */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {/* Icono de Notificaciones */}
+            <IconButton
+              color="inherit"
+              aria-label="notificaciones"
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                },
+              }}
+            >
+              <Badge badgeContent={0} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+
+            {/* Icono de Cerrar Sesión */}
+            <IconButton
+              color="inherit"
+              aria-label="cerrar sesión"
+              onClick={onLogout}
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                },
+              }}
+            >
+              <LogoutIcon />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
       <AdminSidebar open={open} onDrawerToggle={handleDrawerToggle} onLogout={onLogout} />

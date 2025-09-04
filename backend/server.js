@@ -54,7 +54,6 @@ app.use('/uploads', cors({
 // Rutas de la API
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/usuarios', require('./routes/usuarios'));
-app.use('/api/colegios', require('./routes/colegios'));
 app.use('/api/anios-escolares', require('./routes/aniosEscolares'));
 app.use('/api/publicaciones', require('./routes/publicaciones'));
 app.use('/api/notificaciones', require('./routes/notificaciones'));

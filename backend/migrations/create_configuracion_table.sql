@@ -25,6 +25,9 @@ INSERT INTO configuracion (clave, valor, descripcion, tipo, categoria) VALUES
 ('colegio_color_primario', '#1976d2', 'Color primario del tema', 'color', 'colegio'),
 ('colegio_color_secundario', '#424242', 'Color secundario del tema', 'color', 'colegio'),
 ('colegio_director', 'Director del Colegio', 'Nombre del director', 'text', 'colegio'),
+('colegio_background_tipo', 'color', 'Tipo de fondo: color o imagen', 'text', 'colegio'),
+('colegio_background_color', '#f5f5f5', 'Color de fondo de la aplicación', 'color', 'colegio'),
+('colegio_background_imagen', '', 'Imagen de fondo de la aplicación', 'file', 'colegio'),
 ('anio_escolar_actual', '2025', 'Año escolar actual', 'number', 'sistema'),
 ('sistema_activo', 'true', 'Estado del sistema', 'boolean', 'sistema')
 ON CONFLICT (clave) DO NOTHING;

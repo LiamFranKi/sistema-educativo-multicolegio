@@ -868,6 +868,161 @@ Ver archivo `PATRON_CRUD.md` para detalles completos, ejemplos de código y guí
 
 ---
 
+## [2024-09-04] - Migración a Sistema de Un Solo Colegio y Corrección de URLs de Imágenes
+
+### ✅ **CAMBIO ARQUITECTÓNICO: DE MULTI-COLEGIO A UN SOLO COLEGIO**
+
+**Fecha:** 04/09/2025
+**Cambio:** Migración completa del sistema multi-colegio a un sistema de un solo colegio
+
+#### **Archivos Eliminados:**
+
+- `frontend/src/components/Layout/SuperAdminLayout.js`
+- `frontend/src/components/Sidebar/SuperAdminSidebar.js`
+- `frontend/src/pages/SuperAdmin/SuperAdminDashboard.js`
+- `frontend/src/pages/SuperAdmin/GestionColegios.js`
+- `frontend/src/pages/SuperAdmin/GestionUsuarios.js`
+- `frontend/src/pages/SuperAdmin/ConfiguracionSistema.js`
+- `frontend/src/pages/Mantenimientos/Colegios/ColegiosList.js`
+- `frontend/src/pages/Mantenimientos/Colegios/ColegioForm.js`
+- `frontend/src/pages/Mantenimientos/Colegios/ColegioView.js`
+
+#### **Archivos Modificados:**
+
+- `frontend/src/App.js` - Eliminada lógica de Superadministrador y agregado ConfiguracionProvider
+- `frontend/src/services/apiService.js` - Eliminado `colegioService`, agregado `configuracionService`
+- `backend/routes/configuracion.js` - Nuevo sistema de configuración del colegio
+- `backend/migrations/create_configuracion_table.sql` - Nueva tabla de configuración
+
+#### **Nuevas Funcionalidades:**
+
+- **Sistema de Configuración:** Módulo para gestionar datos del colegio único
+- **Contexto Global:** `ConfiguracionContext` para manejo de datos del colegio
+- **URLs de Imágenes:** Sistema unificado para construcción de URLs de imágenes
+- **Actualización en Tiempo Real:** Cambios en configuración se reflejan inmediatamente
+
+### ✅ **CORRECCIÓN DE URLs DE IMÁGENES**
+
+**Problema Identificado:**
+
+- Error 404 al cargar logos del colegio
+- URLs construidas incorrectamente
+- Imágenes no se mostraban en login, dashboard ni sidebar
+
+**Solución Implementada:**
+
+- **Archivo:** `frontend/src/utils/imageUtils.js` - Funciones helper para URLs
+- **Función `getImageUrl()`:** Construye URLs completas para cualquier imagen
+- **Función `getColegioLogoUrl()`:** Específica para logos del colegio
+- **Actualización de Contexto:** `ConfiguracionContext` maneja URLs completas
+- **Actualización de Componentes:** Login, ConfiguracionList, AdminSidebar
+
+### ✅ **SISTEMA DE CONFIGURACIÓN IMPLEMENTADO**
+
+#### **Backend - Nueva Tabla `configuracion`:**
+
+```sql
+CREATE TABLE configuracion (
+    id SERIAL PRIMARY KEY,
+    clave VARCHAR(100) UNIQUE NOT NULL,
+    valor TEXT,
+    descripcion TEXT,
+    tipo VARCHAR(50) DEFAULT 'text',
+    categoria VARCHAR(50) DEFAULT 'general',
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### **Datos Iniciales del Colegio:**
+
+- `colegio_nombre` - Nombre del colegio
+- `colegio_codigo` - Código único del colegio
+- `colegio_direccion` - Dirección completa
+- `colegio_telefono` - Teléfono de contacto
+- `colegio_email` - Email de contacto
+- `colegio_logo` - Archivo del logo
+- `colegio_color_primario` - Color primario del tema
+- `colegio_color_secundario` - Color secundario del tema
+- `colegio_director` - Nombre del director
+
+#### **Rutas de Configuración:**
+
+- `GET /api/configuracion` - Obtener todas las configuraciones
+- `GET /api/configuracion/colegio` - Obtener datos del colegio (público)
+- `GET /api/configuracion/colegio/publico` - Datos públicos sin autenticación
+- `PUT /api/configuracion/colegio` - Actualizar datos del colegio
+- `PUT /api/configuracion/:clave` - Actualizar configuración específica
+
+### ✅ **MEJORAS EN LA EXPERIENCIA DE USUARIO**
+
+#### **Actualización Inmediata:**
+
+- Cambios en configuración se reflejan instantáneamente
+- Sidebar actualiza logo y nombre del colegio automáticamente
+- Login muestra datos actualizados del colegio
+- Preview de imágenes funciona correctamente
+
+#### **Sistema de Archivos Mejorado:**
+
+- Subida de logos con preview inmediato
+- URLs construidas correctamente
+- Manejo de errores mejorado
+- Validación de tipos de archivo
+
+### ✅ **PATRONES ESTABLECIDOS**
+
+#### **Para URLs de Imágenes:**
+
+```javascript
+// Función helper obligatoria
+import { getColegioLogoUrl } from "../utils/imageUtils";
+
+// Uso en componentes
+const logoUrl = getColegioLogoUrl(colegio.logo);
+```
+
+#### **Para Configuración del Colegio:**
+
+```javascript
+// Contexto global
+const { colegio, updateColegio } = useConfiguracion();
+
+// Actualización de datos
+updateColegio({
+  nombre: "Nuevo Nombre",
+  logo: "nuevo-logo.png",
+});
+```
+
+### ✅ **ARCHIVOS CREADOS/MODIFICADOS**
+
+#### **Nuevos Archivos:**
+
+- `frontend/src/utils/imageUtils.js` - Utilidades para URLs de imágenes
+- `frontend/src/contexts/ConfiguracionContext.js` - Contexto global de configuración
+- `frontend/src/pages/Configuracion/ConfiguracionList.js` - Módulo de configuración
+- `backend/routes/configuracion.js` - Rutas de configuración
+- `backend/migrations/create_configuracion_table.sql` - Migración de tabla
+
+#### **Archivos Modificados:**
+
+- `frontend/src/App.js` - Agregado ConfiguracionProvider
+- `frontend/src/pages/Login.js` - URLs de imágenes corregidas
+- `frontend/src/components/Sidebar/AdminSidebar.js` - URLs de imágenes corregidas
+- `frontend/src/services/apiService.js` - Agregado configuracionService
+
+### ✅ **ESTADO FINAL**
+
+- ✅ **Sistema de un solo colegio** completamente implementado
+- ✅ **URLs de imágenes** funcionando correctamente
+- ✅ **Configuración en tiempo real** implementada
+- ✅ **Módulo de configuración** completamente funcional
+- ✅ **Contexto global** para datos del colegio
+- ✅ **Patrones establecidos** para futuros desarrollos
+
+---
+
 ## [2024-12-19] - Patrón de Diseño Visual Unificado Establecido
 
 ### ✅ **PATRÓN OBLIGATORIO PARA DISEÑO VISUAL**

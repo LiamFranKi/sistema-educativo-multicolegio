@@ -8,18 +8,11 @@ const router = express.Router();
 // GET /api/anios-escolares - Obtener años escolares
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const { colegio_id, activo } = req.query;
+    const { activo } = req.query;
 
     let whereClause = 'WHERE 1=1';
     const params = [];
     let paramCount = 0;
-
-    // Filtro por colegio
-    if (colegio_id) {
-      paramCount++;
-      whereClause += ` AND colegio_id = $${paramCount}`;
-      params.push(colegio_id);
-    }
 
     // Filtro por estado activo
     if (activo !== undefined) {
@@ -29,12 +22,10 @@ router.get('/', authenticateToken, async (req, res) => {
     }
 
     const result = await query(
-      `SELECT ae.id, ae.colegio_id, ae.anio, ae.activo, ae.created_at, ae.updated_at,
-              c.nombre as colegio_nombre
-       FROM anios_escolares ae
-       JOIN colegios c ON ae.colegio_id = c.id
+      `SELECT id, anio, activo, created_at, updated_at
+       FROM anios_escolares
        ${whereClause}
-       ORDER BY ae.anio DESC`,
+       ORDER BY anio DESC`,
       params
     );
 
@@ -58,11 +49,9 @@ router.get('/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
 
     const result = await query(
-      `SELECT ae.id, ae.colegio_id, ae.anio, ae.activo, ae.created_at, ae.updated_at,
-              c.nombre as colegio_nombre
-       FROM anios_escolares ae
-       JOIN colegios c ON ae.colegio_id = c.id
-       WHERE ae.id = $1`,
+      `SELECT id, anio, activo, created_at, updated_at
+       FROM anios_escolares
+       WHERE id = $1`,
       [id]
     );
 
@@ -89,7 +78,6 @@ router.get('/:id', authenticateToken, async (req, res) => {
 
 // POST /api/anios-escolares - Crear año escolar (solo administradores)
 router.post('/', authenticateToken, requireAdmin, [
-  body('colegio_id').isInt().withMessage('ID del colegio es requerido'),
   body('anio').isInt({ min: 2020, max: 2030 }).withMessage('Año debe estar entre 2020 y 2030')
 ], async (req, res) => {
   try {
@@ -102,32 +90,23 @@ router.post('/', authenticateToken, requireAdmin, [
       });
     }
 
-    const { colegio_id, anio } = req.body;
+    const { anio } = req.body;
 
-    // Verificar si el colegio existe
-    const colegioCheck = await query('SELECT id FROM colegios WHERE id = $1', [colegio_id]);
-    if (colegioCheck.rows.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: 'Colegio no encontrado'
-      });
-    }
-
-    // Verificar si el año ya existe para este colegio
-    const anioCheck = await query('SELECT id FROM anios_escolares WHERE colegio_id = $1 AND anio = $2', [colegio_id, anio]);
+    // Verificar si el año ya existe
+    const anioCheck = await query('SELECT id FROM anios_escolares WHERE anio = $1', [anio]);
     if (anioCheck.rows.length > 0) {
       return res.status(400).json({
         success: false,
-        message: 'El año escolar ya existe para este colegio'
+        message: 'El año escolar ya existe'
       });
     }
 
     // Crear año escolar
     const result = await query(
-      `INSERT INTO anios_escolares (colegio_id, anio, activo, created_at, updated_at)
-       VALUES ($1, $2, true, NOW(), NOW())
-       RETURNING id, colegio_id, anio, activo, created_at, updated_at`,
-      [colegio_id, anio]
+      `INSERT INTO anios_escolares (anio, activo, created_at, updated_at)
+       VALUES ($1, true, NOW(), NOW())
+       RETURNING id, anio, activo, created_at, updated_at`,
+      [anio]
     );
 
     res.status(201).json({
@@ -163,7 +142,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
     const { anio, activo } = req.body;
 
     // Verificar si el año escolar existe
-    const anioCheck = await query('SELECT id, colegio_id FROM anios_escolares WHERE id = $1', [id]);
+    const anioCheck = await query('SELECT id FROM anios_escolares WHERE id = $1', [id]);
     if (anioCheck.rows.length === 0) {
       return res.status(404).json({
         success: false,
@@ -171,18 +150,16 @@ router.put('/:id', authenticateToken, requireAdmin, [
       });
     }
 
-    const colegio_id = anioCheck.rows[0].colegio_id;
-
-    // Verificar si el año ya existe para este colegio (si se está cambiando)
+    // Verificar si el año ya existe (si se está cambiando)
     if (anio) {
       const anioExistsCheck = await query(
-        'SELECT id FROM anios_escolares WHERE colegio_id = $1 AND anio = $2 AND id != $3',
-        [colegio_id, anio, id]
+        'SELECT id FROM anios_escolares WHERE anio = $1 AND id != $2',
+        [anio, id]
       );
       if (anioExistsCheck.rows.length > 0) {
         return res.status(400).json({
           success: false,
-          message: 'El año escolar ya existe para este colegio'
+          message: 'El año escolar ya existe'
         });
       }
     }
@@ -194,7 +171,7 @@ router.put('/:id', authenticateToken, requireAdmin, [
            activo = COALESCE($2, activo),
            updated_at = NOW()
        WHERE id = $3
-       RETURNING id, colegio_id, anio, activo, created_at, updated_at`,
+       RETURNING id, anio, activo, created_at, updated_at`,
       [anio, activo, id]
     );
 

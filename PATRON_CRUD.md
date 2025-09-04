@@ -8,6 +8,14 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 
 **NOTA IMPORTANTE:** El sistema es de un solo colegio. No existe el módulo de Colegios ni el rol Superadministrador.
 
+**SISTEMA DE CONFIGURACIÓN:** Los datos del colegio se gestionan a través del módulo "Configuración" que permite editar nombre, logo, colores, director, fondos personalizables, etc.
+
+**TEMAS DINÁMICOS:** El sistema incluye temas dinámicos basados en los colores del colegio configurados en el módulo de Configuración.
+
+**SIDEBAR PERSONALIZADO:** El sidebar del dashboard muestra información del usuario logueado (nombre y foto) en lugar de la información del colegio.
+
+**BARRA DE TÍTULO MEJORADA:** La barra de título incluye iconos de notificaciones y cerrar sesión en el lado derecho.
+
 ---
 
 ## 🗂️ **1. ESTRUCTURA DE CARPETAS**
@@ -29,6 +37,13 @@ frontend/src/
 │       ├── ConfirmDialog.js         # Modal de confirmación
 │       ├── SearchBar.js             # Barra de búsqueda
 │       └── ActionButtons.js         # Botones de acción (Editar, Eliminar, Ver)
+├── contexts/
+│   ├── ConfiguracionContext.js      # Contexto global de configuración del colegio
+│   └── ThemeContext.js              # Contexto de tema dinámico
+├── utils/
+│   └── imageUtils.js                # Utilidades para URLs de imágenes
+└── services/
+    └── apiService.js                # Servicios API (incluye configuracionService)
 ```
 
 ---
@@ -68,6 +83,51 @@ frontend/src/
 - Información detallada del registro
 - Botones: Editar, Cerrar
 - Formato de datos legible
+```
+
+---
+
+## ⚙️ **2.5. SISTEMA DE CONFIGURACIÓN**
+
+### **A) ConfiguracionContext.js - Contexto Global**
+
+```javascript
+// Características:
+- Estado global del colegio
+- Funciones de actualización
+- URLs de imágenes construidas correctamente
+- Sincronización con backend
+```
+
+### **B) ThemeContext.js - Tema Dinámico**
+
+```javascript
+// Características:
+- Generación dinámica de tema Material-UI
+- Colores basados en configuración del colegio
+- Aplicación automática en toda la aplicación
+- Actualización en tiempo real
+```
+
+### **C) imageUtils.js - Utilidades de Imágenes**
+
+```javascript
+// Características:
+- Construcción de URLs completas
+- Manejo de URLs existentes
+- Consistencia en toda la aplicación
+- Funciones reutilizables
+```
+
+### **D) ConfiguracionList.js - Módulo de Configuración**
+
+```javascript
+// Características:
+- Edición inline de campos
+- Subida de archivos con preview
+- Validaciones en tiempo real
+- Actualización inmediata de la interfaz
+- Fondos personalizables (color/imagen)
 ```
 
 ---

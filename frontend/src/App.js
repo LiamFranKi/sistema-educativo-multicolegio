@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Box } from '@mui/material';
-import { ConfiguracionProvider } from './contexts/ConfiguracionContext';
+import { ConfiguracionProvider, useConfiguracion } from './contexts/ConfiguracionContext';
+import { DynamicThemeProvider } from './contexts/ThemeContext';
 
 // Componentes de Layout
 import Login from './pages/Login';
@@ -13,7 +14,9 @@ import ApoderadoLayout from './components/Layout/ApoderadoLayout';
 // Servicios
 import { getToken, getUserRole, removeToken } from './services/authService';
 
-function App() {
+// Componente interno que usa el contexto
+function AppContent() {
+  const { colegio } = useConfiguracion();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -61,9 +64,6 @@ function App() {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Login onLogin={handleLogin} />;
-  }
 
   // Renderizar layout según el rol del usuario
   const renderLayout = () => {
@@ -84,10 +84,18 @@ function App() {
   };
 
   return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      {!isAuthenticated ? <Login onLogin={handleLogin} /> : renderLayout()}
+    </Box>
+  );
+}
+
+function App() {
+  return (
     <ConfiguracionProvider>
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        {renderLayout()}
-      </Box>
+      <DynamicThemeProvider>
+        <AppContent />
+      </DynamicThemeProvider>
     </ConfiguracionProvider>
   );
 }

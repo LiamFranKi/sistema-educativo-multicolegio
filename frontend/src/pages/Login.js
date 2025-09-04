@@ -15,46 +15,17 @@ import { School as SchoolIcon } from '@mui/icons-material';
 import { authService } from '../services/apiService';
 import { setToken, setUser } from '../services/authService';
 import { getColegioLogoUrl } from '../utils/imageUtils';
+import { useConfiguracion } from '../contexts/ConfiguracionContext';
 
 const Login = ({ onLogin }) => {
+  const { colegio } = useConfiguracion();
   const [formData, setFormData] = useState({
     dni: '',
     clave: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [collegeData, setCollegeData] = useState({
-    nombre: 'Sistema Educativo',
-    logo: null
-  });
 
-  // Cargar datos del colegio
-  useEffect(() => {
-    const loadCollegeData = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/configuracion/colegio', {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.colegio) {
-            setCollegeData({
-              nombre: data.colegio.nombre || 'Sistema Educativo',
-              logo: getColegioLogoUrl(data.colegio.logo)
-            });
-          }
-        }
-      } catch (error) {
-        console.log('Error cargando datos del colegio:', error);
-        // Mantener valores por defecto
-      }
-    };
-
-    loadCollegeData();
-  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -92,17 +63,30 @@ const Login = ({ onLogin }) => {
     }
   };
 
-  return (
-    <Box
-      sx={{
+  const loginBackgroundSx = colegio.background_tipo === 'imagen' && colegio.background_imagen
+    ? {
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 2,
-      }}
-    >
+        backgroundImage: `url(${colegio.background_imagen})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+      }
+    : {
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 2,
+        backgroundColor: colegio.background_color || '#f5f5f5',
+      };
+
+  return (
+    <Box sx={loginBackgroundSx}>
       <Container maxWidth="sm">
         <Paper
           elevation={10}
@@ -120,30 +104,30 @@ const Login = ({ onLogin }) => {
               py: 4,
             }}
           >
-            {collegeData.logo ? (
+            {colegio.logo ? (
               <Avatar
-                src={collegeData.logo}
+                src={colegio.logo}
                 alt="Logo del colegio"
                 sx={{
-                  width: 80,
-                  height: 80,
+                  width: 95,
+                  height: 95,
                   mx: 'auto',
                   mb: 2,
                   border: '3px solid white',
                 }}
               />
             ) : (
-              <SchoolIcon sx={{ fontSize: 60, mb: 2 }} />
+              <SchoolIcon sx={{ fontSize: 71, mb: 2 }} />
             )}
-            <Typography variant="h4" component="h1" gutterBottom>
-              {collegeData.nombre}
+                                    <Typography variant="h4" component="h1" gutterBottom>
+              {colegio.nombre}
             </Typography>
           </Box>
 
           {/* Formulario */}
           <CardContent sx={{ p: 4 }}>
-            <Typography variant="h5" component="h2" gutterBottom align="center" sx={{ mb: 3 }}>
-              Iniciar Sesión
+            <Typography variant="h5" component="h2" gutterBottom align="center" sx={{ mb: 3, fontSize: '1.2rem' }}>
+              Intranet Educativa
             </Typography>
 
             {error && (

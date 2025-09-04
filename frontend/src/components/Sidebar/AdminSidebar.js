@@ -15,6 +15,8 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useConfiguracion } from '../../contexts/ConfiguracionContext';
+import { getUser } from '../../services/authService';
+import { getImageUrl } from '../../utils/imageUtils';
 import {
   Dashboard as DashboardIcon,
   Person as PersonIcon,
@@ -23,6 +25,7 @@ import {
   Settings as SettingsIcon,
   Logout as LogoutIcon,
   School as SchoolIcon,
+  AccountCircle as AccountCircleIcon,
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 
@@ -54,6 +57,7 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { colegio } = useConfiguracion();
+  const user = getUser();
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -90,25 +94,29 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
       <Box sx={{ p: 2, textAlign: 'center', borderBottom: '1px solid #e0e0e0' }}>
         <Avatar
           sx={{
-            width: 60,
-            height: 60,
+            width: 120, // 60 * 2 = 120 (100% más grande)
+            height: 120, // 60 * 2 = 120 (100% más grande)
             mx: 'auto',
             mb: 1,
             bgcolor: 'primary.main',
           }}
         >
-          {colegio.logo ? (
+          {user?.foto ? (
             <img
-              src={colegio.logo}
-              alt="Logo del colegio"
+              src={getImageUrl(user.foto)}
+              alt="Foto del usuario"
               style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+              onError={(e) => {
+                console.error('Error cargando foto de usuario:', e.target.src);
+                e.target.style.display = 'none';
+              }}
             />
           ) : (
-            <SchoolIcon sx={{ fontSize: 30 }} />
+            <AccountCircleIcon sx={{ fontSize: 60 }} />
           )}
         </Avatar>
         <Typography variant="h6" color="primary" fontWeight="bold">
-          {colegio.nombre}
+          {user?.nombres || 'Administrador'}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Panel Administrativo

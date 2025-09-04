@@ -117,11 +117,16 @@ router.put('/colegio', authenticateToken, requireAdmin, [
   body('codigo').optional().notEmpty().withMessage('Código no puede estar vacío'),
   body('email').optional().isEmail().withMessage('Email inválido'),
   body('color_primario').optional().matches(/^#[0-9A-F]{6}$/i).withMessage('Color primario inválido'),
-  body('color_secundario').optional().matches(/^#[0-9A-F]{6}$/i).withMessage('Color secundario inválido')
+  body('color_secundario').optional().matches(/^#[0-9A-F]{6}$/i).withMessage('Color secundario inválido'),
+  body('background_tipo').optional().isIn(['color', 'imagen']).withMessage('Tipo de fondo debe ser color o imagen'),
+  body('background_color').optional().matches(/^#[0-9A-F]{6}$/i).withMessage('Color de fondo inválido')
 ], async (req, res) => {
   try {
+    console.log('📥 Datos recibidos en /api/configuracion/colegio:', req.body);
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('❌ Errores de validación:', errors.array());
       return res.status(400).json({
         success: false,
         message: 'Datos de entrada inválidos',
@@ -138,7 +143,10 @@ router.put('/colegio', authenticateToken, requireAdmin, [
       logo,
       color_primario,
       color_secundario,
-      director
+      director,
+      background_tipo,
+      background_color,
+      background_imagen
     } = req.body;
 
     // Actualizar cada configuración individualmente
@@ -151,11 +159,15 @@ router.put('/colegio', authenticateToken, requireAdmin, [
       { clave: 'colegio_logo', valor: logo },
       { clave: 'colegio_color_primario', valor: color_primario },
       { clave: 'colegio_color_secundario', valor: color_secundario },
-      { clave: 'colegio_director', valor: director }
+      { clave: 'colegio_director', valor: director },
+      { clave: 'colegio_background_tipo', valor: background_tipo },
+      { clave: 'colegio_background_color', valor: background_color },
+      { clave: 'colegio_background_imagen', valor: background_imagen }
     ];
 
     for (const config of configuraciones) {
       if (config.valor !== undefined && config.valor !== null) {
+        console.log(`Actualizando ${config.clave}: ${config.valor}`);
         await query(
           'UPDATE configuracion SET valor = $1, updated_at = NOW() WHERE clave = $2',
           [config.valor, config.clave]
