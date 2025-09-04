@@ -44,7 +44,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-    { text: 'Mi Perfil', icon: <PersonIcon />, path: '/dashboard/mi-perfil' },
+    { text: 'Mi Perfil', icon: <PersonIcon />, path: '/perfil' },
     { text: 'Usuarios', icon: <PeopleIcon />, path: '/dashboard/usuarios' },
     { text: 'Cursos', icon: <SchoolIcon />, path: '/dashboard/cursos' },
     { text: 'Reportes', icon: <AssessmentIcon />, path: '/dashboard/reportes' },
