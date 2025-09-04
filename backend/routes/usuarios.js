@@ -123,7 +123,7 @@ router.post('/', authenticateToken, requireAdmin, [
       });
     }
 
-    const { nombres, dni, email, telefono, fecha_nacimiento, rol, clave } = req.body;
+    const { nombres, dni, email, telefono, fecha_nacimiento, foto, rol, clave } = req.body;
 
     // Verificar si el DNI ya existe
     const dniCheck = await query('SELECT id FROM usuarios WHERE dni = $1', [dni]);
@@ -148,10 +148,10 @@ router.post('/', authenticateToken, requireAdmin, [
 
     // Crear usuario
     const result = await query(
-      `INSERT INTO usuarios (nombres, dni, email, telefono, fecha_nacimiento, rol, clave, activo, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, true, NOW(), NOW())
+      `INSERT INTO usuarios (nombres, dni, email, telefono, fecha_nacimiento, foto, rol, clave, activo, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, true, NOW(), NOW())
        RETURNING id, nombres, dni, email, telefono, fecha_nacimiento, foto, rol, activo, created_at, updated_at`,
-      [nombres, dni, email, telefono, fecha_nacimiento, rol, hashedPassword]
+      [nombres, dni, email, telefono, fecha_nacimiento, foto, rol, hashedPassword]
     );
 
     res.status(201).json({
@@ -267,8 +267,8 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
       });
     }
 
-    // Eliminar usuario (soft delete - marcar como inactivo)
-    await query('UPDATE usuarios SET activo = false, updated_at = NOW() WHERE id = $1', [id]);
+    // Eliminar usuario completamente de la base de datos
+    await query('DELETE FROM usuarios WHERE id = $1', [id]);
 
     res.json({
       success: true,

@@ -79,14 +79,11 @@ const requireRole = (roles) => {
   };
 };
 
-// Middleware para verificar si es superadministrador
-const requireSuperAdmin = requireRole('Superadministrador');
-
-// Middleware para verificar si es administrador o superior
-const requireAdmin = requireRole(['Superadministrador', 'Administrador']);
+// Middleware para verificar si es administrador
+const requireAdmin = requireRole('Administrador');
 
 // Middleware para verificar si es docente o superior
-const requireDocente = requireRole(['Superadministrador', 'Administrador', 'Docente', 'Tutor']);
+const requireDocente = requireRole(['Administrador', 'Docente', 'Tutor']);
 
 // Middleware opcional para autenticación (no falla si no hay token)
 const optionalAuth = async (req, res, next) => {
@@ -121,7 +118,6 @@ const optionalAuth = async (req, res, next) => {
 module.exports = {
   authenticateToken,
   requireRole,
-  requireSuperAdmin,
   requireAdmin,
   requireDocente,
   optionalAuth

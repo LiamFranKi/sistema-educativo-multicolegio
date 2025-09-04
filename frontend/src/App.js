@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Box } from '@mui/material';
+import { ConfiguracionProvider } from './contexts/ConfiguracionContext';
 
 // Componentes de Layout
 import Login from './pages/Login';
-import SuperAdminLayout from './components/Layout/SuperAdminLayout';
 import AdminLayout from './components/Layout/AdminLayout';
 import DocenteLayout from './components/Layout/DocenteLayout';
 import AlumnoLayout from './components/Layout/AlumnoLayout';
@@ -68,8 +68,6 @@ function App() {
   // Renderizar layout según el rol del usuario
   const renderLayout = () => {
     switch (userRole) {
-      case 'Superadministrador':
-        return <SuperAdminLayout onLogout={handleLogout} />;
       case 'Administrador':
         return <AdminLayout onLogout={handleLogout} />;
       case 'Docente':
@@ -86,9 +84,11 @@ function App() {
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      {renderLayout()}
-    </Box>
+    <ConfiguracionProvider>
+      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        {renderLayout()}
+      </Box>
+    </ConfiguracionProvider>
   );
 }
 

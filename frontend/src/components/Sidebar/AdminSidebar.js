@@ -14,6 +14,7 @@ import {
   useTheme,
   useMediaQuery,
 } from '@mui/material';
+import { useConfiguracion } from '../../contexts/ConfiguracionContext';
 import {
   Dashboard as DashboardIcon,
   Person as PersonIcon,
@@ -38,61 +39,21 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   },
 }));
 
-const menuItems = [
-  { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-  { text: 'Mi Perfil', icon: <PersonIcon />, path: '/dashboard/mi-perfil' },
-  { text: 'Usuarios', icon: <PeopleIcon />, path: '/dashboard/usuarios' },
-  { text: 'Cursos', icon: <SchoolIcon />, path: '/dashboard/cursos' },
-  { text: 'Reportes', icon: <AssessmentIcon />, path: '/dashboard/reportes' },
-  { text: 'Configuración', icon: <SettingsIcon />, path: '/dashboard/configuracion' },
-];
+  const menuItems = [
+    { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
+    { text: 'Mi Perfil', icon: <PersonIcon />, path: '/dashboard/mi-perfil' },
+    { text: 'Usuarios', icon: <PeopleIcon />, path: '/dashboard/usuarios' },
+    { text: 'Cursos', icon: <SchoolIcon />, path: '/dashboard/cursos' },
+    { text: 'Reportes', icon: <AssessmentIcon />, path: '/dashboard/reportes' },
+    { text: 'Configuración', icon: <SettingsIcon />, path: '/dashboard/configuracion' },
+  ];
 
 const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [collegeData, setCollegeData] = React.useState({
-    nombre: 'Cargando...',
-    logo: null
-  });
-
-  // Cargar datos del colegio
-  React.useEffect(() => {
-    const loadCollegeData = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/colegios', {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (data && data.length > 0) {
-            const colegio = data[0];
-            setCollegeData({
-              nombre: colegio.nombre || 'Sistema Docentes',
-              logo: colegio.logo || null
-            });
-          } else {
-            setCollegeData({
-              nombre: 'Sistema Docentes',
-              logo: null
-            });
-          }
-        }
-      } catch (error) {
-        console.log('Error cargando datos del colegio:', error);
-        setCollegeData({
-          nombre: 'Sistema Docentes',
-          logo: null
-        });
-      }
-    };
-
-    loadCollegeData();
-  }, []);
+  const { colegio } = useConfiguracion();
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -136,9 +97,9 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
             bgcolor: 'primary.main',
           }}
         >
-          {collegeData.logo ? (
+          {colegio.logo ? (
             <img
-              src={collegeData.logo}
+              src={colegio.logo}
               alt="Logo del colegio"
               style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
             />
@@ -147,7 +108,7 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
           )}
         </Avatar>
         <Typography variant="h6" color="primary" fontWeight="bold">
-          {collegeData.nombre}
+          {colegio.nombre}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Panel Administrativo

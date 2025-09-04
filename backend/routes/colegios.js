@@ -1,29 +1,64 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const { query } = require('../config/database');
-const { authenticateToken, requireSuperAdmin } = require('../middleware/auth');
+const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
 // GET /api/colegios - Obtener colegios
-router.get('/', async (req, res) => {
+router.get('/', authenticateToken, async (req, res) => {
   try {
     console.log('Solicitando colegios...');
 
-    // Consulta simple para obtener todos los colegios activos
+    // Obtener parámetros de paginación y búsqueda
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || '';
+    const offset = (page - 1) * limit;
+
+    // Construir consulta con búsqueda
+    let whereClause = 'WHERE 1=1';
+    let queryParams = [];
+    let paramCount = 0;
+
+    if (search) {
+      paramCount++;
+      whereClause += ` AND (nombre ILIKE $${paramCount} OR codigo ILIKE $${paramCount} OR direccion ILIKE $${paramCount})`;
+      queryParams.push(`%${search}%`);
+    }
+
+    // Consulta para obtener colegios con paginación
     const result = await query(
       `SELECT id, nombre, codigo, logo, color_primario, color_secundario,
               direccion, telefono, email, director_nombre, activo, created_at, updated_at
        FROM colegios
-       WHERE activo = true
-       ORDER BY created_at DESC`
+       ${whereClause}
+       ORDER BY created_at DESC
+       LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`,
+      [...queryParams, limit, offset]
     );
 
-    console.log('Colegios encontrados:', result.rows.length);
-    console.log('Primer colegio:', result.rows[0]);
+    // Consulta para contar total
+    const countResult = await query(
+      `SELECT COUNT(*) as total FROM colegios ${whereClause}`,
+      queryParams
+    );
 
-    // Devolver directamente los datos
-    res.json(result.rows);
+    const total = parseInt(countResult.rows[0].total);
+
+    console.log('Colegios encontrados:', result.rows.length);
+    console.log('Total:', total);
+
+    res.json({
+      success: true,
+      colegios: result.rows,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit)
+      }
+    });
 
   } catch (error) {
     console.error('Error obteniendo colegios:', error);
@@ -67,8 +102,8 @@ router.get('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// POST /api/colegios - Crear colegio (solo superadministradores)
-router.post('/', authenticateToken, requireSuperAdmin, [
+// POST /api/colegios - Crear colegio (solo administradores)
+router.post('/', authenticateToken, requireAdmin, [
   body('nombre').notEmpty().withMessage('Nombre del colegio es requerido'),
   body('codigo').notEmpty().withMessage('Código del colegio es requerido'),
   body('color_primario').optional().matches(/^#[0-9A-F]{6}$/i).withMessage('Color primario inválido'),
@@ -142,8 +177,8 @@ router.post('/', authenticateToken, requireSuperAdmin, [
   }
 });
 
-// PUT /api/colegios/:id - Actualizar colegio (solo superadministradores)
-router.put('/:id', authenticateToken, requireSuperAdmin, [
+// PUT /api/colegios/:id - Actualizar colegio (solo administradores)
+router.put('/:id', authenticateToken, requireAdmin, [
   body('nombre').optional().notEmpty().withMessage('Nombre no puede estar vacío'),
   body('codigo').optional().notEmpty().withMessage('Código no puede estar vacío'),
   body('color_primario').optional().matches(/^#[0-9A-F]{6}$/i).withMessage('Color primario inválido'),
@@ -240,8 +275,8 @@ router.put('/:id', authenticateToken, requireSuperAdmin, [
   }
 });
 
-// DELETE /api/colegios/:id - Eliminar colegio (solo superadministradores)
-router.delete('/:id', authenticateToken, requireSuperAdmin, async (req, res) => {
+// DELETE /api/colegios/:id - Eliminar colegio (solo administradores)
+router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -254,17 +289,11 @@ router.delete('/:id', authenticateToken, requireSuperAdmin, async (req, res) => 
       });
     }
 
-    // Verificar si hay usuarios asociados al colegio
-    const usuariosCheck = await query('SELECT COUNT(*) as count FROM usuarios WHERE colegio_id = $1', [id]);
-    if (parseInt(usuariosCheck.rows[0].count) > 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'No se puede eliminar el colegio porque tiene usuarios asociados'
-      });
-    }
+    // En este sistema multi-colegio, los usuarios no están directamente asociados a un colegio específico
+    // Por lo tanto, no necesitamos verificar usuarios asociados antes de eliminar
 
-    // Eliminar colegio (soft delete - marcar como inactivo)
-    await query('UPDATE colegios SET activo = false, updated_at = NOW() WHERE id = $1', [id]);
+    // Eliminar colegio (hard delete - eliminar permanentemente)
+    await query('DELETE FROM colegios WHERE id = $1', [id]);
 
     res.json({
       success: true,

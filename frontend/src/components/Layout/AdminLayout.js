@@ -6,7 +6,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 // Páginas del Administrador
 import AdminDashboard from '../../pages/Admin/AdminDashboard';
-import GestionUsuarios from '../../pages/Admin/GestionUsuarios';
+import UsuariosList from '../../pages/Mantenimientos/Usuarios/UsuariosList';
+import ConfiguracionList from '../../pages/Configuracion/ConfiguracionList';
 import GestionGrados from '../../pages/Admin/GestionGrados';
 import GestionCursos from '../../pages/Admin/GestionCursos';
 import Reportes from '../../pages/Admin/Reportes';
@@ -93,7 +94,11 @@ const AdminLayout = ({ onLogout }) => {
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<AdminDashboard />} />
-            <Route path="/usuarios" element={<GestionUsuarios />} />
+            <Route path="/dashboard/usuarios" element={<UsuariosList />} />
+            <Route path="/dashboard/usuarios/nuevo" element={<UsuariosList />} />
+            <Route path="/dashboard/usuarios/editar/:id" element={<UsuariosList />} />
+            <Route path="/dashboard/usuarios/ver/:id" element={<UsuariosList />} />
+            <Route path="/dashboard/configuracion" element={<ConfiguracionList />} />
             <Route path="/grados" element={<GestionGrados />} />
             <Route path="/cursos" element={<GestionCursos />} />
             <Route path="/reportes" element={<Reportes />} />

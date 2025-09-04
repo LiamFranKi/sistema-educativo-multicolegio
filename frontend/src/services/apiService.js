@@ -13,6 +13,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const headers = getAuthHeaders();
+    console.log('Token enviado:', headers.Authorization ? 'SÍ' : 'NO');
     config.headers.Authorization = headers.Authorization;
     return config;
   },
@@ -57,8 +58,21 @@ export const authService = {
 // Servicios de usuarios
 export const userService = {
   getUsers: async (params = {}) => {
-    const response = await api.get('/usuarios', { params });
-    return response.data;
+    try {
+      console.log('Llamando a /usuarios con params:', params);
+      const response = await api.get('/usuarios', { params });
+      console.log('Respuesta completa de /usuarios:', response);
+      return response.data;
+    } catch (error) {
+      console.error('Error in getUsers service:', error);
+      console.error('Error response:', error.response);
+      // Devolver un objeto con estructura esperada en caso de error
+      return {
+        data: [],
+        total: 0,
+        error: error.message
+      };
+    }
   },
 
   getUserById: async (id) => {
@@ -89,33 +103,7 @@ export const userService = {
   },
 };
 
-// Servicios de colegios
-export const colegioService = {
-  getColegios: async () => {
-    const response = await api.get('/colegios');
-    return response.data;
-  },
 
-  getColegioById: async (id) => {
-    const response = await api.get(`/colegios/${id}`);
-    return response.data;
-  },
-
-  createColegio: async (colegioData) => {
-    const response = await api.post('/colegios', colegioData);
-    return response.data;
-  },
-
-  updateColegio: async (id, colegioData) => {
-    const response = await api.put(`/colegios/${id}`, colegioData);
-    return response.data;
-  },
-
-  deleteColegio: async (id) => {
-    const response = await api.delete(`/colegios/${id}`);
-    return response.data;
-  },
-};
 
 // Servicios de años escolares
 export const anioEscolarService = {
@@ -229,6 +217,29 @@ export const fileService = {
 
   deleteFile: async (filename) => {
     const response = await api.delete(`/files/${filename}`);
+    return response.data;
+  },
+};
+
+// Servicios de configuración
+export const configuracionService = {
+  getConfiguraciones: async () => {
+    const response = await api.get('/configuracion');
+    return response.data;
+  },
+
+  getColegio: async () => {
+    const response = await api.get('/configuracion/colegio');
+    return response.data;
+  },
+
+  updateColegio: async (data) => {
+    const response = await api.put('/configuracion/colegio', data);
+    return response.data;
+  },
+
+  updateConfiguracion: async (clave, valor) => {
+    const response = await api.put(`/configuracion/${clave}`, { valor });
     return response.data;
   },
 };

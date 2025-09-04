@@ -14,6 +14,7 @@ import {
 import { School as SchoolIcon } from '@mui/icons-material';
 import { authService } from '../services/apiService';
 import { setToken, setUser } from '../services/authService';
+import { getColegioLogoUrl } from '../utils/imageUtils';
 
 const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ const Login = ({ onLogin }) => {
   useEffect(() => {
     const loadCollegeData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/colegios', {
+        const response = await fetch('http://localhost:5000/api/configuracion/colegio', {
           headers: {
             'Content-Type': 'application/json'
           }
@@ -39,11 +40,10 @@ const Login = ({ onLogin }) => {
 
         if (response.ok) {
           const data = await response.json();
-          if (data && data.length > 0) {
-            const colegio = data[0];
+          if (data.success && data.colegio) {
             setCollegeData({
-              nombre: colegio.nombre || 'Sistema Educativo',
-              logo: colegio.logo || null
+              nombre: data.colegio.nombre || 'Sistema Educativo',
+              logo: getColegioLogoUrl(data.colegio.logo)
             });
           }
         }

@@ -10,7 +10,10 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware de seguridad
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false
+}));
 app.use(compression());
 
 // Rate limiting
@@ -36,8 +39,17 @@ app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Servir archivos estáticos
-app.use('/uploads', express.static('uploads'));
+// Servir archivos estáticos con CORS
+app.use('/uploads', cors({
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  credentials: true
+}), (req, res, next) => {
+  // Headers específicos para imágenes
+  res.header('Access-Control-Allow-Origin', process.env.CORS_ORIGIN || 'http://localhost:3000');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+}, express.static('uploads'));
 
 // Rutas de la API
 app.use('/api/auth', require('./routes/auth'));
@@ -47,6 +59,7 @@ app.use('/api/anios-escolares', require('./routes/aniosEscolares'));
 app.use('/api/publicaciones', require('./routes/publicaciones'));
 app.use('/api/notificaciones', require('./routes/notificaciones'));
 app.use('/api/files', require('./routes/files'));
+app.use('/api/configuracion', require('./routes/configuracion'));
 
 // Ruta de salud
 app.get('/api/health', (req, res) => {
