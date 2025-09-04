@@ -16,6 +16,8 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 
 **BARRA DE TÍTULO MEJORADA:** La barra de título incluye iconos de notificaciones y cerrar sesión en el lado derecho.
 
+**DASHBOARD CON ESTADÍSTICAS REALES:** El dashboard principal muestra estadísticas reales de usuarios por rol (Administradores, Docentes, Alumnos, Apoderados, Tutores) con 5 tarjetas responsivas que se cargan automáticamente desde la base de datos.
+
 ---
 
 ## 🗂️ **1. ESTRUCTURA DE CARPETAS**
@@ -128,6 +130,143 @@ frontend/src/
 - Validaciones en tiempo real
 - Actualización inmediata de la interfaz
 - Fondos personalizables (color/imagen)
+```
+
+### **E) AdminDashboard.js - Dashboard Principal**
+
+```javascript
+// Características:
+- Estadísticas reales de usuarios por rol
+- 5 tarjetas responsivas (Administradores, Docentes, Alumnos, Apoderados, Tutores)
+- Carga automática de datos al inicializar
+- Layout responsive con CSS Grid
+- Loading spinner durante carga
+- Manejo de errores con toast notifications
+- Logging detallado para debugging
+```
+
+---
+
+## 📊 **2.6. PATRÓN DE DASHBOARD CON ESTADÍSTICAS**
+
+### **A) AdminDashboard.js - Dashboard Principal**
+
+```javascript
+// Estados del dashboard:
+const [stats, setStats] = useState({
+  administradores: 0,
+  docentes: 0,
+  alumnos: 0,
+  apoderados: 0,
+  tutores: 0,
+});
+const [loading, setLoading] = useState(true);
+
+// Carga automática de estadísticas:
+useEffect(() => {
+  loadUserStats();
+}, []);
+
+// Función de carga de estadísticas:
+const loadUserStats = async () => {
+  try {
+    setLoading(true);
+    const response = await userService.getUsers();
+    
+    if (response.success) {
+      const usuarios = response.usuarios || [];
+      const statsData = {
+        administradores: usuarios.filter(u => u.rol === 'Administrador').length,
+        docentes: usuarios.filter(u => u.rol === 'Docente').length,
+        alumnos: usuarios.filter(u => u.rol === 'Alumno').length,
+        apoderados: usuarios.filter(u => u.rol === 'Apoderado').length,
+        tutores: usuarios.filter(u => u.rol === 'Tutor').length,
+      };
+      setStats(statsData);
+    }
+  } catch (error) {
+    toast.error('Error al cargar estadísticas');
+  } finally {
+    setLoading(false);
+  }
+};
+```
+
+### **B) Layout Responsivo con CSS Grid**
+
+```javascript
+// Grid responsive para 5 tarjetas:
+<Box sx={{
+  display: 'grid',
+  gridTemplateColumns: {
+    xs: '1fr',           // 1 columna en móvil
+    sm: 'repeat(2, 1fr)', // 2 columnas en tablet
+    md: 'repeat(3, 1fr)', // 3 columnas en desktop
+    lg: 'repeat(5, 1fr)'  // 5 columnas en pantalla grande
+  },
+  gap: { xs: 1, sm: 2, md: 2 },
+  mb: 4,
+}}>
+  {/* 5 tarjetas de estadísticas */}
+</Box>
+```
+
+### **C) Tarjetas de Estadísticas**
+
+```javascript
+// Patrón de tarjeta de estadística:
+<Card sx={{ 
+  background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
+  color: 'white',
+  textAlign: 'center',
+  p: 3,
+  borderRadius: 2,
+  boxShadow: 3,
+  '&:hover': { transform: 'translateY(-4px)', boxShadow: 6 }
+}}>
+  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
+    <AdminPanelSettingsIcon sx={{ fontSize: 40, mr: 1 }} />
+  </Box>
+  <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', mb: 1 }}>
+    {loading ? <CircularProgress size={24} color="inherit" /> : stats.administradores}
+  </Typography>
+  <Typography variant="h6" sx={{ opacity: 0.9 }}>
+    Administradores
+  </Typography>
+</Card>
+```
+
+### **D) Colores de Tarjetas**
+
+```javascript
+// Colores específicos por rol:
+const cardColors = {
+  administradores: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)', // Azul
+  docentes: 'linear-gradient(135deg, #dc004e 0%, #c2185b 100%)',        // Rojo
+  alumnos: 'linear-gradient(135deg, #2e7d32 0%, #388e3c 100%)',         // Verde
+  apoderados: 'linear-gradient(135deg, #ed6c02 0%, #f57c00 100%)',       // Naranja
+  tutores: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',         // Morado
+};
+```
+
+### **E) Manejo de Errores y Loading**
+
+```javascript
+// Loading spinner global:
+{loading && (
+  <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+    <CircularProgress size={60} />
+  </Box>
+)}
+
+// Manejo de errores:
+try {
+  const response = await userService.getUsers();
+  // ... procesar datos
+} catch (error) {
+  console.error('Error cargando estadísticas:', error);
+  toast.error('Error al cargar estadísticas de usuarios');
+}
 ```
 
 ---

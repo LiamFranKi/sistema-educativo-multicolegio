@@ -228,6 +228,113 @@ spacing: 8,                 // Unidad base de espaciado (8px)
 </Box>
 ```
 
+### **D) Dashboard con Estadísticas Reales**
+
+#### **Estructura Visual:**
+
+```javascript
+// Contenedor principal del dashboard
+<Box sx={{ p: 3 }}>
+  {/* Título del dashboard */}
+  <Typography variant="h4" gutterBottom sx={{ mb: 4, color: "primary.main" }}>
+    Panel de Administración
+  </Typography>
+
+  {/* Grid de estadísticas responsivo */}
+  <Box sx={{
+    display: 'grid',
+    gridTemplateColumns: {
+      xs: '1fr',           // 1 columna en móvil
+      sm: 'repeat(2, 1fr)', // 2 columnas en tablet
+      md: 'repeat(3, 1fr)', // 3 columnas en desktop
+      lg: 'repeat(5, 1fr)'  // 5 columnas en pantalla grande
+    },
+    gap: { xs: 1, sm: 2, md: 2 },
+    mb: 4,
+  }}>
+    {/* 5 tarjetas de estadísticas */}
+  </Box>
+</Box>
+```
+
+#### **Tarjetas de Estadísticas:**
+
+```javascript
+// Patrón de tarjeta de estadística
+<Card sx={{ 
+  background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
+  color: 'white',
+  textAlign: 'center',
+  p: 3,
+  borderRadius: 2,
+  boxShadow: 3,
+  '&:hover': { 
+    transform: 'translateY(-4px)', 
+    boxShadow: 6,
+    transition: 'all 0.3s ease'
+  }
+}}>
+  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
+    <AdminPanelSettingsIcon sx={{ fontSize: 40, mr: 1 }} />
+  </Box>
+  <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', mb: 1 }}>
+    {loading ? <CircularProgress size={24} color="inherit" /> : stats.administradores}
+  </Typography>
+  <Typography variant="h6" sx={{ opacity: 0.9 }}>
+    Administradores
+  </Typography>
+</Card>
+```
+
+#### **Colores de Tarjetas por Rol:**
+
+```javascript
+// Paleta de colores específica para cada rol
+const cardStyles = {
+  administradores: {
+    background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)', // Azul
+    icon: <AdminPanelSettingsIcon />
+  },
+  docentes: {
+    background: 'linear-gradient(135deg, #dc004e 0%, #c2185b 100%)', // Rojo
+    icon: <SchoolIcon />
+  },
+  alumnos: {
+    background: 'linear-gradient(135deg, #2e7d32 0%, #388e3c 100%)', // Verde
+    icon: <PeopleIcon />
+  },
+  apoderados: {
+    background: 'linear-gradient(135deg, #ed6c02 0%, #f57c00 100%)', // Naranja
+    icon: <FamilyIcon />
+  },
+  tutores: {
+    background: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)', // Morado
+    icon: <SupportIcon />
+  }
+};
+```
+
+#### **Loading State del Dashboard:**
+
+```javascript
+// Spinner de carga global
+{loading && (
+  <Box sx={{ 
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center',
+    minHeight: '200px',
+    flexDirection: 'column',
+    gap: 2
+  }}>
+    <CircularProgress size={60} />
+    <Typography variant="h6" color="text.secondary">
+      Cargando estadísticas...
+    </Typography>
+  </Box>
+)}
+```
+
 ---
 
 ## 🧩 **2. COMPONENTES REUTILIZABLES - DISEÑO**
