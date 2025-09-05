@@ -366,7 +366,7 @@ const UsuariosList = () => {
                     </TableCell>
                     <TableCell align="center">
                       <Typography variant="body2" fontWeight="medium">
-                        {usuario.nombres}
+                        {usuario.nombres} {usuario.apellidos}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">

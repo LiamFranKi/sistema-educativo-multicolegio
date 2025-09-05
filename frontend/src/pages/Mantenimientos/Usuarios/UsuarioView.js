@@ -167,7 +167,7 @@ const UsuarioView = ({ open, onClose, usuario, onEdit }) => {
                     Nombres completos
                   </Typography>
                   <Typography variant="body1">
-                    {usuario.nombres}
+                    {usuario.nombres} {usuario.apellidos}
                   </Typography>
                 </Box>
 
@@ -209,6 +209,42 @@ const UsuarioView = ({ open, onClose, usuario, onEdit }) => {
                         ({age} años)
                       </Typography>
                     )}
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Dirección
+                  </Typography>
+                  <Typography variant="body1">
+                    {usuario.direccion || 'No especificada'}
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Género
+                  </Typography>
+                  <Typography variant="body1">
+                    {usuario.genero || 'No especificado'}
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Estado Civil
+                  </Typography>
+                  <Typography variant="body1">
+                    {usuario.estado_civil || 'No especificado'}
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Profesión
+                  </Typography>
+                  <Typography variant="body1">
+                    {usuario.profesion || 'No especificada'}
                   </Typography>
                 </Box>
               </Box>

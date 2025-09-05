@@ -33,10 +33,15 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
   // Estados del formulario
   const [formData, setFormData] = useState({
     nombres: '',
+    apellidos: '',
     dni: '',
     email: '',
     telefono: '',
     fecha_nacimiento: null,
+    direccion: '',
+    genero: '',
+    estado_civil: '',
+    profesion: '',
     clave: '',
     confirmar_clave: '',
     foto: '',
@@ -58,15 +63,36 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
     { value: 'Tutor', label: 'Tutor' }
   ];
 
+  // Opciones para género
+  const generos = [
+    { value: 'Masculino', label: 'Masculino' },
+    { value: 'Femenino', label: 'Femenino' },
+    { value: 'Otro', label: 'Otro' }
+  ];
+
+  // Opciones para estado civil
+  const estadosCiviles = [
+    { value: 'Soltero', label: 'Soltero' },
+    { value: 'Casado', label: 'Casado' },
+    { value: 'Divorciado', label: 'Divorciado' },
+    { value: 'Viudo', label: 'Viudo' },
+    { value: 'Conviviente', label: 'Conviviente' }
+  ];
+
   // Cargar datos del usuario cuando se abre en modo edición
   useEffect(() => {
     if (open && mode === 'edit' && usuario) {
       setFormData({
         nombres: usuario.nombres || '',
+        apellidos: usuario.apellidos || '',
         dni: usuario.dni || '',
         email: usuario.email || '',
         telefono: usuario.telefono || '',
         fecha_nacimiento: usuario.fecha_nacimiento ? new Date(usuario.fecha_nacimiento) : null,
+        direccion: usuario.direccion || '',
+        genero: usuario.genero || '',
+        estado_civil: usuario.estado_civil || '',
+        profesion: usuario.profesion || '',
         clave: '',
         confirmar_clave: '',
         foto: usuario.foto || '',
@@ -82,10 +108,15 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
       // Resetear formulario para modo crear
       setFormData({
         nombres: '',
+        apellidos: '',
         dni: '',
         email: '',
         telefono: '',
         fecha_nacimiento: null,
+        direccion: '',
+        genero: '',
+        estado_civil: '',
+        profesion: '',
         clave: '',
         confirmar_clave: '',
         foto: '',
@@ -253,10 +284,15 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
       // Preparar datos para enviar
       const dataToSend = {
         nombres: formData.nombres.trim(),
+        apellidos: formData.apellidos.trim() || null,
         dni: formData.dni.trim(),
         email: formData.email.trim(),
         telefono: formData.telefono.trim() || null,
         fecha_nacimiento: formData.fecha_nacimiento ? formData.fecha_nacimiento.toISOString().split('T')[0] : null,
+        direccion: formData.direccion.trim() || null,
+        genero: formData.genero || null,
+        estado_civil: formData.estado_civil || null,
+        profesion: formData.profesion.trim() || null,
         foto: formData.foto,
         activo: formData.activo,
         rol: formData.rol
@@ -371,6 +407,18 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
                 />
               </Grid>
 
+              {/* Apellidos */}
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Apellidos"
+                  value={formData.apellidos}
+                  onChange={handleChange('apellidos')}
+                  error={!!errors.apellidos}
+                  helperText={errors.apellidos}
+                />
+              </Grid>
+
               {/* DNI */}
               <Grid item xs={12} md={6}>
                 <TextField
@@ -428,6 +476,84 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
                   InputLabelProps={{
                     shrink: true,
                   }}
+                />
+              </Grid>
+
+              {/* Dirección */}
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Dirección"
+                  value={formData.direccion}
+                  onChange={handleChange('direccion')}
+                  error={!!errors.direccion}
+                  helperText={errors.direccion}
+                  multiline
+                  rows={2}
+                />
+              </Grid>
+
+              {/* Género */}
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth error={!!errors.genero}>
+                  <InputLabel>Género</InputLabel>
+                  <Select
+                    value={formData.genero}
+                    onChange={handleChange('genero')}
+                    label="Género"
+                  >
+                    <MenuItem value="">
+                      <em>Seleccionar género</em>
+                    </MenuItem>
+                    {generos.map((genero) => (
+                      <MenuItem key={genero.value} value={genero.value}>
+                        {genero.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {errors.genero && (
+                  <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 2 }}>
+                    {errors.genero}
+                  </Typography>
+                )}
+              </Grid>
+
+              {/* Estado Civil */}
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth error={!!errors.estado_civil}>
+                  <InputLabel>Estado Civil</InputLabel>
+                  <Select
+                    value={formData.estado_civil}
+                    onChange={handleChange('estado_civil')}
+                    label="Estado Civil"
+                  >
+                    <MenuItem value="">
+                      <em>Seleccionar estado civil</em>
+                    </MenuItem>
+                    {estadosCiviles.map((estado) => (
+                      <MenuItem key={estado.value} value={estado.value}>
+                        {estado.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {errors.estado_civil && (
+                  <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 2 }}>
+                    {errors.estado_civil}
+                  </Typography>
+                )}
+              </Grid>
+
+              {/* Profesión */}
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Profesión"
+                  value={formData.profesion}
+                  onChange={handleChange('profesion')}
+                  error={!!errors.profesion}
+                  helperText={errors.profesion}
                 />
               </Grid>
 
