@@ -48,8 +48,23 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiDrawer-paper': {
     width: drawerWidth,
     boxSizing: 'border-box',
-    backgroundColor: '#f5f5f5',
-    borderRight: '1px solid #e0e0e0',
+    backgroundColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+    '&::-webkit-scrollbar': {
+      width: '4px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'rgba(255, 255, 255, 0.1)',
+      borderRadius: '2px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: 'rgba(255, 255, 255, 0.3)',
+      borderRadius: '2px',
+      '&:hover': {
+        background: 'rgba(255, 255, 255, 0.5)',
+      },
+    },
   },
 }));
 
@@ -113,14 +128,22 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
       open={open}
       onClose={onDrawerToggle}
     >
-      <Box sx={{ p: 2, textAlign: 'center', borderBottom: '1px solid #e0e0e0' }}>
+      <Box sx={{ 
+        p: 2, 
+        textAlign: 'center', 
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        background: 'rgba(255, 255, 255, 0.05)',
+        backdropFilter: 'blur(10px)',
+      }}>
         <Avatar
           sx={{
             width: 120, // 60 * 2 = 120 (100% más grande)
             height: 120, // 60 * 2 = 120 (100% más grande)
             mx: 'auto',
             mb: 1,
-            bgcolor: 'primary.main',
+            bgcolor: 'rgba(255, 255, 255, 0.2)',
+            border: '3px solid rgba(255, 255, 255, 0.3)',
+            boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
           }}
         >
           {user?.foto ? (
@@ -134,16 +157,16 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
               }}
             />
           ) : (
-            <AccountCircleIcon sx={{ fontSize: 60 }} />
+            <AccountCircleIcon sx={{ fontSize: 60, color: 'white' }} />
           )}
         </Avatar>
-        <Typography variant="h6" color="primary" fontWeight="bold">
+        <Typography variant="h6" color="white" fontWeight="bold" sx={{ textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)' }}>
           {user?.nombres && user?.apellidos
             ? `${user.nombres} ${user.apellidos}`
             : user?.nombres || 'Administrador'
           }
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="rgba(255, 255, 255, 0.8)" sx={{ textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' }}>
           Panel Administrativo
         </Typography>
       </Box>
@@ -156,54 +179,79 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
               onClick={() => handleNavigation(item.path)}
               sx={{
                 mx: 1,
-                borderRadius: 1,
+                borderRadius: 2,
+                mb: 0.5,
+                color: 'rgba(255, 255, 255, 0.9)',
                 '&.Mui-selected': {
-                  backgroundColor: 'primary.main',
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
                   color: 'white',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
                   '&:hover': {
-                    backgroundColor: 'primary.dark',
+                    backgroundColor: 'rgba(255, 255, 255, 0.25)',
                   },
                   '& .MuiListItemIcon-root': {
                     color: 'white',
                   },
                 },
                 '&:hover': {
-                  backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(5px)',
                 },
               }}
             >
               <ListItemIcon
                 sx={{
-                  color: isSelected(item.path) ? 'white' : 'inherit',
+                  color: isSelected(item.path) ? 'white' : 'rgba(255, 255, 255, 0.8)',
+                  minWidth: 40,
                 }}
               >
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.text} />
+              <ListItemText 
+                primary={item.text} 
+                sx={{
+                  '& .MuiListItemText-primary': {
+                    fontWeight: isSelected(item.path) ? 600 : 400,
+                    fontSize: '0.9rem',
+                  }
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
 
-      <Divider sx={{ mt: 'auto' }} />
+      <Divider sx={{ mt: 'auto', borderColor: 'rgba(255, 255, 255, 0.1)' }} />
       <List>
         <ListItem disablePadding>
           <ListItemButton
             onClick={handleLogout}
             sx={{
               mx: 1,
-              borderRadius: 1,
-              color: 'error.main',
+              borderRadius: 2,
+              mb: 1,
+              color: 'rgba(255, 255, 255, 0.9)',
               '&:hover': {
-                backgroundColor: 'error.light',
+                backgroundColor: 'rgba(244, 67, 54, 0.2)',
                 color: 'white',
+                backdropFilter: 'blur(5px)',
               },
             }}
           >
-            <ListItemIcon sx={{ color: 'inherit' }}>
+            <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
               <LogoutIcon />
             </ListItemIcon>
-            <ListItemText primary="Cerrar Sesión" />
+            <ListItemText 
+              primary="Cerrar Sesión" 
+              sx={{
+                '& .MuiListItemText-primary': {
+                  fontWeight: 500,
+                  fontSize: '0.9rem',
+                }
+              }}
+            />
           </ListItemButton>
         </ListItem>
       </List>
