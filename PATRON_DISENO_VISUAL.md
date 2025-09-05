@@ -113,15 +113,48 @@ spacing: 8,                 // Unidad base de espaciado (8px)
 #### **Estructura Visual:**
 
 ```javascript
-// Información del usuario en lugar del colegio
-<Box sx={{ p: 2, textAlign: "center", borderBottom: "1px solid #e0e0e0" }}>
+// Sidebar con fondo azul elegante (#0165a1)
+const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  '& .MuiDrawer-paper': {
+    width: drawerWidth,
+    boxSizing: 'border-box',
+    backgroundColor: '#0165a1', // Azul elegante
+    borderRight: '1px solid #014a7a',
+    '&::-webkit-scrollbar': {
+      width: '3px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: '#0165a1', // Mismo color que el fondo
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: '#0165a1', // Invisible
+      '&:hover': {
+        background: '#014a7a',
+      },
+    },
+  },
+}));
+
+// Información del usuario con padding mejorado
+<Box sx={{ 
+  p: 2, 
+  textAlign: "center", 
+  borderBottom: "1px solid #014a7a",
+  background: "rgba(1, 101, 161, 0.3)",
+  pt: 4, // Más padding superior
+  pb: 2,
+  px: 2
+}}>
   <Avatar
     sx={{
       width: 120, // 100% más grande que el original (60px)
       height: 120,
       mx: "auto",
       mb: 1,
-      bgcolor: "primary.main",
+      bgcolor: "rgba(255, 255, 255, 0.2)",
+      border: "2px solid rgba(255, 255, 255, 0.3)",
     }}
   >
     {user?.foto ? (
@@ -140,16 +173,63 @@ spacing: 8,                 // Unidad base de espaciado (8px)
         }}
       />
     ) : (
-      <AccountCircleIcon sx={{ fontSize: 60 }} />
+      <AccountCircleIcon sx={{ fontSize: 60, color: 'white' }} />
     )}
   </Avatar>
-  <Typography variant="h6" color="primary" fontWeight="bold">
+  <Typography variant="h6" color="white" fontWeight="bold" sx={{ mb: 0.5 }}>
     {user?.nombres || "Administrador"}
   </Typography>
-  <Typography variant="body2" color="text.secondary">
-    Panel Administrativo
+  <Typography variant="body2" color="rgba(255, 255, 255, 0.7)" sx={{ fontSize: '0.75rem', fontWeight: 500 }}>
+    ADMINISTRADOR
   </Typography>
 </Box>
+```
+
+#### **Iconos del Menú con Colores Vibrantes:**
+
+```javascript
+// Función para colores vibrantes de iconos
+const getIconColor = (iconName) => {
+  const colors = {
+    'Dashboard': '#00E676', // Verde brillante
+    'Mi Perfil': '#00B0FF', // Azul brillante
+    'Matrículas': '#FF6D00', // Naranja vibrante
+    'Usuarios': '#D500F9', // Púrpura vibrante
+    'Avatars': '#FF1744', // Rosa vibrante
+    'Grados': '#00E5FF', // Cian brillante
+    'Areas': '#FF8F00', // Naranja dorado
+    'Cursos': '#00C853', // Verde esmeralda
+    'Asignaturas': '#651FFF', // Índigo vibrante
+    'Publicaciones': '#FF3D00', // Rojo vibrante
+    'Eventos': '#76FF03', // Verde lima
+    'Comunicados': '#FFD600', // Amarillo dorado
+    'Mensajes': '#00E676', // Verde agua
+    'Alertas': '#FF1744', // Rojo intenso
+    'Notificaciones': '#7C4DFF', // Púrpura brillante
+    'Reportes': '#FF9100', // Naranja intenso
+    'Configuración': '#00BCD4', // Cian profundo
+  };
+  return colors[iconName] || 'white';
+};
+
+// Estilos de iconos con efectos visuales
+<ListItemIcon
+  sx={{
+    color: getIconColor(item.text),
+    minWidth: 40,
+    '& .MuiSvgIcon-root': {
+      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+      textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+      transition: 'all 0.2s ease-in-out',
+      '&:hover': {
+        transform: 'scale(1.1)',
+        filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))',
+      }
+    }
+  }}
+>
+  {item.icon}
+</ListItemIcon>
 ```
 
 ### **B) Barra de Título Mejorada (AdminLayout.js)**
@@ -157,52 +237,63 @@ spacing: 8,                 // Unidad base de espaciado (8px)
 #### **Estructura Visual:**
 
 ```javascript
-<Toolbar>
-  <IconButton
-    color="inherit"
-    aria-label="open drawer"
-    edge="start"
-    onClick={handleDrawerToggle}
-    sx={{ mr: 2, display: { sm: "none" } }}
-  >
-    <MenuIcon />
-  </IconButton>
-  <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-    {colegio.nombre || "Administración del Colegio"}
-  </Typography>
-
-  {/* Iconos de la barra de título */}
-  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-    {/* Icono de Notificaciones */}
+// AppBar con color consistente con el sidebar
+<AppBar
+  position="fixed"
+  sx={{
+    width: { sm: `calc(100% - ${drawerWidth}px)` },
+    ml: { sm: `${drawerWidth}px` },
+    zIndex: (theme) => theme.zIndex.drawer + 1,
+    backgroundColor: '#0165a1', // Mismo color que el sidebar
+  }}
+>
+  <Toolbar>
     <IconButton
       color="inherit"
-      aria-label="notificaciones"
-      sx={{
-        "&:hover": {
-          backgroundColor: "rgba(255, 255, 255, 0.1)",
-        },
-      }}
+      aria-label="open drawer"
+      edge="start"
+      onClick={handleDrawerToggle}
+      sx={{ mr: 2, display: { sm: "none" } }}
     >
-      <Badge badgeContent={0} color="error">
-        <NotificationsIcon />
-      </Badge>
+      <MenuIcon />
     </IconButton>
+    <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+      {colegio.nombre || "Administración del Colegio"}
+    </Typography>
 
-    {/* Icono de Cerrar Sesión */}
-    <IconButton
-      color="inherit"
-      aria-label="cerrar sesión"
-      onClick={onLogout}
-      sx={{
-        "&:hover": {
-          backgroundColor: "rgba(255, 255, 255, 0.1)",
-        },
-      }}
-    >
-      <LogoutIcon />
-    </IconButton>
-  </Box>
-</Toolbar>
+    {/* Iconos de la barra de título */}
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      {/* Icono de Notificaciones */}
+      <IconButton
+        color="inherit"
+        aria-label="notificaciones"
+        sx={{
+          "&:hover": {
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+          },
+        }}
+      >
+        <Badge badgeContent={0} color="error">
+          <NotificationsIcon />
+        </Badge>
+      </IconButton>
+
+      {/* Icono de Cerrar Sesión */}
+      <IconButton
+        color="inherit"
+        aria-label="cerrar sesión"
+        onClick={onLogout}
+        sx={{
+          "&:hover": {
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+          },
+        }}
+      >
+        <LogoutIcon />
+      </IconButton>
+    </Box>
+  </Toolbar>
+</AppBar>
 ```
 
 ### **C) Página de Login con Tema Dinámico**

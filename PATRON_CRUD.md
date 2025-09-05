@@ -14,9 +14,11 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 
 **SIDEBAR PERSONALIZADO:** El sidebar del dashboard muestra información del usuario logueado (nombre y foto) en lugar de la información del colegio.
 
-**BARRA DE TÍTULO MEJORADA:** La barra de título incluye iconos de notificaciones y cerrar sesión en el lado derecho.
+**BARRA DE TÍTULO MEJORADA:** La barra de título incluye iconos de notificaciones y cerrar sesión en el lado derecho, con color consistente (#0165a1) que coincide con el sidebar.
 
 **DASHBOARD CON ESTADÍSTICAS REALES:** El dashboard principal muestra estadísticas reales de usuarios por rol (Administradores, Docentes, Alumnos, Apoderados, Tutores) con 5 tarjetas responsivas que se cargan automáticamente desde la base de datos.
+
+**DISEÑO VISUAL MEJORADO:** El sidebar y la barra de título tienen un diseño elegante con colores consistentes, iconos vibrantes con efectos visuales (sombras, animaciones hover), y scrollbar invisible para una experiencia de usuario premium.
 
 ---
 

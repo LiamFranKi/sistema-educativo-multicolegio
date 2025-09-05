@@ -69,23 +69,23 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   // Función para obtener el color del icono
   const getIconColor = (iconName) => {
     const colors = {
-      'Dashboard': '#4CAF50', // Verde
-      'Mi Perfil': '#2196F3', // Azul
-      'Matrículas': '#FF9800', // Naranja
-      'Usuarios': '#9C27B0', // Púrpura
-      'Avatars': '#E91E63', // Rosa
-      'Grados': '#00BCD4', // Cian
-      'Areas': '#795548', // Marrón
-      'Cursos': '#607D8B', // Azul gris
-      'Asignaturas': '#3F51B5', // Índigo
-      'Publicaciones': '#FF5722', // Rojo naranja
-      'Eventos': '#8BC34A', // Verde claro
-      'Comunicados': '#FFC107', // Ámbar
-      'Mensajes': '#009688', // Teal
-      'Alertas': '#F44336', // Rojo
-      'Notificaciones': '#673AB7', // Púrpura profundo
-      'Reportes': '#FF6F00', // Naranja profundo
-      'Configuración': '#455A64', // Azul gris oscuro
+      'Dashboard': '#00E676', // Verde brillante
+      'Mi Perfil': '#00B0FF', // Azul brillante
+      'Matrículas': '#FF6D00', // Naranja vibrante
+      'Usuarios': '#D500F9', // Púrpura vibrante
+      'Avatars': '#FF1744', // Rosa vibrante
+      'Grados': '#00E5FF', // Cian brillante
+      'Areas': '#FF8F00', // Naranja dorado
+      'Cursos': '#00C853', // Verde esmeralda
+      'Asignaturas': '#651FFF', // Índigo vibrante
+      'Publicaciones': '#FF3D00', // Rojo vibrante
+      'Eventos': '#76FF03', // Verde lima
+      'Comunicados': '#FFD600', // Amarillo dorado
+      'Mensajes': '#00E676', // Verde agua
+      'Alertas': '#FF1744', // Rojo intenso
+      'Notificaciones': '#7C4DFF', // Púrpura brillante
+      'Reportes': '#FF9100', // Naranja intenso
+      'Configuración': '#00BCD4', // Cian profundo
     };
     return colors[iconName] || 'white';
   };
@@ -150,11 +150,11 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
       open={open}
       onClose={onDrawerToggle}
     >
-      <Box sx={{ 
+      <Box sx={{
         pt: 4, // Más padding superior
-        pb: 2, 
+        pb: 2,
         px: 2,
-        textAlign: 'center', 
+        textAlign: 'center',
         borderBottom: '1px solid #014a7a',
         background: 'rgba(1, 101, 161, 0.3)',
       }}>
@@ -223,12 +223,21 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
                 sx={{
                   color: getIconColor(item.text),
                   minWidth: 40,
+                  '& .MuiSvgIcon-root': {
+                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      transform: 'scale(1.1)',
+                      filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))',
+                    }
+                  }
                 }}
               >
                 {item.icon}
               </ListItemIcon>
-              <ListItemText 
-                primary={item.text} 
+              <ListItemText
+                primary={item.text}
                 sx={{
                   '& .MuiListItemText-primary': {
                     fontSize: '0.9rem',
@@ -261,8 +270,8 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
             <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
               <LogoutIcon />
             </ListItemIcon>
-            <ListItemText 
-              primary="Cerrar Sesión" 
+            <ListItemText
+              primary="Cerrar Sesión"
               sx={{
                 '& .MuiListItemText-primary': {
                   fontSize: '0.9rem',

@@ -1,3 +1,29 @@
+# CHANGELOG
+
+## [2025-01-03] - Mejoras de Diseño del Sidebar y Barra de Título
+
+### ✨ Nuevas Características
+- **Barra de título con color consistente**: La barra de título ahora usa el mismo color azul (#0165a1) que el sidebar para mantener consistencia visual
+- **Iconos del menú mejorados**: 
+  - Colores más vibrantes y brillantes para mejor visibilidad
+  - Efectos de sombra y profundidad para mayor contraste
+  - Animaciones suaves al hacer hover (escala 1.1x)
+  - Transiciones fluidas para mejor experiencia de usuario
+
+### 🎨 Mejoras de Diseño
+- **Paleta de colores actualizada**: Iconos con colores más saturados y vibrantes
+- **Efectos visuales**: Sombras drop-shadow y text-shadow para mejor definición
+- **Interactividad mejorada**: Efectos hover con escalado y sombras intensificadas
+- **Consistencia visual**: Barra de título y sidebar con el mismo esquema de colores
+
+### 🔧 Cambios Técnicos
+- Actualizado `AdminLayout.js` con `backgroundColor: '#0165a1'` en AppBar
+- Mejorada función `getIconColor()` en `AdminSidebar.js` con colores más vibrantes
+- Agregados estilos CSS avanzados para efectos visuales en iconos
+- Mantenida funcionalidad existente sin cambios en la lógica de negocio
+
+---
+
 # ESTRUCTURA DE BASE DE DATOS (Referencia Rápida)
 
 ## Tabla `usuarios`
