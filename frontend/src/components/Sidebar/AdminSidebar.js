@@ -48,20 +48,19 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiDrawer-paper': {
     width: drawerWidth,
     boxSizing: 'border-box',
-    backgroundColor: '#f5f5f5',
-    borderRight: '1px solid #e0e0e0',
+    backgroundColor: '#1e3a8a', // Azul oscuro similar al de la imagen
+    borderRight: '1px solid #1e40af',
     '&::-webkit-scrollbar': {
-      width: '4px',
+      width: '3px', // Scrollbar aún más delgado
     },
     '&::-webkit-scrollbar-track': {
-      background: 'rgba(0, 0, 0, 0.1)',
-      borderRadius: '2px',
+      background: 'transparent',
     },
     '&::-webkit-scrollbar-thumb': {
-      background: 'rgba(0, 0, 0, 0.3)',
+      background: 'rgba(255, 255, 255, 0.3)',
       borderRadius: '2px',
       '&:hover': {
-        background: 'rgba(0, 0, 0, 0.5)',
+        background: 'rgba(255, 255, 255, 0.5)',
       },
     },
   },
@@ -127,14 +126,20 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
       open={open}
       onClose={onDrawerToggle}
     >
-      <Box sx={{ p: 2, textAlign: 'center', borderBottom: '1px solid #e0e0e0' }}>
+      <Box sx={{ 
+        p: 2, 
+        textAlign: 'center', 
+        borderBottom: '1px solid #1e40af',
+        background: 'rgba(30, 64, 175, 0.3)',
+      }}>
         <Avatar
           sx={{
-            width: 120, // 60 * 2 = 120 (100% más grande)
-            height: 120, // 60 * 2 = 120 (100% más grande)
+            width: 80,
+            height: 80,
             mx: 'auto',
             mb: 1,
-            bgcolor: 'primary.main',
+            bgcolor: 'rgba(255, 255, 255, 0.2)',
+            border: '2px solid rgba(255, 255, 255, 0.3)',
           }}
         >
           {user?.foto ? (
@@ -148,17 +153,17 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
               }}
             />
           ) : (
-            <AccountCircleIcon sx={{ fontSize: 60 }} />
+            <AccountCircleIcon sx={{ fontSize: 40, color: 'white' }} />
           )}
         </Avatar>
-        <Typography variant="h6" color="primary" fontWeight="bold">
+        <Typography variant="h6" color="white" fontWeight="bold" sx={{ mb: 0.5 }}>
           {user?.nombres && user?.apellidos
             ? `${user.nombres} ${user.apellidos}`
             : user?.nombres || 'Administrador'
           }
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Panel Administrativo
+        <Typography variant="body2" color="rgba(255, 255, 255, 0.7)" sx={{ fontSize: '0.75rem', fontWeight: 500 }}>
+          ADMINISTRADOR
         </Typography>
       </Box>
 
@@ -171,35 +176,46 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
               sx={{
                 mx: 1,
                 borderRadius: 1,
+                color: 'white',
+                py: 1,
                 '&.Mui-selected': {
-                  backgroundColor: 'primary.main',
+                  backgroundColor: 'rgba(59, 130, 246, 0.3)', // Azul claro para seleccionado
                   color: 'white',
                   '&:hover': {
-                    backgroundColor: 'primary.dark',
+                    backgroundColor: 'rgba(59, 130, 246, 0.4)',
                   },
                   '& .MuiListItemIcon-root': {
                     color: 'white',
                   },
                 },
                 '&:hover': {
-                  backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
                 },
               }}
             >
               <ListItemIcon
                 sx={{
-                  color: isSelected(item.path) ? 'white' : 'inherit',
+                  color: 'white',
+                  minWidth: 40,
                 }}
               >
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.text} />
+              <ListItemText 
+                primary={item.text} 
+                sx={{
+                  '& .MuiListItemText-primary': {
+                    fontSize: '0.9rem',
+                    fontWeight: isSelected(item.path) ? 600 : 400,
+                  }
+                }}
+              />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
 
-      <Divider sx={{ mt: 'auto' }} />
+      <Divider sx={{ mt: 'auto', borderColor: '#1e40af' }} />
       <List>
         <ListItem disablePadding>
           <ListItemButton
@@ -207,17 +223,26 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
             sx={{
               mx: 1,
               borderRadius: 1,
-              color: 'error.main',
+              color: 'rgba(255, 255, 255, 0.8)',
+              py: 1,
               '&:hover': {
-                backgroundColor: 'error.light',
+                backgroundColor: 'rgba(239, 68, 68, 0.2)',
                 color: 'white',
               },
             }}
           >
-            <ListItemIcon sx={{ color: 'inherit' }}>
+            <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
               <LogoutIcon />
             </ListItemIcon>
-            <ListItemText primary="Cerrar Sesión" />
+            <ListItemText 
+              primary="Cerrar Sesión" 
+              sx={{
+                '& .MuiListItemText-primary': {
+                  fontSize: '0.9rem',
+                  fontWeight: 400,
+                }
+              }}
+            />
           </ListItemButton>
         </ListItem>
       </List>
