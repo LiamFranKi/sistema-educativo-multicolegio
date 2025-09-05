@@ -48,19 +48,19 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiDrawer-paper': {
     width: drawerWidth,
     boxSizing: 'border-box',
-    backgroundColor: '#1976d2', // Mismo color que la barra de título
-    borderRight: '1px solid #1565c0',
+    backgroundColor: '#0165a1', // Azul más oscuro como solicitado
+    borderRight: '1px solid #014a7a',
     '&::-webkit-scrollbar': {
       width: '3px', // Scrollbar aún más delgado
     },
     '&::-webkit-scrollbar-track': {
-      background: 'transparent',
+      background: '#0165a1', // Mismo color que el fondo
     },
     '&::-webkit-scrollbar-thumb': {
-      background: 'rgba(255, 255, 255, 0.3)',
+      background: '#0165a1', // Mismo color que el fondo para que no se vea
       borderRadius: '2px',
       '&:hover': {
-        background: 'rgba(255, 255, 255, 0.5)',
+        background: '#014a7a', // Ligeramente más oscuro en hover
       },
     },
   },
@@ -155,8 +155,8 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
         pb: 2, 
         px: 2,
         textAlign: 'center', 
-        borderBottom: '1px solid #1565c0',
-        background: 'rgba(25, 118, 210, 0.3)',
+        borderBottom: '1px solid #014a7a',
+        background: 'rgba(1, 101, 161, 0.3)',
       }}>
         <Avatar
           sx={{
@@ -241,7 +241,7 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
         ))}
       </List>
 
-      <Divider sx={{ mt: 'auto', borderColor: '#1565c0' }} />
+      <Divider sx={{ mt: 'auto', borderColor: '#014a7a' }} />
       <List>
         <ListItem disablePadding>
           <ListItemButton
