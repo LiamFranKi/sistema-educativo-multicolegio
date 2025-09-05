@@ -22,9 +22,9 @@ export const DynamicThemeProvider = ({ children }) => {
     const dynamicTheme = createTheme({
       palette: {
         primary: {
-          main: colegio.color_primario || '#1976d2',
-          light: lightenColor(colegio.color_primario || '#1976d2', 0.3),
-          dark: darkenColor(colegio.color_primario || '#1976d2', 0.3),
+          main: colegio.color_primario || '#0165a1',
+          light: lightenColor(colegio.color_primario || '#0165a1', 0.3),
+          dark: darkenColor(colegio.color_primario || '#0165a1', 0.3),
         },
         secondary: {
           main: colegio.color_secundario || '#424242',

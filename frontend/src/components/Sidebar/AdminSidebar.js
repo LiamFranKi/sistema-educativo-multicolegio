@@ -249,10 +249,11 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
             sx={{
               mx: 1,
               borderRadius: 1,
-              color: 'rgba(255, 255, 255, 0.8)',
+              color: 'white',
+              backgroundColor: 'error.main',
               py: 1,
               '&:hover': {
-                backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                backgroundColor: 'error.dark',
                 color: 'white',
               },
             }}
