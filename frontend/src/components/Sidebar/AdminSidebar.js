@@ -48,8 +48,8 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   '& .MuiDrawer-paper': {
     width: drawerWidth,
     boxSizing: 'border-box',
-    backgroundColor: '#1e3a8a', // Azul oscuro similar al de la imagen
-    borderRight: '1px solid #1e40af',
+    backgroundColor: '#1976d2', // Mismo color que la barra de título
+    borderRight: '1px solid #1565c0',
     '&::-webkit-scrollbar': {
       width: '3px', // Scrollbar aún más delgado
     },
@@ -65,6 +65,30 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
     },
   },
 }));
+
+  // Función para obtener el color del icono
+  const getIconColor = (iconName) => {
+    const colors = {
+      'Dashboard': '#4CAF50', // Verde
+      'Mi Perfil': '#2196F3', // Azul
+      'Matrículas': '#FF9800', // Naranja
+      'Usuarios': '#9C27B0', // Púrpura
+      'Avatars': '#E91E63', // Rosa
+      'Grados': '#00BCD4', // Cian
+      'Areas': '#795548', // Marrón
+      'Cursos': '#607D8B', // Azul gris
+      'Asignaturas': '#3F51B5', // Índigo
+      'Publicaciones': '#FF5722', // Rojo naranja
+      'Eventos': '#8BC34A', // Verde claro
+      'Comunicados': '#FFC107', // Ámbar
+      'Mensajes': '#009688', // Teal
+      'Alertas': '#F44336', // Rojo
+      'Notificaciones': '#673AB7', // Púrpura profundo
+      'Reportes': '#FF6F00', // Naranja profundo
+      'Configuración': '#455A64', // Azul gris oscuro
+    };
+    return colors[iconName] || 'white';
+  };
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
@@ -127,15 +151,17 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
       onClose={onDrawerToggle}
     >
       <Box sx={{ 
-        p: 2, 
+        pt: 4, // Más padding superior
+        pb: 2, 
+        px: 2,
         textAlign: 'center', 
-        borderBottom: '1px solid #1e40af',
-        background: 'rgba(30, 64, 175, 0.3)',
+        borderBottom: '1px solid #1565c0',
+        background: 'rgba(25, 118, 210, 0.3)',
       }}>
         <Avatar
           sx={{
-            width: 80,
-            height: 80,
+            width: 120, // Vuelto al tamaño anterior
+            height: 120, // Vuelto al tamaño anterior
             mx: 'auto',
             mb: 1,
             bgcolor: 'rgba(255, 255, 255, 0.2)',
@@ -153,7 +179,7 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
               }}
             />
           ) : (
-            <AccountCircleIcon sx={{ fontSize: 40, color: 'white' }} />
+            <AccountCircleIcon sx={{ fontSize: 60, color: 'white' }} />
           )}
         </Avatar>
         <Typography variant="h6" color="white" fontWeight="bold" sx={{ mb: 0.5 }}>
@@ -179,10 +205,10 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
                 color: 'white',
                 py: 1,
                 '&.Mui-selected': {
-                  backgroundColor: 'rgba(59, 130, 246, 0.3)', // Azul claro para seleccionado
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)', // Blanco semi-transparente para seleccionado
                   color: 'white',
                   '&:hover': {
-                    backgroundColor: 'rgba(59, 130, 246, 0.4)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.3)',
                   },
                   '& .MuiListItemIcon-root': {
                     color: 'white',
@@ -195,7 +221,7 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
             >
               <ListItemIcon
                 sx={{
-                  color: 'white',
+                  color: getIconColor(item.text),
                   minWidth: 40,
                 }}
               >
@@ -215,7 +241,7 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
         ))}
       </List>
 
-      <Divider sx={{ mt: 'auto', borderColor: '#1e40af' }} />
+      <Divider sx={{ mt: 'auto', borderColor: '#1565c0' }} />
       <List>
         <ListItem disablePadding>
           <ListItemButton
