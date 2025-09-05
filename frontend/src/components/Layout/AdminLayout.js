@@ -6,6 +6,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useConfiguracion } from '../../contexts/ConfiguracionContext';
+import { UserProvider } from '../../contexts/UserContext';
 
 // Páginas del Administrador
 import AdminDashboard from '../../pages/Admin/AdminDashboard';
@@ -51,99 +52,101 @@ const AdminLayout = ({ onLogout }) => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-        }}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            {colegio.nombre || 'Administración del Colegio'}
-          </Typography>
-
-          {/* Iconos de la barra de título */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {/* Icono de Notificaciones */}
-            <IconButton
-              color="inherit"
-              aria-label="notificaciones"
-              sx={{
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                },
-              }}
-            >
-              <Badge badgeContent={0} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-
-            {/* Icono de Cerrar Sesión */}
-            <IconButton
-              color="inherit"
-              aria-label="cerrar sesión"
-              onClick={onLogout}
-              sx={{
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                },
-              }}
-            >
-              <LogoutIcon />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <AdminSidebar open={open} onDrawerToggle={handleDrawerToggle} onLogout={onLogout} />
-      <Box
-        component="main"
-        open={open}
-        sx={{
-          flexGrow: 1,
-          pt: '80px', // Aumentar padding-top para evitar superposición
-          minHeight: '100vh',
-          width: '100%',
-        }}
-      >
-        <Box
+    <UserProvider>
+      <Box sx={{ display: 'flex' }}>
+        <AppBar
+          position="fixed"
           sx={{
-            maxWidth: 1400,
-            margin: '0 auto',
-            px: { xs: 1, sm: 2 }, // Menos padding en móvil
-            pb: 3,
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            ml: { sm: `${drawerWidth}px` },
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+          }}
+        >
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: 'none' } }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+              {colegio.nombre || 'Administración del Colegio'}
+            </Typography>
+
+            {/* Iconos de la barra de título */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {/* Icono de Notificaciones */}
+              <IconButton
+                color="inherit"
+                aria-label="notificaciones"
+                sx={{
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  },
+                }}
+              >
+                <Badge badgeContent={0} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+
+              {/* Icono de Cerrar Sesión */}
+              <IconButton
+                color="inherit"
+                aria-label="cerrar sesión"
+                onClick={onLogout}
+                sx={{
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  },
+                }}
+              >
+                <LogoutIcon />
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </AppBar>
+        <AdminSidebar open={open} onDrawerToggle={handleDrawerToggle} onLogout={onLogout} />
+        <Box
+          component="main"
+          open={open}
+          sx={{
+            flexGrow: 1,
+            pt: '80px', // Aumentar padding-top para evitar superposición
+            minHeight: '100vh',
             width: '100%',
           }}
         >
-          <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<AdminDashboard />} />
-            <Route path="/dashboard/usuarios" element={<UsuariosList />} />
-            <Route path="/dashboard/usuarios/nuevo" element={<UsuariosList />} />
-            <Route path="/dashboard/usuarios/editar/:id" element={<UsuariosList />} />
-            <Route path="/dashboard/usuarios/ver/:id" element={<UsuariosList />} />
-            <Route path="/dashboard/configuracion" element={<ConfiguracionList />} />
-            <Route path="/grados" element={<GestionGrados />} />
-            <Route path="/cursos" element={<GestionCursos />} />
-            <Route path="/reportes" element={<Reportes />} />
-            <Route path="/perfil" element={<MiPerfil />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Routes>
+          <Box
+            sx={{
+              maxWidth: 1400,
+              margin: '0 auto',
+              px: { xs: 1, sm: 2 }, // Menos padding en móvil
+              pb: 3,
+              width: '100%',
+            }}
+          >
+            <Routes>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<AdminDashboard />} />
+              <Route path="/dashboard/usuarios" element={<UsuariosList />} />
+              <Route path="/dashboard/usuarios/nuevo" element={<UsuariosList />} />
+              <Route path="/dashboard/usuarios/editar/:id" element={<UsuariosList />} />
+              <Route path="/dashboard/usuarios/ver/:id" element={<UsuariosList />} />
+              <Route path="/dashboard/configuracion" element={<ConfiguracionList />} />
+              <Route path="/grados" element={<GestionGrados />} />
+              <Route path="/cursos" element={<GestionCursos />} />
+              <Route path="/reportes" element={<Reportes />} />
+              <Route path="/perfil" element={<MiPerfil />} />
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Routes>
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </UserProvider>
   );
 };
 

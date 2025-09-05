@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Card,
@@ -18,12 +18,12 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { 
-  PhotoCamera, 
-  Lock, 
-  Person, 
-  Email, 
-  Phone, 
+import {
+  PhotoCamera,
+  Lock,
+  Person,
+  Email,
+  Phone,
   CalendarToday,
   Visibility,
   VisibilityOff,
@@ -38,10 +38,11 @@ import {
 import { getUserId } from '../services/authService';
 import { userService, fileService } from '../services/apiService';
 import { getImageUrl } from '../utils/imageUtils';
+import { useUser } from '../contexts/UserContext';
 import toast from 'react-hot-toast';
 
 const MiPerfil = () => {
-  const [user, setUser] = useState(null);
+  const { user, updateUser } = useUser();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -71,39 +72,28 @@ const MiPerfil = () => {
   });
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    loadUserData();
-  }, []);
-
-  const loadUserData = async () => {
+  const loadUserData = useCallback(async () => {
     try {
       setLoading(true);
-      const userId = getUserId();
-      const response = await userService.getUserById(userId);
-      
-      if (response.success) {
-        const userData = response.user;
-        setUser(userData);
+      if (user) {
         setFormData({
-          nombres: userData.nombres || '',
-          apellidos: userData.apellidos || '',
-          email: userData.email || '',
-          telefono: userData.telefono || '',
-          fecha_nacimiento: userData.fecha_nacimiento ? userData.fecha_nacimiento.split('T')[0] : '',
-          dni: userData.dni || '',
-          direccion: userData.direccion || '',
-          genero: userData.genero || '',
-          estado_civil: userData.estado_civil || '',
-          profesion: userData.profesion || '',
-          foto: userData.foto || '',
+          nombres: user.nombres || '',
+          apellidos: user.apellidos || '',
+          email: user.email || '',
+          telefono: user.telefono || '',
+          fecha_nacimiento: user.fecha_nacimiento ? user.fecha_nacimiento.split('T')[0] : '',
+          dni: user.dni || '',
+          direccion: user.direccion || '',
+          genero: user.genero || '',
+          estado_civil: user.estado_civil || '',
+          profesion: user.profesion || '',
+          foto: user.foto || '',
         });
-        
+
         // Limpiar preview si hay foto existente
-        if (userData.foto) {
+        if (user.foto) {
           setPreviewImage('');
         }
-      } else {
-        toast.error('Error al cargar los datos del usuario');
       }
     } catch (err) {
       console.error('Error cargando datos del usuario:', err);
@@ -111,7 +101,13 @@ const MiPerfil = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      loadUserData();
+    }
+  }, [user, loadUserData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -119,7 +115,7 @@ const MiPerfil = () => {
       ...prev,
       [name]: value,
     }));
-    
+
     // Limpiar error del campo específico
     if (errors[name]) {
       setErrors(prev => ({
@@ -135,7 +131,7 @@ const MiPerfil = () => {
       ...prev,
       [name]: value,
     }));
-    
+
     // Limpiar error del campo específico
     if (errors[name]) {
       setErrors(prev => ({
@@ -154,46 +150,46 @@ const MiPerfil = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.nombres.trim()) {
       newErrors.nombres = 'Los nombres son obligatorios';
     }
-    
+
     if (!formData.email.trim()) {
       newErrors.email = 'El email es obligatorio';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'El email no es válido';
     }
-    
+
     if (formData.telefono && !/^[0-9+\-\s()]+$/.test(formData.telefono)) {
       newErrors.telefono = 'El teléfono no es válido';
     }
-    
+
     if (formData.dni && !/^[0-9]{8}$/.test(formData.dni)) {
       newErrors.dni = 'El DNI debe tener 8 dígitos';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const validatePasswordForm = () => {
     const newErrors = {};
-    
+
     if (!passwordData.clave_actual) {
       newErrors.clave_actual = 'La contraseña actual es obligatoria';
     }
-    
+
     if (!passwordData.nueva_clave) {
       newErrors.nueva_clave = 'La nueva contraseña es obligatoria';
     } else if (passwordData.nueva_clave.length < 6) {
       newErrors.nueva_clave = 'La contraseña debe tener al menos 6 caracteres';
     }
-    
+
     if (passwordData.nueva_clave !== passwordData.confirmar_clave) {
       newErrors.confirmar_clave = 'Las contraseñas no coinciden';
     }
-    
+
     setErrors(prev => ({ ...prev, ...newErrors }));
     return Object.keys(newErrors).length === 0;
   };
@@ -211,7 +207,7 @@ const MiPerfil = () => {
 
       if (response.success) {
         toast.success('Perfil actualizado correctamente');
-        setUser(response.user);
+        updateUser(response.user); // Actualizar el contexto global
         setEditing(false);
         setPreviewImage('');
       } else {
@@ -293,6 +289,8 @@ const MiPerfil = () => {
     try {
       const response = await fileService.uploadFile(file, 'profile');
       if (response.success) {
+        const updatedUser = { ...user, foto: response.filename };
+        updateUser(updatedUser); // Actualizar el contexto global
         setFormData(prev => ({
           ...prev,
           foto: response.filename
@@ -313,10 +311,10 @@ const MiPerfil = () => {
 
   if (loading) {
     return (
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         minHeight: '400px',
         flexDirection: 'column',
         gap: 2
@@ -370,7 +368,7 @@ const MiPerfil = () => {
             </Box>
           )}
         </Box>
-        
+
         {/* Información del rol */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
           <Chip
@@ -417,7 +415,7 @@ const MiPerfil = () => {
                         </InputAdornment>
                       ),
                     }}
-                    sx={{ 
+                    sx={{
                       '& .MuiOutlinedInput-root': { borderRadius: 2 },
                       '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
                     }}
@@ -438,7 +436,7 @@ const MiPerfil = () => {
                         </InputAdornment>
                       ),
                     }}
-                    sx={{ 
+                    sx={{
                       '& .MuiOutlinedInput-root': { borderRadius: 2 },
                       '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
                     }}
@@ -462,7 +460,7 @@ const MiPerfil = () => {
                         </InputAdornment>
                       ),
                     }}
-                    sx={{ 
+                    sx={{
                       '& .MuiOutlinedInput-root': { borderRadius: 2 },
                       '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
                     }}
@@ -485,7 +483,7 @@ const MiPerfil = () => {
                         </InputAdornment>
                       ),
                     }}
-                    sx={{ 
+                    sx={{
                       '& .MuiOutlinedInput-root': { borderRadius: 2 },
                       '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
                     }}
@@ -508,7 +506,7 @@ const MiPerfil = () => {
                         </InputAdornment>
                       ),
                     }}
-                    sx={{ 
+                    sx={{
                       '& .MuiOutlinedInput-root': { borderRadius: 2 },
                       '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
                     }}
@@ -531,7 +529,7 @@ const MiPerfil = () => {
                         </InputAdornment>
                       ),
                     }}
-                    sx={{ 
+                    sx={{
                       '& .MuiOutlinedInput-root': { borderRadius: 2 },
                       '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
                     }}
@@ -547,7 +545,7 @@ const MiPerfil = () => {
                     disabled={!editing}
                     multiline
                     rows={2}
-                    sx={{ 
+                    sx={{
                       '& .MuiOutlinedInput-root': { borderRadius: 2 },
                       '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
                     }}
@@ -603,7 +601,7 @@ const MiPerfil = () => {
                         </InputAdornment>
                       ),
                     }}
-                    sx={{ 
+                    sx={{
                       '& .MuiOutlinedInput-root': { borderRadius: 2 },
                       '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
                     }}
@@ -626,10 +624,10 @@ const MiPerfil = () => {
               <Box sx={{ mb: 3 }}>
                 <Avatar
                   src={previewImage || (user?.foto ? getImageUrl(user.foto) : undefined)}
-                  sx={{ 
-                    width: 150, 
-                    height: 150, 
-                    mx: 'auto', 
+                  sx={{
+                    width: 150,
+                    height: 150,
+                    mx: 'auto',
                     mb: 2,
                     border: '3px solid',
                     borderColor: 'primary.main',

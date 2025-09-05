@@ -15,7 +15,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useConfiguracion } from '../../contexts/ConfiguracionContext';
-import { getUser } from '../../services/authService';
+import { useUser } from '../../contexts/UserContext';
 import { getImageUrl } from '../../utils/imageUtils';
 import {
   Dashboard as DashboardIcon,
@@ -57,7 +57,7 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { colegio } = useConfiguracion();
-  const user = getUser();
+  const { user } = useUser();
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -116,7 +116,10 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
           )}
         </Avatar>
         <Typography variant="h6" color="primary" fontWeight="bold">
-          {user?.nombres || 'Administrador'}
+          {user?.nombres && user?.apellidos 
+            ? `${user.nombres} ${user.apellidos}` 
+            : user?.nombres || 'Administrador'
+          }
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Panel Administrativo
