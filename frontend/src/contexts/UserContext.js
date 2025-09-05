@@ -46,14 +46,8 @@ export const UserProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    // Cargar datos iniciales del usuario
-    const storedUser = getUser();
-    if (storedUser) {
-      setUser(storedUser);
-      setLoading(false);
-    } else {
-      loadUserData();
-    }
+    // Siempre cargar datos frescos del servidor para obtener todos los campos
+    loadUserData();
   }, []);
 
   const value = {
