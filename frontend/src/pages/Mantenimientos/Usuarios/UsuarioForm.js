@@ -398,7 +398,7 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
               <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
-                  label="Nombres completos"
+                  label="Nombres"
                   value={formData.nombres}
                   onChange={handleChange('nombres')}
                   error={!!errors.nombres}

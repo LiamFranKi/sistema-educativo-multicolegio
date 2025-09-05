@@ -164,10 +164,19 @@ const UsuarioView = ({ open, onClose, usuario, onEdit }) => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Box>
                   <Typography variant="subtitle2" color="text.secondary">
-                    Nombres completos
+                    Nombres
                   </Typography>
                   <Typography variant="body1">
-                    {usuario.nombres} {usuario.apellidos}
+                    {usuario.nombres}
+                  </Typography>
+                </Box>
+
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Apellidos
+                  </Typography>
+                  <Typography variant="body1">
+                    {usuario.apellidos || 'No especificados'}
                   </Typography>
                 </Box>
 
