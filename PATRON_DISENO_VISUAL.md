@@ -6,7 +6,9 @@
 
 Unificar el diseño visual de todos los componentes reutilizables del sistema para mantener consistencia, mejorar la experiencia de usuario y facilitar el mantenimiento del código.
 
-**NOTA IMPORTANTE:** El sistema incluye temas dinámicos basados en la configuración del colegio, sidebar personalizado con información del usuario, y barra de título mejorada con iconos de notificaciones y cerrar sesión.
+**NOTA IMPORTANTE:** El sistema incluye temas dinámicos basados en la configuración del colegio, sidebar personalizado con información del usuario, barra de título mejorada con iconos de notificaciones y cerrar sesión, y módulo de configuración optimizado con layout compacto y diseño de 2 columnas.
+
+**SISTEMA DE GAMIFICACIÓN EDUCATIVA (FUTURO):** Planificación de un sistema de gamificación que convertirá cada bimestre en un "mundo" explorable estilo videojuego, con progresión lineal, elementos lúdicos (retos, puntos, avatares), y experiencia inmersiva para motivar el aprendizaje de los estudiantes.
 
 ---
 
@@ -1402,3 +1404,276 @@ export const theme = createTheme({
 - **Estados Visuales:** Loading, error y éxito con feedback visual claro
 - **Validaciones:** Campos con errores resaltados en rojo
 - **Modo Edición:** Campos deshabilitados en modo lectura, habilitados en edición
+
+---
+
+## 🎮 **SISTEMA DE GAMIFICACIÓN EDUCATIVA (FUTURO)**
+
+### **Concepto de Diseño:**
+
+El sistema de gamificación transformará la experiencia de aprendizaje en una aventura interactiva estilo videojuego, donde cada bimestre se convierte en un "mundo" explorable.
+
+### **Estructura Visual Propuesta:**
+
+#### **A) Interfaz de Mundo/Mapa**
+
+```javascript
+// Componente principal del mundo de aprendizaje
+const LearningWorld = () => {
+  return (
+    <Box sx={{ 
+      width: '100vw', 
+      height: '100vh', 
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      zIndex: 9999
+    }}>
+      {/* Mapa del mundo con islas flotantes */}
+      <WorldMap>
+        {/* Bimestre 1 - Mundo Desbloqueado */}
+        <FloatingIsland 
+          status="unlocked" 
+          progress={75}
+          biome="forest"
+          position={{ x: 100, y: 200 }}
+        >
+          <IslandContent>
+            <TempleBuilding />
+            <CrystalReward />
+            <ProgressIndicator />
+          </IslandContent>
+        </FloatingIsland>
+
+        {/* Bimestre 2 - Mundo Bloqueado */}
+        <FloatingIsland 
+          status="locked" 
+          progress={0}
+          biome="desert"
+          position={{ x: 400, y: 150 }}
+        >
+          <IslandContent>
+            <LockedTemple />
+            <LockIcon />
+          </IslandContent>
+        </FloatingIsland>
+      </WorldMap>
+    </Box>
+  );
+};
+```
+
+#### **B) Elementos de Gamificación**
+
+```javascript
+// Sistema de progreso y recompensas
+const GamificationElements = {
+  // Barras de progreso
+  progressBar: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: '20px',
+    height: '8px',
+    overflow: 'hidden',
+    '& .MuiLinearProgress-bar': {
+      background: 'linear-gradient(90deg, #4CAF50, #8BC34A)',
+      borderRadius: '20px'
+    }
+  },
+
+  // Cristales de recompensa
+  crystalReward: {
+    width: '40px',
+    height: '40px',
+    background: 'linear-gradient(45deg, #00E5FF, #2196F3)',
+    borderRadius: '50%',
+    boxShadow: '0 0 20px rgba(0, 229, 255, 0.6)',
+    animation: 'pulse 2s infinite',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+    fontSize: '20px'
+  },
+
+  // Avatares desbloqueados
+  avatarUnlocked: {
+    width: '60px',
+    height: '60px',
+    borderRadius: '50%',
+    border: '3px solid #4CAF50',
+    boxShadow: '0 0 15px rgba(76, 175, 80, 0.5)',
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      transform: 'scale(1.1)',
+      boxShadow: '0 0 25px rgba(76, 175, 80, 0.8)'
+    }
+  },
+
+  // Puntos y logros
+  pointsDisplay: {
+    position: 'absolute',
+    top: '20px',
+    right: '20px',
+    background: 'rgba(0, 0, 0, 0.7)',
+    color: 'white',
+    padding: '10px 20px',
+    borderRadius: '25px',
+    fontSize: '18px',
+    fontWeight: 'bold'
+  }
+};
+```
+
+#### **C) Estados de Progresión**
+
+```javascript
+// Estados visuales para diferentes niveles de completitud
+const ProgressStates = {
+  locked: {
+    opacity: 0.3,
+    filter: 'grayscale(100%)',
+    cursor: 'not-allowed',
+    '&:hover': {
+      transform: 'none'
+    }
+  },
+  
+  unlocked: {
+    opacity: 1,
+    filter: 'none',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      transform: 'scale(1.05)',
+      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)'
+    }
+  },
+  
+  inProgress: {
+    opacity: 0.8,
+    filter: 'none',
+    cursor: 'pointer',
+    border: '3px solid #FF9800',
+    animation: 'glow 2s infinite alternate'
+  },
+  
+  completed: {
+    opacity: 1,
+    filter: 'none',
+    cursor: 'pointer',
+    border: '3px solid #4CAF50',
+    boxShadow: '0 0 20px rgba(76, 175, 80, 0.5)'
+  }
+};
+```
+
+#### **D) Animaciones y Transiciones**
+
+```javascript
+// Keyframes para animaciones
+const keyframes = `
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  
+  @keyframes glow {
+    0% { box-shadow: 0 0 5px rgba(255, 152, 0, 0.5); }
+    100% { box-shadow: 0 0 20px rgba(255, 152, 0, 0.8); }
+  }
+  
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+`;
+
+// Aplicación de animaciones
+const FloatingIsland = styled(Box)({
+  animation: 'float 3s ease-in-out infinite',
+  '&:hover': {
+    animation: 'none',
+    transform: 'translateY(-5px)'
+  }
+});
+```
+
+### **Estructura de Datos para Gamificación:**
+
+```javascript
+// Estructura de datos para el sistema de gamificación
+const GamificationData = {
+  student: {
+    id: 'student_123',
+    name: 'Juan Pérez',
+    level: 'Secundaria',
+    totalPoints: 1250,
+    currentBimestre: 1,
+    unlockedAvatars: ['avatar_1', 'avatar_3'],
+    achievements: ['first_complete', 'perfect_score']
+  },
+  
+  course: {
+    id: 'math_001',
+    name: 'Matemáticas',
+    level: 'Secundaria',
+    bimestres: [
+      {
+        id: 'bimestre_1',
+        name: 'Números Enteros',
+        status: 'in_progress', // locked, unlocked, in_progress, completed
+        progress: 75,
+        world: {
+          biome: 'forest',
+          theme: 'green',
+          position: { x: 100, y: 200 }
+        },
+        topics: [
+          {
+            id: 'topic_1',
+            name: 'Suma y Resta',
+            status: 'completed',
+            points: 100
+          },
+          {
+            id: 'topic_2',
+            name: 'Multiplicación',
+            status: 'in_progress',
+            points: 50
+          }
+        ],
+        tasks: [
+          {
+            id: 'task_1',
+            name: 'Ejercicios Prácticos',
+            status: 'pending',
+            points: 150,
+            type: 'practice'
+          }
+        ],
+        exams: [
+          {
+            id: 'exam_1',
+            name: 'Examen Bimestral',
+            status: 'locked',
+            points: 300,
+            type: 'final'
+          }
+        ]
+      }
+    ]
+  }
+};
+```
+
+### **Objetivos de Diseño:**
+
+1. **Inmersión Total**: Ocultar elementos de navegación tradicional
+2. **Progresión Visual**: Mostrar claramente el avance del estudiante
+3. **Motivación**: Elementos visuales atractivos que incentiven el aprendizaje
+4. **Claridad**: Interfaz intuitiva que no confunda al usuario
+5. **Responsive**: Adaptable a diferentes tamaños de pantalla
+6. **Performance**: Animaciones suaves sin afectar el rendimiento

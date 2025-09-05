@@ -320,26 +320,27 @@ const ConfiguracionList = () => {
   }
 
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 2 }}>
       {/* Header */}
-      <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
-        <SettingsIcon sx={{ fontSize: 32, color: 'primary.main' }} />
-        <Typography variant="h4" component="h1" color="primary">
+      <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <SettingsIcon sx={{ fontSize: 24, color: 'primary.main' }} />
+        <Typography variant="h5" component="h1" color="primary">
           Configuración del Sistema
         </Typography>
       </Box>
 
       {/* Información del Colegio */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            <SchoolIcon color="primary" />
-            <Typography variant="h5" component="h2" color="primary">
+      <Card sx={{ mb: 2 }}>
+        <CardContent sx={{ p: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+            <SchoolIcon color="primary" sx={{ fontSize: 20 }} />
+            <Typography variant="h6" component="h2" color="primary">
               Información del Colegio
             </Typography>
             {!editMode && (
               <Button
                 variant="outlined"
+                size="small"
                 startIcon={<EditIcon />}
                 onClick={() => setEditMode(true)}
                 sx={{ ml: 'auto' }}
@@ -349,13 +350,13 @@ const ConfiguracionList = () => {
             )}
           </Box>
 
-          <Divider sx={{ mb: 3 }} />
+          <Divider sx={{ mb: 2 }} />
 
-          <Grid container spacing={3}>
+          <Grid container spacing={2}>
             {/* Logo del Colegio */}
             <Grid item xs={12} md={4}>
               <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="h6" gutterBottom>
+                <Typography variant="subtitle1" gutterBottom>
                   Logo del Colegio
                 </Typography>
 
@@ -371,9 +372,10 @@ const ConfiguracionList = () => {
                     <label htmlFor="logo-upload">
                       <Button
                         variant="outlined"
+                        size="small"
                         component="span"
                         startIcon={<PhotoCameraIcon />}
-                        sx={{ mb: 2 }}
+                        sx={{ mb: 1.5 }}
                       >
                         Subir Logo
                       </Button>
@@ -384,14 +386,14 @@ const ConfiguracionList = () => {
                 <Avatar
                   src={previewImage}
                   sx={{
-                    width: 120,
-                    height: 120,
+                    width: editMode ? 80 : 160, // 200% más grande en modo lectura
+                    height: editMode ? 80 : 160, // 200% más grande en modo lectura
                     mx: 'auto',
-                    mb: 2,
+                    mb: 1.5,
                     border: '2px solid #e0e0e0'
                   }}
                 >
-                  <SchoolIcon sx={{ fontSize: 60 }} />
+                  <SchoolIcon sx={{ fontSize: editMode ? 40 : 80 }} />
                 </Avatar>
 
                 {editMode && formData.logo && (
@@ -404,10 +406,11 @@ const ConfiguracionList = () => {
 
             {/* Información Básica */}
             <Grid item xs={12} md={8}>
-              <Grid container spacing={2}>
+              <Grid container spacing={1.5}>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
+                    size="small"
                     label="Nombre del Colegio"
                     value={editMode ? formData.nombre || '' : colegio.nombre || ''}
                     onChange={(e) => handleInputChange('nombre', e.target.value)}
@@ -419,6 +422,7 @@ const ConfiguracionList = () => {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
+                    size="small"
                     label="Código"
                     value={editMode ? formData.codigo || '' : colegio.codigo || ''}
                     onChange={(e) => handleInputChange('codigo', e.target.value)}
@@ -430,19 +434,21 @@ const ConfiguracionList = () => {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
+                    size="small"
                     label="Dirección"
                     value={editMode ? formData.direccion || '' : colegio.direccion || ''}
                     onChange={(e) => handleInputChange('direccion', e.target.value)}
                     disabled={!editMode}
                     variant={editMode ? 'outlined' : 'filled'}
                     multiline
-                    rows={2}
+                    rows={1}
                   />
                 </Grid>
 
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
+                    size="small"
                     label="Teléfono"
                     value={editMode ? formData.telefono || '' : colegio.telefono || ''}
                     onChange={(e) => handleInputChange('telefono', e.target.value)}
@@ -454,6 +460,7 @@ const ConfiguracionList = () => {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
+                    size="small"
                     label="Email"
                     type="email"
                     value={editMode ? formData.email || '' : colegio.email || ''}
@@ -466,6 +473,7 @@ const ConfiguracionList = () => {
                 <Grid item xs={12}>
                   <TextField
                     fullWidth
+                    size="small"
                     label="Director"
                     value={editMode ? formData.director || '' : colegio.director || ''}
                     onChange={(e) => handleInputChange('director', e.target.value)}
@@ -479,191 +487,219 @@ const ConfiguracionList = () => {
         </CardContent>
       </Card>
 
-      {/* Configuración de Colores */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            <PaletteIcon color="primary" />
-            <Typography variant="h5" component="h2" color="primary">
-              Configuración de Colores
-            </Typography>
-          </Box>
-
-          <Divider sx={{ mb: 3 }} />
-
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    backgroundColor: editMode ? formData.color_primario || '#1976d2' : colegio.color_primario || '#1976d2',
-                    borderRadius: 1,
-                    border: '2px solid #e0e0e0'
-                  }}
-                />
-                <TextField
-                  fullWidth
-                  label="Color Primario"
-                  value={editMode ? formData.color_primario || '#1976d2' : colegio.color_primario || '#1976d2'}
-                  onChange={(e) => handleInputChange('color_primario', e.target.value)}
-                  disabled={!editMode}
-                  variant={editMode ? 'outlined' : 'filled'}
-                  placeholder="#1976d2"
-                />
+      {/* Configuración de Colores y Fondo - 2 Columnas */}
+      <Grid container spacing={2} sx={{ mb: 2 }}>
+        {/* Columna 1: Configuración de Colores */}
+        <Grid item xs={12} md={6}>
+          <Card sx={{ height: '100%', minHeight: 200 }}>
+            <CardContent sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+                <PaletteIcon color="primary" sx={{ fontSize: 20 }} />
+                <Typography variant="h6" component="h2" color="primary">
+                  Configuración de Colores
+                </Typography>
               </Box>
-            </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    backgroundColor: editMode ? formData.color_secundario || '#424242' : colegio.color_secundario || '#424242',
-                    borderRadius: 1,
-                    border: '2px solid #e0e0e0'
-                  }}
-                />
-                <TextField
-                  fullWidth
-                  label="Color Secundario"
-                  value={editMode ? formData.color_secundario || '#424242' : colegio.color_secundario || '#424242'}
-                  onChange={(e) => handleInputChange('color_secundario', e.target.value)}
-                  disabled={!editMode}
-                  variant={editMode ? 'outlined' : 'filled'}
-                  placeholder="#424242"
-                />
-              </Box>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </Card>
+              <Divider sx={{ mb: 2 }} />
 
-      {/* Configuración de Fondo */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            <ImageIcon color="primary" />
-            <Typography variant="h5" component="h2" color="primary">
-              Configuración de Fondo
-            </Typography>
-          </Box>
-
-          <Divider sx={{ mb: 3 }} />
-
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Tipo de Fondo</InputLabel>
-                <Select
-                  value={editMode ? formData.background_tipo || 'color' : colegio.background_tipo || 'color'}
-                  onChange={(e) => handleInputChange('background_tipo', e.target.value)}
-                  disabled={!editMode}
-                  variant={editMode ? 'outlined' : 'filled'}
-                >
-                  <MenuItem value="color">Color</MenuItem>
-                  <MenuItem value="imagen">Imagen</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            {((editMode ? formData.background_tipo : colegio.background_tipo) === 'color') ? (
-              <Grid item xs={12} sm={6}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Box
-                    sx={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 1,
-                      backgroundColor: editMode ? formData.background_color : colegio.background_color,
-                      border: '2px solid #e0e0e0',
-                      cursor: editMode ? 'pointer' : 'default'
-                    }}
-                    onClick={editMode ? () => document.getElementById('background-color-picker').click() : undefined}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Color de Fondo"
-                    value={editMode ? formData.background_color || '#f5f5f5' : colegio.background_color || '#f5f5f5'}
-                    onChange={(e) => handleInputChange('background_color', e.target.value)}
-                    disabled={!editMode}
-                    variant={editMode ? 'outlined' : 'filled'}
-                    type="color"
-                    inputProps={{ id: 'background-color-picker' }}
-                  />
-                </Box>
-              </Grid>
-            ) : (
-              <Grid item xs={12} sm={6}>
-                <Box>
-                  <input
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    id="background-image-upload"
-                    type="file"
-                    onChange={handleBackgroundImageUpload}
-                  />
-                  <label htmlFor="background-image-upload">
-                    <Button
-                      variant="outlined"
-                      component="span"
-                      startIcon={<PhotoCameraIcon />}
-                      disabled={!editMode}
-                      fullWidth
-                    >
-                      Subir Imagen de Fondo
-                    </Button>
-                  </label>
-
-                  {(editMode ? formData.background_imagen : colegio.background_imagen) && (
-                    <Box sx={{ mt: 2, textAlign: 'center' }}>
-                      {(() => {
-                        const imageSrc = editMode ? formData.background_imagen : colegio.background_imagen;
-                        console.log('Vista previa - editMode:', editMode);
-                        console.log('Vista previa - formData.background_imagen:', formData.background_imagen);
-                        console.log('Vista previa - colegio.background_imagen:', colegio.background_imagen);
-                        console.log('Vista previa - imageSrc final:', imageSrc);
-                        return (
-                          <img
-                            src={imageSrc}
-                            alt="Vista previa del fondo"
-                            style={{
-                              maxWidth: '100%',
-                              maxHeight: 150,
-                              borderRadius: 8,
-                              border: '2px solid #e0e0e0'
-                            }}
-                            onError={(e) => {
-                              console.error('Error cargando imagen de vista previa:', e.target.src);
-                              e.target.style.display = 'none';
-                            }}
-                            onLoad={() => {
-                              console.log('Imagen de vista previa cargada correctamente');
-                            }}
-                          />
-                        );
-                      })()}
+              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <Grid container spacing={1.5}>
+                  <Grid item xs={12}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                      <Box
+                        sx={{
+                          width: 30,
+                          height: 30,
+                          backgroundColor: editMode ? formData.color_primario || '#1976d2' : colegio.color_primario || '#1976d2',
+                          borderRadius: 1,
+                          border: '2px solid #e0e0e0'
+                        }}
+                      />
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label="Color Primario"
+                        value={editMode ? formData.color_primario || '#1976d2' : colegio.color_primario || '#1976d2'}
+                        onChange={(e) => handleInputChange('color_primario', e.target.value)}
+                        disabled={!editMode}
+                        variant={editMode ? 'outlined' : 'filled'}
+                        placeholder="#1976d2"
+                      />
                     </Box>
-                  )}
-                </Box>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                      <Box
+                        sx={{
+                          width: 30,
+                          height: 30,
+                          backgroundColor: editMode ? formData.color_secundario || '#424242' : colegio.color_secundario || '#424242',
+                          borderRadius: 1,
+                          border: '2px solid #e0e0e0'
+                        }}
+                      />
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label="Color Secundario"
+                        value={editMode ? formData.color_secundario || '#424242' : colegio.color_secundario || '#424242'}
+                        onChange={(e) => handleInputChange('color_secundario', e.target.value)}
+                        disabled={!editMode}
+                        variant={editMode ? 'outlined' : 'filled'}
+                        placeholder="#424242"
+                      />
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* Columna 2: Configuración de Fondo */}
+        <Grid item xs={12} md={6}>
+          <Card sx={{ height: '100%', minHeight: 200 }}>
+            <CardContent sx={{ p: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+                <ImageIcon color="primary" sx={{ fontSize: 20 }} />
+                <Typography variant="h6" component="h2" color="primary">
+                  Configuración de Fondo del Login
+                </Typography>
+              </Box>
+
+              <Divider sx={{ mb: 1.5 }} />
+
+              <Box sx={{ flex: 1 }}>
+                <Grid container spacing={1.5}>
+                {/* Columna 1: Controles */}
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, pt: 1 }}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel>Tipo de Fondo</InputLabel>
+                      <Select
+                        value={editMode ? formData.background_tipo || 'color' : colegio.background_tipo || 'color'}
+                        onChange={(e) => handleInputChange('background_tipo', e.target.value)}
+                        disabled={!editMode}
+                        variant={editMode ? 'outlined' : 'filled'}
+                      >
+                        <MenuItem value="color">Color</MenuItem>
+                        <MenuItem value="imagen">Imagen</MenuItem>
+                      </Select>
+                    </FormControl>
+
+                    {((editMode ? formData.background_tipo : colegio.background_tipo) === 'color') ? (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        <Box
+                          sx={{
+                            width: 30,
+                            height: 30,
+                            borderRadius: 1,
+                            backgroundColor: editMode ? formData.background_color : colegio.background_color,
+                            border: '2px solid #e0e0e0',
+                            cursor: editMode ? 'pointer' : 'default'
+                          }}
+                          onClick={editMode ? () => document.getElementById('background-color-picker').click() : undefined}
+                        />
+                        <TextField
+                          fullWidth
+                          size="small"
+                          label="Color de Fondo"
+                          value={editMode ? formData.background_color || '#f5f5f5' : colegio.background_color || '#f5f5f5'}
+                          onChange={(e) => handleInputChange('background_color', e.target.value)}
+                          disabled={!editMode}
+                          variant={editMode ? 'outlined' : 'filled'}
+                          type="color"
+                          inputProps={{ id: 'background-color-picker' }}
+                        />
+                      </Box>
+                    ) : (
+                      <Box>
+                        <input
+                          accept="image/*"
+                          style={{ display: 'none' }}
+                          id="background-image-upload"
+                          type="file"
+                          onChange={handleBackgroundImageUpload}
+                        />
+                        <label htmlFor="background-image-upload">
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            component="span"
+                            startIcon={<PhotoCameraIcon />}
+                            disabled={!editMode}
+                            fullWidth
+                          >
+                            Subir Imagen de Fondo
+                          </Button>
+                        </label>
+                      </Box>
+                    )}
+                  </Box>
+                </Grid>
+
+                {/* Columna 2: Vista previa */}
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', height: '100%', minHeight: 140, pt: 1 }}>
+                    {(editMode ? formData.background_imagen : colegio.background_imagen) ? (
+                      <Box sx={{ textAlign: 'center', width: '100%' }}>
+                        {(() => {
+                          const imageSrc = editMode ? formData.background_imagen : colegio.background_imagen;
+                          console.log('Vista previa - editMode:', editMode);
+                          console.log('Vista previa - formData.background_imagen:', formData.background_imagen);
+                          console.log('Vista previa - colegio.background_imagen:', colegio.background_imagen);
+                          console.log('Vista previa - imageSrc final:', imageSrc);
+                          return (
+                            <img
+                              src={imageSrc}
+                              alt="Vista previa del fondo"
+                              style={{
+                                maxWidth: '100%',
+                                maxHeight: 100,
+                                borderRadius: 8,
+                                border: '2px solid #e0e0e0',
+                                objectFit: 'cover'
+                              }}
+                              onError={(e) => {
+                                console.error('Error cargando imagen de vista previa:', e.target.src);
+                                e.target.style.display = 'none';
+                              }}
+                              onLoad={() => {
+                                console.log('Imagen de vista previa cargada correctamente');
+                              }}
+                            />
+                          );
+                        })()}
+                      </Box>
+                    ) : (
+                      <Box sx={{ textAlign: 'center', color: 'text.secondary' }}>
+                        <ImageIcon sx={{ fontSize: 40, mb: 1, opacity: 0.5 }} />
+                        <Typography variant="caption" color="text.secondary">
+                          {editMode ? 'Seleccione una imagen para ver la vista previa' : 'No hay imagen de fondo configurada'}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </Grid>
               </Grid>
-            )}
-          </Grid>
-        </CardContent>
-      </Card>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
 
       {/* Gestión de Años Escolares */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            <CalendarIcon color="primary" />
-            <Typography variant="h5" component="h2" color="primary">
+      <Card sx={{ mb: 2 }}>
+        <CardContent sx={{ p: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+            <CalendarIcon color="primary" sx={{ fontSize: 20 }} />
+            <Typography variant="h6" component="h2" color="primary">
               Gestión de Años Escolares
             </Typography>
             <Button
               variant="outlined"
+              size="small"
               startIcon={<AddIcon />}
               onClick={() => setAnioEscolarMode(!anioEscolarMode)}
               sx={{ ml: 'auto' }}
@@ -672,18 +708,19 @@ const ConfiguracionList = () => {
             </Button>
           </Box>
 
-          <Divider sx={{ mb: 3 }} />
+          <Divider sx={{ mb: 2 }} />
 
           {/* Formulario para crear nuevo año */}
           {anioEscolarMode && (
-            <Box sx={{ mb: 3, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-              <Typography variant="h6" gutterBottom>
+            <Box sx={{ mb: 2, p: 1.5, bgcolor: 'grey.50', borderRadius: 1 }}>
+              <Typography variant="subtitle1" gutterBottom>
                 Crear Nuevo Año Escolar
               </Typography>
-              <Grid container spacing={2} alignItems="center">
+              <Grid container spacing={1.5} alignItems="center">
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
+                    size="small"
                     label="Año"
                     type="number"
                     value={nuevoAnio}
@@ -696,6 +733,7 @@ const ConfiguracionList = () => {
                   <Box sx={{ display: 'flex', gap: 1 }}>
                     <Button
                       variant="contained"
+                      size="small"
                       onClick={handleCrearAnioEscolar}
                       disabled={!nuevoAnio}
                     >
@@ -703,6 +741,7 @@ const ConfiguracionList = () => {
                     </Button>
                     <Button
                       variant="outlined"
+                      size="small"
                       onClick={() => {
                         setAnioEscolarMode(false);
                         setNuevoAnio('');
@@ -717,8 +756,8 @@ const ConfiguracionList = () => {
           )}
 
           {/* Lista de años escolares */}
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="h6" gutterBottom>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="subtitle1" gutterBottom>
               Años Escolares Disponibles
             </Typography>
             {aniosEscolares.length === 0 ? (
@@ -726,27 +765,27 @@ const ConfiguracionList = () => {
                 No hay años escolares registrados. Cree uno nuevo para comenzar.
               </Alert>
             ) : (
-              <Grid container spacing={2}>
+              <Grid container spacing={1.5}>
                 {aniosEscolares.map((anio) => (
                   <Grid item xs={12} sm={6} md={4} key={anio.id}>
                     <Card
                       variant="outlined"
                       sx={{
-                        p: 2,
+                        p: 1.5,
                         border: anio.anio === colegio.anio_escolar_actual ? '2px solid' : '1px solid',
                         borderColor: anio.anio === colegio.anio_escolar_actual ? 'primary.main' : 'divider'
                       }}
                     >
-                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                        <Typography variant="h6">
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
+                        <Typography variant="subtitle1">
                           {anio.anio}
                         </Typography>
                         {anio.anio === colegio.anio_escolar_actual && (
-                          <CheckCircleIcon color="primary" />
+                          <CheckCircleIcon color="primary" sx={{ fontSize: 18 }} />
                         )}
                       </Box>
 
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1.5 }}>
                         <Chip
                           label={anio.activo ? 'Activo' : 'Inactivo'}
                           color={anio.activo ? 'success' : 'default'}
@@ -761,7 +800,7 @@ const ConfiguracionList = () => {
                         )}
                       </Box>
 
-                      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                      <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
                         {anio.anio !== colegio.anio_escolar_actual && (
                           <Button
                             size="small"
@@ -803,9 +842,10 @@ const ConfiguracionList = () => {
 
       {/* Botones de Acción */}
       {editMode && (
-        <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+        <Box sx={{ mt: 2, display: 'flex', gap: 1.5, justifyContent: 'flex-end' }}>
           <Button
             variant="outlined"
+            size="small"
             onClick={handleCancel}
             disabled={saving}
           >
@@ -813,7 +853,8 @@ const ConfiguracionList = () => {
           </Button>
           <Button
             variant="contained"
-            startIcon={saving ? <CircularProgress size={20} /> : <SaveIcon />}
+            size="small"
+            startIcon={saving ? <CircularProgress size={16} /> : <SaveIcon />}
             onClick={handleSave}
             disabled={saving}
           >
@@ -823,7 +864,7 @@ const ConfiguracionList = () => {
       )}
 
       {/* Alerta Informativa */}
-      <Alert severity="info" sx={{ mt: 3 }}>
+      <Alert severity="info" sx={{ mt: 2 }}>
         <Typography variant="body2">
           <strong>Nota:</strong> Los cambios en la configuración del colegio se aplicarán inmediatamente
           y afectarán la apariencia del sistema. Los colores se actualizarán en tiempo real.

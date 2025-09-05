@@ -20,6 +20,10 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 
 **DISEÑO VISUAL MEJORADO:** El sidebar y la barra de título tienen un diseño elegante con colores consistentes, iconos vibrantes con efectos visuales (sombras, animaciones hover), y scrollbar invisible para una experiencia de usuario premium.
 
+**MÓDULO DE CONFIGURACIÓN OPTIMIZADO:** El módulo de Configuración ha sido optimizado con layout compacto, logo dinámico, layout de 2 columnas para colores y fondo, y vista previa mejorada para una mejor experiencia de usuario.
+
+**SISTEMA DE GAMIFICACIÓN EDUCATIVA (FUTURO):** Planificación de un sistema de gamificación que convertirá cada bimestre en un "mundo" explorable estilo videojuego, con progresión lineal, elementos lúdicos (retos, puntos, avatares), y experiencia inmersiva para motivar el aprendizaje de los estudiantes.
+
 ---
 
 ## 🗂️ **1. ESTRUCTURA DE CARPETAS**
