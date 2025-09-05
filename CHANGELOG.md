@@ -226,6 +226,254 @@
 
 # CHANGELOG
 
+## [2024-12-19] - Módulo Mi Perfil y Nueva Estructura de Usuarios
+
+### ✅ **MÓDULO MI PERFIL COMPLETAMENTE IMPLEMENTADO**
+
+**Funcionalidad:** Sistema completo de gestión de perfil de usuario con campos adicionales y actualización en tiempo real
+
+#### **🎯 Características Implementadas:**
+
+##### **1. Nuevos Campos de Usuario:**
+- **Apellidos** - Campo opcional para apellidos del usuario
+- **Dirección** - Campo opcional para dirección completa
+- **Género** - Selector con opciones: Masculino, Femenino, Otro
+- **Estado Civil** - Selector con opciones: Soltero, Casado, Divorciado, Viudo, Conviviente
+- **Profesión** - Campo opcional para profesión u ocupación
+
+##### **2. Gestión de Perfil Completa:**
+- **Edición de datos personales** con validaciones
+- **Subida de foto** con preview inmediato
+- **Cambio de contraseña** con validación de contraseña actual
+- **Actualización en tiempo real** del sidebar sin re-login
+- **Formulario responsivo** con diseño profesional
+
+##### **3. Contexto Global de Usuario:**
+- **UserContext** para manejo global de datos de usuario
+- **Actualización automática** de la interfaz al cambiar datos
+- **Sincronización** entre Mi Perfil y sidebar
+- **Carga de datos frescos** desde el servidor
+
+#### **🔧 Archivos Creados/Modificados:**
+
+##### **Frontend:**
+- `frontend/src/pages/MiPerfil.js` - Página principal del módulo
+- `frontend/src/contexts/UserContext.js` - Contexto global de usuario
+- `frontend/src/components/Layout/AdminLayout.js` - Agregado UserProvider
+- `frontend/src/components/Sidebar/AdminSidebar.js` - Actualización de datos en tiempo real
+
+##### **Backend:**
+- `backend/routes/usuarios.js` - Agregados nuevos campos en CRUD
+- `backend/migrations/add_user_profile_fields.sql` - Script de migración
+- `backend/config/database.js` - Configuración de contraseña de BD
+
+##### **Base de Datos:**
+- **Nuevos campos en tabla `usuarios`:**
+  - `apellidos` VARCHAR(100) - Apellidos del usuario
+  - `direccion` TEXT - Dirección completa
+  - `genero` VARCHAR(20) - Género del usuario
+  - `estado_civil` VARCHAR(20) - Estado civil
+  - `profesion` VARCHAR(100) - Profesión u ocupación
+
+#### **📊 Funcionalidades del Módulo:**
+
+##### **Gestión de Datos Personales:**
+```javascript
+const formData = {
+  nombres: '',
+  apellidos: '',
+  dni: '',
+  email: '',
+  telefono: '',
+  fecha_nacimiento: '',
+  direccion: '',
+  genero: '',
+  estado_civil: '',
+  profesion: '',
+  foto: ''
+};
+```
+
+##### **Subida de Foto:**
+```javascript
+const handlePhotoUpload = async (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    // Validación de tipo y tamaño
+    if (!file.type.startsWith('image/')) {
+      toast.error('Solo se permiten archivos de imagen');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('La imagen no puede ser mayor a 5MB');
+      return;
+    }
+    
+    // Preview inmediato
+    const reader = new FileReader();
+    reader.onload = (e) => setPreviewImage(e.target.result);
+    reader.readAsDataURL(file);
+    
+    // Subida real del archivo
+    const response = await fileService.uploadFile(file, 'profile');
+    if (response.success) {
+      setFormData(prev => ({ ...prev, foto: response.filename }));
+      toast.success('Foto actualizada correctamente');
+    }
+  }
+};
+```
+
+##### **Cambio de Contraseña:**
+```javascript
+const handlePasswordChange = async () => {
+  if (!validatePasswordForm()) {
+    toast.error('Por favor corrige los errores en el formulario');
+    return;
+  }
+  
+  const response = await userService.changePassword(userId, {
+    currentPassword: currentPassword,
+    newPassword: newPassword
+  });
+  
+  if (response.success) {
+    toast.success('Contraseña actualizada correctamente');
+    setShowPasswords(false);
+  }
+};
+```
+
+#### **🔄 Actualización en Tiempo Real:**
+
+##### **UserContext:**
+```javascript
+export const UserProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem('usuario', JSON.stringify(updatedUser));
+  };
+  
+  const loadUserData = async () => {
+    const userId = getUserId();
+    if (userId) {
+      const response = await userService.getUserById(userId);
+      if (response.success) {
+        setUser(response.user);
+        localStorage.setItem('usuario', JSON.stringify(response.user));
+      }
+    }
+  };
+  
+  // Siempre cargar datos frescos del servidor
+  useEffect(() => {
+    loadUserData();
+  }, []);
+};
+```
+
+##### **Sidebar Actualizado:**
+```javascript
+const { user } = useUser();
+
+// Mostrar nombre completo
+<Typography variant="h6">
+  {user?.nombres && user?.apellidos 
+    ? `${user.nombres} ${user.apellidos}` 
+    : user?.nombres || 'Administrador'
+  }
+</Typography>
+```
+
+#### **🗄️ Estructura de Base de Datos Actualizada:**
+
+##### **Tabla `usuarios` (Nueva Estructura):**
+```sql
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nombres VARCHAR(255) NOT NULL,
+    apellidos VARCHAR(100),                    -- NUEVO
+    dni VARCHAR(20) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    telefono VARCHAR(20),
+    fecha_nacimiento DATE,
+    direccion TEXT,                            -- NUEVO
+    genero VARCHAR(20) CHECK (genero IN ('Masculino', 'Femenino', 'Otro')), -- NUEVO
+    estado_civil VARCHAR(20) CHECK (estado_civil IN ('Soltero', 'Casado', 'Divorciado', 'Viudo', 'Conviviente')), -- NUEVO
+    profesion VARCHAR(100),                    -- NUEVO
+    clave VARCHAR(255) NOT NULL,
+    foto VARCHAR(500),
+    activo BOOLEAN DEFAULT true,
+    rol VARCHAR(50) NOT NULL CHECK (rol IN ('Administrador', 'Docente', 'Alumno', 'Apoderado', 'Tutor')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+##### **Índices Creados:**
+```sql
+CREATE INDEX idx_usuarios_apellidos ON usuarios(apellidos);
+CREATE INDEX idx_usuarios_genero ON usuarios(genero);
+CREATE INDEX idx_usuarios_profesion ON usuarios(profesion);
+```
+
+#### **🔧 Backend - CRUD Actualizado:**
+
+##### **GET /api/usuarios/:id:**
+```javascript
+const result = await query(
+  `SELECT id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, 
+          direccion, genero, estado_civil, profesion, foto, rol, activo, 
+          created_at, updated_at 
+   FROM usuarios WHERE id = $1`,
+  [id]
+);
+```
+
+##### **PUT /api/usuarios/:id:**
+```javascript
+const result = await query(
+  `UPDATE usuarios
+   SET nombres = COALESCE($1, nombres),
+       apellidos = COALESCE($2, apellidos),
+       email = COALESCE($3, email),
+       telefono = COALESCE($4, telefono),
+       fecha_nacimiento = COALESCE($5, fecha_nacimiento),
+       direccion = COALESCE($6, direccion),
+       genero = COALESCE($7, genero),
+       estado_civil = COALESCE($8, estado_civil),
+       profesion = COALESCE($9, profesion),
+       foto = COALESCE($10, foto),
+       updated_at = NOW()
+   WHERE id = $11
+   RETURNING id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, 
+             direccion, genero, estado_civil, profesion, foto, rol, activo, 
+             created_at, updated_at`,
+  [nombres, apellidos, email, telefono, fecha_nacimiento, direccion, 
+   genero, estado_civil, profesion, foto, id]
+);
+```
+
+#### **✅ Estado Final:**
+- ✅ **Módulo Mi Perfil** completamente funcional
+- ✅ **Nuevos campos** agregados a la base de datos
+- ✅ **Actualización en tiempo real** implementada
+- ✅ **Contexto global** para datos de usuario
+- ✅ **Validaciones** completas en frontend y backend
+- ✅ **Subida de fotos** funcionando correctamente
+- ✅ **Cambio de contraseña** implementado
+- ✅ **Diseño responsivo** y profesional
+- ✅ **Sincronización** entre componentes
+
+#### **📚 Documentación Actualizada:**
+- **PATRON_CRUD.md** - Agregada sección de Mi Perfil
+- **PATRON_DISENO_VISUAL.md** - Agregada sección de Mi Perfil
+- **CHANGELOG.md** - Documentación completa de cambios
+
+---
+
 ## [2024-07-17] - Preparación para desarrollo portátil y configuración de GitHub
 
 ### Estado Actual del Proyecto

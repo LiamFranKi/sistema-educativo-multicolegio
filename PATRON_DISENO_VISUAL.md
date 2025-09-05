@@ -938,3 +938,376 @@ export const theme = createTheme({
 - **Guardando:** Botón con spinner y texto "Guardando..."
 - **Error:** Toast de error con SweetAlert2
 - **Éxito:** Toast de éxito con confirmación
+
+---
+
+## 👤 **MÓDULO MI PERFIL - DISEÑO VISUAL**
+
+### **Estructura Visual Principal:**
+
+```javascript
+// Contenedor principal del perfil
+<Box sx={{ p: 3 }}>
+  {/* Header del perfil con avatar y botón de edición */}
+  <Box sx={{ 
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'space-between',
+    mb: 4,
+    p: 3,
+    backgroundColor: 'background.paper',
+    borderRadius: 2,
+    boxShadow: 1
+  }}>
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Avatar sx={{ width: 80, height: 80, mr: 3, bgcolor: 'primary.main' }}>
+        {/* Foto del usuario o icono por defecto */}
+      </Avatar>
+      <Box>
+        <Typography variant="h4" color="primary" gutterBottom>
+          {user?.nombres && user?.apellidos 
+            ? `${user.nombres} ${user.apellidos}` 
+            : user?.nombres || 'Usuario'
+          }
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          {user?.rol || 'Administrador'}
+        </Typography>
+      </Box>
+    </Box>
+    
+    {/* Botón de edición */}
+    <Button
+      variant={editing ? "outlined" : "contained"}
+      startIcon={editing ? <CloseIcon /> : <EditIcon />}
+      onClick={editing ? handleCancelEdit : () => setEditing(true)}
+      sx={{ borderRadius: 2 }}
+    >
+      {editing ? 'Cancelar' : 'Editar Perfil'}
+    </Button>
+  </Box>
+</Box>
+```
+
+### **Formulario de Perfil - Layout de 2 Columnas:**
+
+```javascript
+// Formulario principal con Grid responsivo
+<Paper sx={{ p: 3, borderRadius: 2, boxShadow: 1 }}>
+  <Grid container spacing={3}>
+    {/* Columna izquierda - Información personal */}
+    <Grid item xs={12} md={6}>
+      <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', mb: 2 }}>
+        Información Personal
+      </Typography>
+      
+      {/* Campos de información básica */}
+      <TextField
+        fullWidth
+        label="Nombres"
+        value={formData.nombres}
+        onChange={(e) => setFormData(prev => ({ ...prev, nombres: e.target.value }))}
+        disabled={!editing}
+        error={!!errors.nombres}
+        helperText={errors.nombres}
+        sx={{ mb: 2 }}
+      />
+      
+      <TextField
+        fullWidth
+        label="Apellidos"
+        value={formData.apellidos}
+        onChange={(e) => setFormData(prev => ({ ...prev, apellidos: e.target.value }))}
+        disabled={!editing}
+        sx={{ mb: 2 }}
+      />
+      
+      {/* ... más campos */}
+    </Grid>
+    
+    {/* Columna derecha - Información adicional */}
+    <Grid item xs={12} md={6}>
+      <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', mb: 2 }}>
+        Información Adicional
+      </Typography>
+      
+      {/* Campos de información adicional */}
+      <TextField
+        fullWidth
+        label="Dirección"
+        multiline
+        rows={3}
+        value={formData.direccion}
+        onChange={(e) => setFormData(prev => ({ ...prev, direccion: e.target.value }))}
+        disabled={!editing}
+        sx={{ mb: 2 }}
+      />
+      
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel>Género</InputLabel>
+        <Select
+          value={formData.genero}
+          onChange={(e) => setFormData(prev => ({ ...prev, genero: e.target.value }))}
+          disabled={!editing}
+          label="Género"
+        >
+          <MenuItem value="Masculino">Masculino</MenuItem>
+          <MenuItem value="Femenino">Femenino</MenuItem>
+          <MenuItem value="Otro">Otro</MenuItem>
+        </Select>
+      </FormControl>
+      
+      {/* ... más campos */}
+    </Grid>
+  </Grid>
+</Paper>
+```
+
+### **Sección de Foto de Perfil:**
+
+```javascript
+// Sección de foto con preview
+<Box sx={{ mt: 3, p: 3, backgroundColor: 'grey.50', borderRadius: 2 }}>
+  <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', mb: 2 }}>
+    Foto de Perfil
+  </Typography>
+  
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+    {/* Avatar actual */}
+    <Avatar sx={{ width: 100, height: 100, bgcolor: 'primary.main' }}>
+      {previewImage ? (
+        <img
+          src={previewImage}
+          alt="Preview"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            borderRadius: "50%",
+          }}
+        />
+      ) : user?.foto ? (
+        <img
+          src={getImageUrl(user.foto)}
+          alt="Foto del usuario"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            borderRadius: "50%",
+          }}
+        />
+      ) : (
+        <AccountCircleIcon sx={{ fontSize: 50 }} />
+      )}
+    </Avatar>
+    
+    {/* Botón de subida */}
+    <Box>
+      <input
+        accept="image/*"
+        style={{ display: 'none' }}
+        id="photo-upload"
+        type="file"
+        onChange={handlePhotoUpload}
+        disabled={!editing}
+      />
+      <label htmlFor="photo-upload">
+        <Button
+          variant="outlined"
+          component="span"
+          startIcon={<CloudUploadIcon />}
+          disabled={!editing}
+          sx={{ borderRadius: 2 }}
+        >
+          {editing ? 'Cambiar Foto' : 'Ver Foto'}
+        </Button>
+      </label>
+      <Typography variant="caption" display="block" sx={{ mt: 1, color: 'text.secondary' }}>
+        Máximo 5MB. Formatos: JPG, PNG, GIF
+      </Typography>
+    </Box>
+  </Box>
+</Box>
+```
+
+### **Sección de Cambio de Contraseña:**
+
+```javascript
+// Sección de cambio de contraseña (solo en modo edición)
+{editing && (
+  <Box sx={{ mt: 3, p: 3, backgroundColor: 'warning.light', borderRadius: 2 }}>
+    <Typography variant="h6" gutterBottom sx={{ color: 'warning.dark', mb: 2 }}>
+      Cambio de Contraseña
+    </Typography>
+    
+    {!showPasswords ? (
+      <Button
+        variant="outlined"
+        startIcon={<LockIcon />}
+        onClick={() => setShowPasswords(true)}
+        sx={{ borderRadius: 2 }}
+      >
+        Cambiar Contraseña
+      </Button>
+    ) : (
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <TextField
+          fullWidth
+          label="Contraseña Actual"
+          type="password"
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+          error={!!errors.currentPassword}
+          helperText={errors.currentPassword}
+        />
+        <TextField
+          fullWidth
+          label="Nueva Contraseña"
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          error={!!errors.newPassword}
+          helperText={errors.newPassword}
+        />
+        <TextField
+          fullWidth
+          label="Confirmar Nueva Contraseña"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          error={!!errors.confirmPassword}
+          helperText={errors.confirmPassword}
+        />
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="contained"
+            onClick={handlePasswordChange}
+            disabled={saving}
+            sx={{ borderRadius: 2 }}
+          >
+            {saving ? <CircularProgress size={20} /> : 'Cambiar Contraseña'}
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={() => setShowPasswords(false)}
+            sx={{ borderRadius: 2 }}
+          >
+            Cancelar
+          </Button>
+        </Box>
+      </Box>
+    )}
+  </Box>
+)}
+```
+
+### **Botones de Acción:**
+
+```javascript
+// Botones de acción (solo en modo edición)
+{editing && (
+  <Box sx={{ 
+    display: 'flex', 
+    justifyContent: 'flex-end', 
+    gap: 2, 
+    mt: 4,
+    pt: 3,
+    borderTop: '1px solid #e0e0e0'
+  }}>
+    <Button
+      variant="outlined"
+      onClick={handleCancelEdit}
+      sx={{ borderRadius: 2 }}
+    >
+      Cancelar
+    </Button>
+    <Button
+      variant="contained"
+      onClick={handleSaveProfile}
+      disabled={saving}
+      startIcon={saving ? <CircularProgress size={20} /> : <SaveIcon />}
+      sx={{ borderRadius: 2 }}
+    >
+      {saving ? 'Guardando...' : 'Guardar Cambios'}
+    </Button>
+  </Box>
+)}
+```
+
+### **Estados Visuales del Perfil:**
+
+```javascript
+// Estado de carga
+{loading && (
+  <Box sx={{ 
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center',
+    minHeight: '400px',
+    flexDirection: 'column',
+    gap: 2
+  }}>
+    <CircularProgress size={60} />
+    <Typography variant="h6" color="text.secondary">
+      Cargando perfil...
+    </Typography>
+  </Box>
+)}
+
+// Estado de error
+{error && (
+  <Alert severity="error" sx={{ borderRadius: 2, mb: 3 }}>
+    <Typography variant="subtitle2" gutterBottom>
+      Error al cargar el perfil
+    </Typography>
+    <Typography variant="body2">{error}</Typography>
+  </Alert>
+)}
+```
+
+### **Responsive Design del Perfil:**
+
+```javascript
+// Grid responsivo para el formulario
+<Grid container spacing={3}>
+  <Grid item xs={12} md={6}>
+    {/* Información personal */}
+  </Grid>
+  <Grid item xs={12} md={6}>
+    {/* Información adicional */}
+  </Grid>
+</Grid>
+
+// Avatar responsivo
+<Avatar
+  sx={{
+    width: { xs: 60, sm: 80, md: 100 },
+    height: { xs: 60, sm: 80, md: 100 },
+    mr: { xs: 2, sm: 3 },
+  }}
+>
+
+// Botones responsivos
+<Box sx={{ 
+  display: 'flex', 
+  flexDirection: { xs: 'column', sm: 'row' },
+  gap: 2,
+  justifyContent: 'flex-end'
+}}>
+  <Button variant="outlined">Cancelar</Button>
+  <Button variant="contained">Guardar</Button>
+</Box>
+```
+
+### **Características de Diseño:**
+
+- **Header del Perfil:** Avatar grande (80x80px) con nombre completo y rol
+- **Formulario de 2 Columnas:** Información personal a la izquierda, información adicional a la derecha
+- **Sección de Foto:** Preview inmediato con botón de subida
+- **Cambio de Contraseña:** Sección separada con fondo de advertencia
+- **Botones de Acción:** Alineados a la derecha con estados de carga
+- **Responsive:** Grid que se adapta a móvil (1 columna) y desktop (2 columnas)
+- **Estados Visuales:** Loading, error y éxito con feedback visual claro
+- **Validaciones:** Campos con errores resaltados en rojo
+- **Modo Edición:** Campos deshabilitados en modo lectura, habilitados en edición

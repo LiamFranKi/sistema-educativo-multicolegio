@@ -116,8 +116,8 @@ const AdminSidebar = ({ open, onDrawerToggle, onLogout }) => {
           )}
         </Avatar>
         <Typography variant="h6" color="primary" fontWeight="bold">
-          {user?.nombres && user?.apellidos 
-            ? `${user.nombres} ${user.apellidos}` 
+          {user?.nombres && user?.apellidos
+            ? `${user.nombres} ${user.apellidos}`
             : user?.nombres || 'Administrador'
           }
         </Typography>

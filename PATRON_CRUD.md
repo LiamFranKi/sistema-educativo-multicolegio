@@ -30,8 +30,9 @@ frontend/src/
 │   │       ├── UsuariosList.js      # Lista principal con tabla
 │   │       ├── UsuarioForm.js       # Formulario (Nuevo/Editar)
 │   │       └── UsuarioView.js       # Vista detallada (solo lectura)
-│   └── Configuracion/
-│       └── ConfiguracionList.js     # Configuración del colegio
+│   ├── Configuracion/
+│   │   └── ConfiguracionList.js     # Configuración del colegio
+│   └── MiPerfil.js                  # Módulo de perfil de usuario
 ├── components/
 │   └── Common/
 │       ├── DataTable.js             # Tabla reutilizable con paginación
@@ -41,7 +42,8 @@ frontend/src/
 │       └── ActionButtons.js         # Botones de acción (Editar, Eliminar, Ver)
 ├── contexts/
 │   ├── ConfiguracionContext.js      # Contexto global de configuración del colegio
-│   └── ThemeContext.js              # Contexto de tema dinámico
+│   ├── ThemeContext.js              # Contexto de tema dinámico
+│   └── UserContext.js               # Contexto global de datos de usuario
 ├── utils/
 │   └── imageUtils.js                # Utilidades para URLs de imágenes
 └── services/
@@ -121,7 +123,19 @@ frontend/src/
 - Funciones reutilizables
 ```
 
-### **D) ConfiguracionList.js - Módulo de Configuración**
+### **D) UserContext.js - Contexto Global de Usuario**
+
+```javascript
+// Características:
+- Estado global de datos del usuario logueado
+- Funciones de actualización y sincronización
+- Carga de datos frescos desde el servidor
+- Sincronización con localStorage
+- Actualización automática de la interfaz
+- Integración con MiPerfil y sidebar
+```
+
+### **E) ConfiguracionList.js - Módulo de Configuración**
 
 ```javascript
 // Características:
@@ -132,7 +146,7 @@ frontend/src/
 - Fondos personalizables (color/imagen)
 ```
 
-### **E) AdminDashboard.js - Dashboard Principal**
+### **F) AdminDashboard.js - Dashboard Principal**
 
 ```javascript
 // Características:
@@ -145,9 +159,238 @@ frontend/src/
 - Logging detallado para debugging
 ```
 
+### **G) MiPerfil.js - Módulo de Perfil de Usuario**
+
+```javascript
+// Características:
+- Gestión completa de datos personales del usuario
+- Nuevos campos: apellidos, dirección, género, estado civil, profesión
+- Subida de foto con preview inmediato
+- Cambio de contraseña con validación
+- Actualización en tiempo real del sidebar
+- Formulario responsivo con validaciones
+- Integración con UserContext para sincronización global
+```
+
 ---
 
-## 📊 **2.6. PATRÓN DE DASHBOARD CON ESTADÍSTICAS**
+## 👤 **2.6. PATRÓN DE MÓDULO MI PERFIL**
+
+### **A) Estructura del Componente MiPerfil.js**
+
+```javascript
+// Estados principales:
+const [editing, setEditing] = useState(false);
+const [showPasswords, setShowPasswords] = useState(false);
+const [previewImage, setPreviewImage] = useState('');
+const [formData, setFormData] = useState({
+  nombres: '',
+  apellidos: '',
+  dni: '',
+  email: '',
+  telefono: '',
+  fecha_nacimiento: '',
+  direccion: '',
+  genero: '',
+  estado_civil: '',
+  profesion: '',
+  foto: ''
+});
+
+// Integración con UserContext:
+const { user, updateUser } = useUser();
+```
+
+### **B) Gestión de Datos Personales**
+
+```javascript
+// Carga de datos del usuario:
+const loadUserData = useCallback(() => {
+  if (user) {
+    setFormData({
+      nombres: user.nombres || '',
+      apellidos: user.apellidos || '',
+      dni: user.dni || '',
+      email: user.email || '',
+      telefono: user.telefono || '',
+      fecha_nacimiento: user.fecha_nacimiento || '',
+      direccion: user.direccion || '',
+      genero: user.genero || '',
+      estado_civil: user.estado_civil || '',
+      profesion: user.profesion || '',
+      foto: user.foto || ''
+    });
+  }
+}, [user]);
+
+// Actualización de perfil:
+const handleSaveProfile = async () => {
+  if (!validateForm()) {
+    toast.error('Por favor corrige los errores en el formulario');
+    return;
+  }
+  
+  const response = await userService.updateUser(userId, formData);
+  if (response.success) {
+    toast.success('Perfil actualizado correctamente');
+    updateUser(response.user); // Actualizar contexto global
+    setEditing(false);
+  }
+};
+```
+
+### **C) Subida de Foto con Preview**
+
+```javascript
+// Manejo de subida de imagen:
+const handlePhotoUpload = async (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    // Validaciones
+    if (!file.type.startsWith('image/')) {
+      toast.error('Solo se permiten archivos de imagen');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('La imagen no puede ser mayor a 5MB');
+      return;
+    }
+    
+    // Preview inmediato
+    const reader = new FileReader();
+    reader.onload = (e) => setPreviewImage(e.target.result);
+    reader.readAsDataURL(file);
+    
+    // Subida real
+    const response = await fileService.uploadFile(file, 'profile');
+    if (response.success) {
+      setFormData(prev => ({ ...prev, foto: response.filename }));
+      toast.success('Foto actualizada correctamente');
+      updateUser({ ...user, foto: response.filename });
+    }
+  }
+};
+```
+
+### **D) Cambio de Contraseña**
+
+```javascript
+// Estados para contraseñas:
+const [currentPassword, setCurrentPassword] = useState('');
+const [newPassword, setNewPassword] = useState('');
+const [confirmPassword, setConfirmPassword] = useState('');
+
+// Validación de contraseñas:
+const validatePasswordForm = () => {
+  const errors = {};
+  if (!currentPassword) errors.currentPassword = 'Contraseña actual requerida';
+  if (!newPassword) errors.newPassword = 'Nueva contraseña requerida';
+  if (newPassword.length < 6) errors.newPassword = 'Mínimo 6 caracteres';
+  if (newPassword !== confirmPassword) errors.confirmPassword = 'Las contraseñas no coinciden';
+  setErrors(errors);
+  return Object.keys(errors).length === 0;
+};
+
+// Cambio de contraseña:
+const handlePasswordChange = async () => {
+  if (!validatePasswordForm()) return;
+  
+  const response = await userService.changePassword(userId, {
+    currentPassword,
+    newPassword
+  });
+  
+  if (response.success) {
+    toast.success('Contraseña actualizada correctamente');
+    setShowPasswords(false);
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+  }
+};
+```
+
+### **E) Validaciones del Formulario**
+
+```javascript
+// Validación general del formulario:
+const validateForm = () => {
+  const errors = {};
+  
+  if (!formData.nombres.trim()) errors.nombres = 'Nombres requeridos';
+  if (!formData.email.trim()) errors.email = 'Email requerido';
+  if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
+    errors.email = 'Email inválido';
+  }
+  if (formData.telefono && formData.telefono.length < 9) {
+    errors.telefono = 'Teléfono inválido';
+  }
+  
+  setErrors(errors);
+  return Object.keys(errors).length === 0;
+};
+```
+
+### **F) Integración con UserContext**
+
+```javascript
+// En UserContext.js:
+export const UserProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem('usuario', JSON.stringify(updatedUser));
+  };
+  
+  const loadUserData = async () => {
+    const userId = getUserId();
+    if (userId) {
+      const response = await userService.getUserById(userId);
+      if (response.success) {
+        setUser(response.user);
+        localStorage.setItem('usuario', JSON.stringify(response.user));
+      }
+    }
+  };
+  
+  // Siempre cargar datos frescos del servidor
+  useEffect(() => {
+    loadUserData();
+  }, []);
+  
+  return (
+    <UserContext.Provider value={{ user, updateUser, loadUserData }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
+```
+
+### **G) Actualización en Tiempo Real del Sidebar**
+
+```javascript
+// En AdminSidebar.js:
+const { user } = useUser();
+
+// Mostrar nombre completo:
+<Typography variant="h6">
+  {user?.nombres && user?.apellidos 
+    ? `${user.nombres} ${user.apellidos}` 
+    : user?.nombres || 'Administrador'
+  }
+</Typography>
+
+// Mostrar foto actualizada:
+<Avatar 
+  src={getImageUrl(user?.foto)} 
+  sx={{ width: 80, height: 80 }}
+/>
+```
+
+---
+
+## 📊 **2.7. PATRÓN DE DASHBOARD CON ESTADÍSTICAS**
 
 ### **A) AdminDashboard.js - Dashboard Principal**
 
