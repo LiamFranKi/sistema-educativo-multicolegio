@@ -59,6 +59,7 @@ app.use('/api/publicaciones', require('./routes/publicaciones'));
 app.use('/api/notificaciones', require('./routes/notificaciones'));
 app.use('/api/files', require('./routes/files'));
 app.use('/api/configuracion', require('./routes/configuracion'));
+app.use('/api/niveles', require('./routes/niveles'));
 
 // Ruta de salud
 app.get('/api/health', (req, res) => {

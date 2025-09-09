@@ -15,7 +15,17 @@ import {
   Select,
   MenuItem,
   Alert,
-  CircularProgress
+  CircularProgress,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  InputAdornment
 } from '@mui/material';
 import {
   Settings as SettingsIcon,
@@ -28,14 +38,17 @@ import {
   CalendarToday as CalendarIcon,
   Add as AddIcon,
   Delete as DeleteIcon,
-  CheckCircle as CheckCircleIcon
+  CheckCircle as CheckCircleIcon,
+  Search as SearchIcon,
+  Clear as ClearIcon
 } from '@mui/icons-material';
 import { getUser } from '../../services/authService';
-import { configuracionService } from '../../services/apiService';
+import { configuracionService, nivelesService } from '../../services/apiService';
 import { fileService } from '../../services/apiService';
 import { useConfiguracion } from '../../contexts/ConfiguracionContext';
 import { getColegioLogoUrl } from '../../utils/imageUtils';
 import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 const ConfiguracionList = () => {
   const {
@@ -56,6 +69,28 @@ const ConfiguracionList = () => {
   // Estados para gestión de años escolares
   const [anioEscolarMode, setAnioEscolarMode] = useState(false);
   const [nuevoAnio, setNuevoAnio] = useState('');
+  const [anioSearchTerm, setAnioSearchTerm] = useState('');
+  const [anioPagination, setAnioPagination] = useState({
+    page: 0,
+    rowsPerPage: 5
+  });
+
+  // Estados para gestión de niveles
+  const [niveles, setNiveles] = useState([]);
+  const [loadingNiveles, setLoadingNiveles] = useState(true);
+  const [nivelMode, setNivelMode] = useState(false);
+  const [editingNivel, setEditingNivel] = useState(null);
+  const [nivelForm, setNivelForm] = useState({
+    nombre: '',
+    descripcion: '',
+    codigo: '',
+    orden: 0
+  });
+  const [nivelSearchTerm, setNivelSearchTerm] = useState('');
+  const [nivelPagination, setNivelPagination] = useState({
+    page: 0,
+    rowsPerPage: 5
+  });
 
   const loadConfiguraciones = async () => {
     try {
@@ -89,8 +124,209 @@ const ConfiguracionList = () => {
     }
   };
 
+  const loadNiveles = async () => {
+    try {
+      setLoadingNiveles(true);
+      console.log('Cargando niveles educativos...');
+
+      const response = await nivelesService.getNiveles();
+      console.log('Respuesta de niveles:', response);
+
+      if (response.success) {
+        setNiveles(response.niveles);
+      }
+    } catch (error) {
+      console.error('Error cargando niveles:', error);
+      toast.error('Error al cargar niveles educativos');
+    } finally {
+      setLoadingNiveles(false);
+    }
+  };
+
+  // Funciones para CRUD de niveles
+  const handleNivelInputChange = (field, value) => {
+    setNivelForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleCreateNivel = () => {
+    setEditingNivel(null);
+    setNivelForm({
+      nombre: '',
+      descripcion: '',
+      codigo: '',
+      orden: niveles.length + 1
+    });
+    setNivelMode(true);
+  };
+
+  const handleEditNivel = (nivel) => {
+    setEditingNivel(nivel);
+    setNivelForm({
+      nombre: nivel.nombre,
+      descripcion: nivel.descripcion || '',
+      codigo: nivel.codigo,
+      orden: nivel.orden
+    });
+    setNivelMode(true);
+  };
+
+  const handleSaveNivel = async () => {
+    try {
+      setSaving(true);
+
+      // Validaciones
+      if (!nivelForm.nombre.trim()) {
+        toast.error('El nombre es requerido');
+        return;
+      }
+      if (!nivelForm.codigo.trim()) {
+        toast.error('El código es requerido');
+        return;
+      }
+
+      if (editingNivel) {
+        // Actualizar nivel existente
+        const response = await nivelesService.updateNivel(editingNivel.id, nivelForm);
+        if (response.success) {
+          toast.success('Nivel actualizado exitosamente');
+          await loadNiveles();
+          setNivelMode(false);
+          setEditingNivel(null);
+        }
+      } else {
+        // Crear nuevo nivel
+        const response = await nivelesService.createNivel(nivelForm);
+        if (response.success) {
+          toast.success('Nivel creado exitosamente');
+          await loadNiveles();
+          setNivelMode(false);
+        }
+      }
+    } catch (error) {
+      console.error('Error guardando nivel:', error);
+      toast.error('Error al guardar nivel');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteNivel = async (nivel) => {
+    try {
+      const confirmed = await Swal.fire({
+        title: '¿Estás seguro?',
+        text: `¿Deseas eliminar el nivel "${nivel.nombre}"?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      });
+
+      if (confirmed.isConfirmed) {
+        setSaving(true);
+        const response = await nivelesService.deleteNivel(nivel.id);
+        if (response.success) {
+          toast.success('Nivel eliminado exitosamente');
+          await loadNiveles();
+        }
+      }
+    } catch (error) {
+      console.error('Error eliminando nivel:', error);
+      toast.error('Error al eliminar nivel');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCancelNivel = () => {
+    setNivelMode(false);
+    setEditingNivel(null);
+    setNivelForm({
+      nombre: '',
+      descripcion: '',
+      codigo: '',
+      orden: 0
+    });
+  };
+
+  // Funciones de búsqueda y paginación para niveles
+  const handleNivelSearch = (event) => {
+    setNivelSearchTerm(event.target.value);
+    setNivelPagination(prev => ({ ...prev, page: 0 }));
+  };
+
+  const handleNivelClear = () => {
+    setNivelSearchTerm('');
+  };
+
+  const handleNivelChangePage = (event, newPage) => {
+    setNivelPagination(prev => ({ ...prev, page: newPage }));
+  };
+
+  const handleNivelChangeRowsPerPage = (event) => {
+    setNivelPagination(prev => ({
+      ...prev,
+      rowsPerPage: parseInt(event.target.value, 10),
+      page: 0
+    }));
+  };
+
+  // Filtrar niveles según término de búsqueda
+  const filteredNiveles = niveles.filter(nivel =>
+    nivel.nombre.toLowerCase().includes(nivelSearchTerm.toLowerCase()) ||
+    nivel.codigo.toLowerCase().includes(nivelSearchTerm.toLowerCase()) ||
+    (nivel.descripcion && nivel.descripcion.toLowerCase().includes(nivelSearchTerm.toLowerCase()))
+  );
+
+  // Obtener niveles paginados
+  const paginatedNiveles = filteredNiveles.slice(
+    nivelPagination.page * nivelPagination.rowsPerPage,
+    nivelPagination.page * nivelPagination.rowsPerPage + nivelPagination.rowsPerPage
+  );
+
+  // Funciones de búsqueda y paginación para años escolares
+  const handleAnioSearch = (event) => {
+    setAnioSearchTerm(event.target.value);
+    setAnioPagination(prev => ({ ...prev, page: 0 }));
+  };
+
+  const handleAnioClear = () => {
+    setAnioSearchTerm('');
+  };
+
+  const handleAnioChangePage = (event, newPage) => {
+    setAnioPagination(prev => ({ ...prev, page: newPage }));
+  };
+
+  const handleAnioChangeRowsPerPage = (event) => {
+    setAnioPagination(prev => ({
+      ...prev,
+      rowsPerPage: parseInt(event.target.value, 10),
+      page: 0
+    }));
+  };
+
+  // Filtrar años escolares según término de búsqueda y ordenar por año descendente
+  const filteredAnios = aniosEscolares
+    .filter(anio =>
+      anio.anio.toString().includes(anioSearchTerm) ||
+      (anio.activo ? 'activo' : 'inactivo').includes(anioSearchTerm.toLowerCase())
+    )
+    .sort((a, b) => b.anio - a.anio); // Ordenar por año descendente
+
+  // Obtener años escolares paginados
+  const paginatedAnios = filteredAnios.slice(
+    anioPagination.page * anioPagination.rowsPerPage,
+    anioPagination.page * anioPagination.rowsPerPage + anioPagination.rowsPerPage
+  );
+
   useEffect(() => {
     loadConfiguraciones();
+    loadNiveles();
   }, []);
 
   const handleInputChange = (field, value) => {
@@ -337,17 +573,38 @@ const ConfiguracionList = () => {
             <Typography variant="h6" component="h2" color="primary">
               Información del Colegio
             </Typography>
-            {!editMode && (
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<EditIcon />}
-                onClick={() => setEditMode(true)}
-                sx={{ ml: 'auto' }}
-              >
-                Editar
-              </Button>
-            )}
+            <Box sx={{ ml: 'auto', display: 'flex', gap: 1 }}>
+              {editMode ? (
+                <>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleCancel}
+                    disabled={saving}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    startIcon={saving ? <CircularProgress size={16} /> : <SaveIcon />}
+                    onClick={handleSave}
+                    disabled={saving}
+                  >
+                    {saving ? 'Guardando...' : 'Guardar Cambios'}
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<EditIcon />}
+                  onClick={() => setEditMode(true)}
+                >
+                  Editar
+                </Button>
+              )}
+            </Box>
           </Box>
 
           <Divider sx={{ mb: 2 }} />
@@ -484,6 +741,14 @@ const ConfiguracionList = () => {
               </Grid>
             </Grid>
           </Grid>
+
+          {/* Alerta informativa para la sección de Información del Colegio */}
+          <Alert severity="info" sx={{ mt: 2 }}>
+            <Typography variant="body2">
+              <strong>Nota:</strong> Los cambios en la configuración del colegio se aplicarán inmediatamente
+              y afectarán la apariencia del sistema. Los colores se actualizarán en tiempo real.
+            </Typography>
+          </Alert>
         </CardContent>
       </Card>
 
@@ -689,187 +954,502 @@ const ConfiguracionList = () => {
         </Grid>
       </Grid>
 
+      {/* Gestión de Niveles Educativos */}
+      <Paper sx={{ mb: 2, overflow: 'hidden', borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+        {/* Header con título y botón "Nuevo" */}
+        <Box sx={{
+          p: 2,
+          borderBottom: '1px solid #e0e0e0',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <SchoolIcon color="primary" sx={{ fontSize: 20 }} />
+            <Typography variant="h6" color="primary">
+              Niveles Educativos
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleCreateNivel}
+            size="small"
+            disabled={saving}
+            sx={{ borderRadius: 2 }}
+          >
+            Nuevo Nivel
+          </Button>
+        </Box>
+
+        {/* Formulario de creación/edición */}
+        {nivelMode && (
+          <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', backgroundColor: 'grey.50' }}>
+            <Typography variant="h6" gutterBottom>
+              {editingNivel ? 'Editar Nivel' : 'Nuevo Nivel'}
+            </Typography>
+
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Nombre del Nivel"
+                  value={nivelForm.nombre}
+                  onChange={(e) => handleNivelInputChange('nombre', e.target.value)}
+                  size="small"
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Código"
+                  value={nivelForm.codigo}
+                  onChange={(e) => handleNivelInputChange('codigo', e.target.value.toUpperCase())}
+                  size="small"
+                  required
+                  inputProps={{ maxLength: 10 }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Descripción"
+                  value={nivelForm.descripcion}
+                  onChange={(e) => handleNivelInputChange('descripcion', e.target.value)}
+                  size="small"
+                  multiline
+                  rows={2}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Orden"
+                  type="number"
+                  value={nivelForm.orden}
+                  onChange={(e) => handleNivelInputChange('orden', parseInt(e.target.value) || 0)}
+                  size="small"
+                  inputProps={{ min: 1 }}
+                />
+              </Grid>
+            </Grid>
+
+            <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+              <Button
+                variant="contained"
+                onClick={handleSaveNivel}
+                disabled={saving}
+                startIcon={saving ? <CircularProgress size={16} /> : <CheckCircleIcon />}
+              >
+                {saving ? 'Guardando...' : 'Guardar'}
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={handleCancelNivel}
+                disabled={saving}
+              >
+                Cancelar
+              </Button>
+            </Box>
+          </Box>
+        )}
+
+        {/* Barra de búsqueda */}
+        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+          <TextField
+            placeholder="Buscar por nombre, código o descripción..."
+            variant="outlined"
+            size="small"
+            value={nivelSearchTerm}
+            onChange={handleNivelSearch}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: 'text.secondary' }} />
+                </InputAdornment>
+              ),
+              endAdornment: nivelSearchTerm && (
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    onClick={handleNivelClear}
+                    sx={{ color: 'text.secondary' }}
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            sx={{ width: 400 }}
+          />
+        </Box>
+
+        {/* Tabla */}
+        <TableContainer>
+          {loadingNiveles ? (
+            <Box sx={{ p: 4, textAlign: 'center' }}>
+              <CircularProgress />
+              <Typography sx={{ mt: 2 }}>Cargando niveles...</Typography>
+            </Box>
+          ) : filteredNiveles.length === 0 ? (
+            <Box sx={{
+              p: 4,
+              textAlign: 'center',
+              color: 'text.secondary'
+            }}>
+              <Typography variant="h6" gutterBottom>
+                No hay niveles disponibles
+              </Typography>
+              <Typography variant="body2">
+                {nivelSearchTerm ? 'No se encontraron niveles con ese criterio de búsqueda' : 'Comienza creando un nuevo nivel'}
+              </Typography>
+            </Box>
+          ) : (
+            <Table>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+                  <TableCell align="center">Orden</TableCell>
+                  <TableCell align="center">Nombre</TableCell>
+                  <TableCell align="center">Código</TableCell>
+                  <TableCell align="center">Descripción</TableCell>
+                  <TableCell align="center">Estado</TableCell>
+                  <TableCell align="center">Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedNiveles.map((nivel) => (
+                  <TableRow
+                    key={nivel.id}
+                    hover
+                    sx={{
+                      '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
+                      '&:hover': { backgroundColor: '#e3f2fd' }
+                    }}
+                  >
+                    <TableCell align="center">
+                      <Typography variant="body2" fontWeight="medium">
+                        {nivel.orden}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography variant="body2" fontWeight="medium">
+                        {nivel.nombre}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography variant="body2">
+                        {nivel.codigo}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography variant="body2" color="text.secondary">
+                        {nivel.descripcion || '-'}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Chip
+                        label={nivel.activo ? 'Activo' : 'Inactivo'}
+                        color={nivel.activo ? 'success' : 'error'}
+                        size="small"
+                        variant="outlined"
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }}>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleEditNivel(nivel)}
+                          sx={{ color: 'primary.main' }}
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleDeleteNivel(nivel)}
+                          sx={{ color: 'error.main' }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </TableContainer>
+
+        {/* Paginación */}
+        {filteredNiveles.length > 0 && (
+          <TablePagination
+            component="div"
+            count={filteredNiveles.length}
+            page={nivelPagination.page}
+            onPageChange={handleNivelChangePage}
+            rowsPerPage={nivelPagination.rowsPerPage}
+            onRowsPerPageChange={handleNivelChangeRowsPerPage}
+            rowsPerPageOptions={[5, 10, 25]}
+            labelRowsPerPage="Filas por página:"
+            labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+          />
+        )}
+
+        {/* Alerta informativa */}
+        <Box sx={{ p: 2, borderTop: '1px solid #e0e0e0' }}>
+          <Alert severity="info">
+            <Typography variant="body2">
+              <strong>Nota:</strong> Los niveles educativos definen la estructura académica del colegio.
+              Cada nivel puede contener múltiples grados y cursos.
+            </Typography>
+          </Alert>
+        </Box>
+      </Paper>
+
       {/* Gestión de Años Escolares */}
-      <Card sx={{ mb: 2 }}>
-        <CardContent sx={{ p: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
+      <Paper sx={{ mb: 2, overflow: 'hidden', borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+        {/* Header con título y botón "Nuevo" */}
+        <Box sx={{
+          p: 2,
+          borderBottom: '1px solid #e0e0e0',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <CalendarIcon color="primary" sx={{ fontSize: 20 }} />
-            <Typography variant="h6" component="h2" color="primary">
+            <Typography variant="h6" color="primary">
               Gestión de Años Escolares
             </Typography>
-            <Button
-              variant="outlined"
-              size="small"
-              startIcon={<AddIcon />}
-              onClick={() => setAnioEscolarMode(!anioEscolarMode)}
-              sx={{ ml: 'auto' }}
-            >
-              {anioEscolarMode ? 'Cancelar' : 'Nuevo Año'}
-            </Button>
           </Box>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setAnioEscolarMode(!anioEscolarMode)}
+            size="small"
+            disabled={saving}
+            sx={{ borderRadius: 2 }}
+          >
+            {anioEscolarMode ? 'Cancelar' : 'Nuevo Año'}
+          </Button>
+        </Box>
 
-          <Divider sx={{ mb: 2 }} />
-
-          {/* Formulario para crear nuevo año */}
-          {anioEscolarMode && (
-            <Box sx={{ mb: 2, p: 1.5, bgcolor: 'grey.50', borderRadius: 1 }}>
-              <Typography variant="subtitle1" gutterBottom>
-                Crear Nuevo Año Escolar
-              </Typography>
-              <Grid container spacing={1.5} alignItems="center">
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    label="Año"
-                    type="number"
-                    value={nuevoAnio}
-                    onChange={(e) => setNuevoAnio(e.target.value)}
-                    placeholder="2025"
-                    inputProps={{ min: 2020, max: 2030 }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      onClick={handleCrearAnioEscolar}
-                      disabled={!nuevoAnio}
-                    >
-                      Crear
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={() => {
-                        setAnioEscolarMode(false);
-                        setNuevoAnio('');
-                      }}
-                    >
-                      Cancelar
-                    </Button>
-                  </Box>
-                </Grid>
-              </Grid>
-            </Box>
-          )}
-
-          {/* Lista de años escolares */}
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle1" gutterBottom>
-              Años Escolares Disponibles
+        {/* Formulario de creación */}
+        {anioEscolarMode && (
+          <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', backgroundColor: 'grey.50' }}>
+            <Typography variant="h6" gutterBottom>
+              Crear Nuevo Año Escolar
             </Typography>
-            {aniosEscolares.length === 0 ? (
-              <Alert severity="info">
-                No hay años escolares registrados. Cree uno nuevo para comenzar.
-              </Alert>
-            ) : (
-              <Grid container spacing={1.5}>
-                {aniosEscolares.map((anio) => (
-                  <Grid item xs={12} sm={6} md={4} key={anio.id}>
-                    <Card
-                      variant="outlined"
-                      sx={{
-                        p: 1.5,
-                        border: anio.anio === colegio.anio_escolar_actual ? '2px solid' : '1px solid',
-                        borderColor: anio.anio === colegio.anio_escolar_actual ? 'primary.main' : 'divider'
-                      }}
-                    >
-                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
-                        <Typography variant="subtitle1">
-                          {anio.anio}
-                        </Typography>
-                        {anio.anio === colegio.anio_escolar_actual && (
-                          <CheckCircleIcon color="primary" sx={{ fontSize: 18 }} />
-                        )}
-                      </Box>
 
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 1.5 }}>
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Año"
+                  type="number"
+                  value={nuevoAnio}
+                  onChange={(e) => setNuevoAnio(e.target.value)}
+                  placeholder="2025"
+                  size="small"
+                  inputProps={{ min: 2020, max: 2030 }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    variant="contained"
+                    onClick={handleCrearAnioEscolar}
+                    disabled={!nuevoAnio || saving}
+                    startIcon={saving ? <CircularProgress size={16} /> : <CheckCircleIcon />}
+                  >
+                    {saving ? 'Creando...' : 'Crear'}
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      setAnioEscolarMode(false);
+                      setNuevoAnio('');
+                    }}
+                    disabled={saving}
+                  >
+                    Cancelar
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
+
+        {/* Barra de búsqueda */}
+        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+          <TextField
+            placeholder="Buscar por año o estado..."
+            variant="outlined"
+            size="small"
+            value={anioSearchTerm}
+            onChange={handleAnioSearch}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: 'text.secondary' }} />
+                </InputAdornment>
+              ),
+              endAdornment: anioSearchTerm && (
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    onClick={handleAnioClear}
+                    sx={{ color: 'text.secondary' }}
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            sx={{ width: 400 }}
+          />
+        </Box>
+
+        {/* Tabla */}
+        <TableContainer>
+          {aniosEscolares.length === 0 ? (
+            <Box sx={{
+              p: 4,
+              textAlign: 'center',
+              color: 'text.secondary'
+            }}>
+              <Typography variant="h6" gutterBottom>
+                No hay años escolares registrados
+              </Typography>
+              <Typography variant="body2">
+                {anioSearchTerm ? 'No se encontraron años con ese criterio de búsqueda' : 'Comienza creando un nuevo año escolar'}
+              </Typography>
+            </Box>
+          ) : (
+            <Table>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+                  <TableCell align="center">Año</TableCell>
+                  <TableCell align="center">Estado</TableCell>
+                  <TableCell align="center">Año Actual</TableCell>
+                  <TableCell align="center">Fecha de Creación</TableCell>
+                  <TableCell align="center">Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedAnios.map((anio) => (
+                  <TableRow
+                    key={anio.id}
+                    hover
+                    sx={{
+                      '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
+                      '&:hover': { backgroundColor: '#e3f2fd' },
+                      ...(anio.anio === colegio.anio_escolar_actual && {
+                        backgroundColor: '#e3f2fd',
+                        borderLeft: '4px solid #1976d2'
+                      })
+                    }}
+                  >
+                    <TableCell align="center">
+                      <Typography variant="body2" fontWeight="medium">
+                        {anio.anio}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Chip
+                        label={anio.activo ? 'Activo' : 'Inactivo'}
+                        color={anio.activo ? 'success' : 'error'}
+                        size="small"
+                        variant="outlined"
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      {anio.anio === colegio.anio_escolar_actual ? (
                         <Chip
-                          label={anio.activo ? 'Activo' : 'Inactivo'}
-                          color={anio.activo ? 'success' : 'default'}
+                          label="Año Actual"
+                          color="primary"
                           size="small"
+                          icon={<CheckCircleIcon />}
                         />
-                        {anio.anio === colegio.anio_escolar_actual && (
-                          <Chip
-                            label="Actual"
-                            color="primary"
-                            size="small"
-                          />
-                        )}
-                      </Box>
-
-                      <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">
+                          -
+                        </Typography>
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography variant="body2" color="text.secondary">
+                        {new Date(anio.created_at).toLocaleDateString('es-ES')}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center', flexWrap: 'wrap' }}>
                         {anio.anio !== colegio.anio_escolar_actual && (
                           <Button
                             size="small"
                             variant="outlined"
                             onClick={() => handleSetAnioActual(anio.anio)}
-                            disabled={!anio.activo}
+                            disabled={!anio.activo || saving}
+                            sx={{ minWidth: 'auto', px: 1 }}
                           >
                             Establecer Actual
                           </Button>
                         )}
-
                         <Button
                           size="small"
                           variant="outlined"
                           color={anio.activo ? 'warning' : 'success'}
                           onClick={() => handleActualizarAnioEscolar(anio.id, !anio.activo)}
+                          disabled={saving}
+                          sx={{ minWidth: 'auto', px: 1 }}
                         >
                           {anio.activo ? 'Desactivar' : 'Activar'}
                         </Button>
-
-                        <Button
+                        <IconButton
                           size="small"
-                          variant="outlined"
-                          color="error"
                           onClick={() => handleEliminarAnioEscolar(anio.id)}
+                          disabled={saving}
+                          sx={{ color: 'error.main' }}
                         >
                           <DeleteIcon fontSize="small" />
-                        </Button>
+                        </IconButton>
                       </Box>
-                    </Card>
-                  </Grid>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </Grid>
-            )}
-          </Box>
-        </CardContent>
-      </Card>
+              </TableBody>
+            </Table>
+          )}
+        </TableContainer>
 
+        {/* Paginación */}
+        {filteredAnios.length > 0 && (
+          <TablePagination
+            component="div"
+            count={filteredAnios.length}
+            page={anioPagination.page}
+            onPageChange={handleAnioChangePage}
+            rowsPerPage={anioPagination.rowsPerPage}
+            onRowsPerPageChange={handleAnioChangeRowsPerPage}
+            rowsPerPageOptions={[5, 10, 25]}
+            labelRowsPerPage="Filas por página:"
+            labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+          />
+        )}
 
-      {/* Botones de Acción */}
-      {editMode && (
-        <Box sx={{ mt: 2, display: 'flex', gap: 1.5, justifyContent: 'flex-end' }}>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={handleCancel}
-            disabled={saving}
-          >
-            Cancelar
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            startIcon={saving ? <CircularProgress size={16} /> : <SaveIcon />}
-            onClick={handleSave}
-            disabled={saving}
-          >
-            {saving ? 'Guardando...' : 'Guardar Cambios'}
-          </Button>
+        {/* Alerta informativa */}
+        <Box sx={{ p: 2, borderTop: '1px solid #e0e0e0' }}>
+          <Alert severity="info">
+            <Typography variant="body2">
+              <strong>Nota:</strong> Solo puede haber un año escolar actual activo.
+              Al establecer un nuevo año como actual, el anterior se desactivará automáticamente.
+            </Typography>
+          </Alert>
         </Box>
-      )}
+      </Paper>
 
-      {/* Alerta Informativa */}
-      <Alert severity="info" sx={{ mt: 2 }}>
-        <Typography variant="body2">
-          <strong>Nota:</strong> Los cambios en la configuración del colegio se aplicarán inmediatamente
-          y afectarán la apariencia del sistema. Los colores se actualizarán en tiempo real.
-        </Typography>
-      </Alert>
+
+
     </Box>
   );
 };

@@ -22,6 +22,10 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 
 **MÓDULO DE CONFIGURACIÓN OPTIMIZADO:** El módulo de Configuración ha sido optimizado con layout compacto, logo dinámico, layout de 2 columnas para colores y fondo, y vista previa mejorada para una mejor experiencia de usuario.
 
+**MÓDULO DE NIVELES EDUCATIVOS:** Implementación completa del CRUD para niveles educativos (Inicial, Primaria, Secundaria) con base de datos, API y interfaz de tabla profesional con búsqueda y paginación.
+
+**FORMATO DE GRILLA/TABLA:** Conversión de módulos de Configuración a formato de tabla profesional para ahorro de espacio y mejor escalabilidad, siguiendo el patrón establecido de otros módulos de mantenimiento.
+
 **SISTEMA DE GAMIFICACIÓN EDUCATIVA (FUTURO):** Planificación de un sistema de gamificación que convertirá cada bimestre en un "mundo" explorable estilo videojuego, con progresión lineal, elementos lúdicos (retos, puntos, avatares), y experiencia inmersiva para motivar el aprendizaje de los estudiantes.
 
 ---

@@ -1,5 +1,44 @@
 # CHANGELOG
 
+## [2025-01-03] - Implementación de Niveles Educativos y Optimización de Configuración
+
+### ✨ Nuevas Características
+- **Módulo de Niveles Educativos**: CRUD completo para gestión de niveles educativos (Inicial, Primaria, Secundaria)
+- **Base de datos de niveles**: Tabla `niveles` con campos id, nombre, descripción, código, orden, activo
+- **API de niveles**: Rutas completas para CRUD de niveles (`/api/niveles`)
+- **Formato de grilla/tabla**: Conversión de módulos de Configuración a formato de tabla profesional
+- **Búsqueda y paginación**: Funcionalidades de búsqueda en tiempo real y paginación para ambos módulos
+- **Ordenamiento inteligente**: Años escolares ordenados por año descendente (más reciente primero)
+
+### 🎨 Mejoras de Diseño
+- **Interfaz de tabla profesional**: Reemplazo de cards por tablas con header, búsqueda y paginación
+- **Ahorro significativo de espacio**: Módulos más compactos y escalables
+- **Diseño consistente**: Mismo patrón visual en todos los módulos de mantenimiento
+- **Botones de acción optimizados**: Acciones (Editar/Eliminar) en cada fila de la tabla
+- **Estados visuales mejorados**: Resaltado del año escolar actual con borde azul y fondo especial
+- **Alertas contextuales**: Mensajes informativos movidos a sus secciones correspondientes
+
+### 🔧 Cambios Técnicos
+- **Backend**: Nuevas rutas para CRUD de niveles con validaciones completas
+- **Frontend**: Servicio `nivelesService` para comunicación con la API
+- **Estados de paginación**: Implementación de paginación independiente para cada módulo
+- **Filtros de búsqueda**: Búsqueda en tiempo real por múltiples campos
+- **Ordenamiento**: Algoritmo de ordenamiento por año descendente
+- **Validaciones**: Campos requeridos y validaciones de duplicados en el backend
+
+### 📊 Optimizaciones
+- **Espacio vertical reducido**: De múltiples cards a tablas compactas
+- **Escalabilidad mejorada**: Preparado para manejar muchos más registros
+- **UX optimizada**: Navegación más eficiente con búsqueda y paginación
+- **Mantenibilidad**: Código más limpio y reutilizable siguiendo patrones establecidos
+
+### 🗃️ Base de Datos
+- **Tabla `niveles`**: Estructura completa con índices optimizados
+- **Datos iniciales**: 3 niveles educativos predefinidos (Inicial, Primaria, Secundaria)
+- **Relaciones preparadas**: Estructura lista para relacionar con grados futuros
+
+---
+
 ## [2025-01-03] - Mejoras de Diseño del Sidebar y Barra de Título
 
 ### ✨ Nuevas Características

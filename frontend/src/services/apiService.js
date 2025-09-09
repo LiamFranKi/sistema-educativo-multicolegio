@@ -252,4 +252,32 @@ export const configuracionService = {
   },
 };
 
+// Servicios de niveles educativos
+export const nivelesService = {
+  getNiveles: async () => {
+    const response = await api.get('/niveles');
+    return response.data;
+  },
+
+  getNivel: async (id) => {
+    const response = await api.get(`/niveles/${id}`);
+    return response.data;
+  },
+
+  createNivel: async (data) => {
+    const response = await api.post('/niveles', data);
+    return response.data;
+  },
+
+  updateNivel: async (id, data) => {
+    const response = await api.put(`/niveles/${id}`, data);
+    return response.data;
+  },
+
+  deleteNivel: async (id) => {
+    const response = await api.delete(`/niveles/${id}`);
+    return response.data;
+  },
+};
+
 export default api;

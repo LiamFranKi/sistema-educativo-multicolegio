@@ -8,6 +8,10 @@ Unificar el diseño visual de todos los componentes reutilizables del sistema pa
 
 **NOTA IMPORTANTE:** El sistema incluye temas dinámicos basados en la configuración del colegio, sidebar personalizado con información del usuario, barra de título mejorada con iconos de notificaciones y cerrar sesión, y módulo de configuración optimizado con layout compacto y diseño de 2 columnas.
 
+**MÓDULO DE NIVELES EDUCATIVOS:** Implementación completa con interfaz de tabla profesional, búsqueda en tiempo real, paginación y CRUD completo para gestión de niveles educativos.
+
+**FORMATO DE GRILLA/TABLA:** Conversión de módulos de Configuración a formato de tabla profesional para optimización de espacio y mejor escalabilidad, siguiendo patrones de diseño establecidos.
+
 **SISTEMA DE GAMIFICACIÓN EDUCATIVA (FUTURO):** Planificación de un sistema de gamificación que convertirá cada bimestre en un "mundo" explorable estilo videojuego, con progresión lineal, elementos lúdicos (retos, puntos, avatares), y experiencia inmersiva para motivar el aprendizaje de los estudiantes.
 
 ---
@@ -1677,3 +1681,109 @@ const GamificationData = {
 4. **Claridad**: Interfaz intuitiva que no confunda al usuario
 5. **Responsive**: Adaptable a diferentes tamaños de pantalla
 6. **Performance**: Animaciones suaves sin afectar el rendimiento
+
+---
+
+## 📊 **FORMATO DE GRILLA/TABLA PROFESIONAL**
+
+### **Patrón Establecido para Módulos de Configuración:**
+
+El sistema implementa un formato de grilla/tabla profesional para módulos de configuración que optimiza el espacio y mejora la escalabilidad.
+
+### **Estructura de Tabla:**
+
+```jsx
+<Paper sx={{ mb: 2, overflow: 'hidden', borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+  {/* Header con título y botón "Nuevo" */}
+  <Box sx={{
+    p: 2,
+    borderBottom: '1px solid #e0e0e0',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+      <IconComponent color="primary" sx={{ fontSize: 20 }} />
+      <Typography variant="h6" color="primary">
+        Título del Módulo
+      </Typography>
+    </Box>
+    <Button variant="contained" startIcon={<AddIcon />} size="small">
+      Nuevo Elemento
+    </Button>
+  </Box>
+
+  {/* Formulario de creación/edición */}
+  {mode && (
+    <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', backgroundColor: 'grey.50' }}>
+      {/* Formulario aquí */}
+    </Box>
+  )}
+
+  {/* Barra de búsqueda */}
+  <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+    <TextField
+      placeholder="Buscar..."
+      variant="outlined"
+      size="small"
+      InputProps={{
+        startAdornment: <SearchIcon />,
+        endAdornment: <ClearIcon />
+      }}
+      sx={{ width: 400 }}
+    />
+  </Box>
+
+  {/* Tabla */}
+  <TableContainer>
+    <Table>
+      <TableHead>
+        <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+          <TableCell align="center">Columna 1</TableCell>
+          <TableCell align="center">Columna 2</TableCell>
+          <TableCell align="center">Acciones</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {/* Filas de datos */}
+      </TableBody>
+    </Table>
+  </TableContainer>
+
+  {/* Paginación */}
+  <TablePagination
+    component="div"
+    count={totalItems}
+    page={page}
+    onPageChange={handleChangePage}
+    rowsPerPage={rowsPerPage}
+    onRowsPerPageChange={handleChangeRowsPerPage}
+    rowsPerPageOptions={[5, 10, 25]}
+  />
+</Paper>
+```
+
+### **Características del Formato:**
+
+1. **Header Unificado**: Título con icono y botón de acción principal
+2. **Formulario Contextual**: Creación/edición en la parte superior cuando es necesario
+3. **Búsqueda Integrada**: Barra de búsqueda con iconos y funcionalidad de limpiar
+4. **Tabla Profesional**: Headers con fondo gris, filas alternadas, hover effects
+5. **Paginación Completa**: Control de filas por página y navegación
+6. **Acciones por Fila**: Botones de editar/eliminar en cada fila
+7. **Estados Visuales**: Resaltado especial para elementos importantes
+8. **Responsive**: Adaptable a diferentes tamaños de pantalla
+
+### **Beneficios del Formato:**
+
+- **Ahorro de Espacio**: Más información visible en menos espacio vertical
+- **Escalabilidad**: Maneja grandes cantidades de datos eficientemente
+- **Consistencia**: Mismo patrón en todos los módulos
+- **UX Optimizada**: Navegación intuitiva con búsqueda y paginación
+- **Mantenibilidad**: Código reutilizable y fácil de mantener
+
+### **Módulos Implementados:**
+
+- ✅ **Niveles Educativos**: CRUD completo con búsqueda y paginación
+- ✅ **Gestión de Años Escolares**: Con ordenamiento por año descendente
+- 🔄 **Grados** (próximo): Relacionado con niveles educativos
