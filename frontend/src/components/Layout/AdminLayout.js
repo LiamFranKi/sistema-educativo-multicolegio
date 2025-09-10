@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Box, AppBar, Toolbar, IconButton, Typography, useTheme, useMediaQuery, Badge } from '@mui/material';
+import { Box, AppBar, Toolbar, IconButton, Typography, useTheme, useMediaQuery, Badge, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -80,33 +80,37 @@ const AdminLayout = ({ onLogout }) => {
             {/* Iconos de la barra de título */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               {/* Icono de Notificaciones */}
-              <IconButton
-                color="inherit"
-                aria-label="notificaciones"
-                sx={{
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  },
-                }}
-              >
-                <Badge badgeContent={0} color="error">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
+              <Tooltip title="Notificaciones" arrow>
+                <IconButton
+                  color="inherit"
+                  aria-label="notificaciones"
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    },
+                  }}
+                >
+                  <Badge badgeContent={0} color="error">
+                    <NotificationsIcon />
+                  </Badge>
+                </IconButton>
+              </Tooltip>
 
               {/* Icono de Cerrar Sesión */}
-              <IconButton
-                color="inherit"
-                aria-label="cerrar sesión"
-                onClick={onLogout}
-                sx={{
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  },
-                }}
-              >
-                <LogoutIcon />
-              </IconButton>
+              <Tooltip title="Cerrar sesión" arrow>
+                <IconButton
+                  color="inherit"
+                  aria-label="cerrar sesión"
+                  onClick={onLogout}
+                  sx={{
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    },
+                  }}
+                >
+                  <LogoutIcon />
+                </IconButton>
+              </Tooltip>
             </Box>
           </Toolbar>
         </AppBar>
