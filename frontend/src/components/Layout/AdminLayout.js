@@ -12,8 +12,7 @@ import { UserProvider } from '../../contexts/UserContext';
 import AdminDashboard from '../../pages/Admin/AdminDashboard';
 import UsuariosList from '../../pages/Mantenimientos/Usuarios/UsuariosList';
 import ConfiguracionList from '../../pages/Configuracion/ConfiguracionList';
-import GestionGrados from '../../pages/Admin/GestionGrados';
-import GestionCursos from '../../pages/Admin/GestionCursos';
+import { GradosList } from '../../pages/Mantenimientos/Grados';
 import Reportes from '../../pages/Admin/Reportes';
 import MiPerfil from '../../pages/MiPerfil';
 
@@ -142,8 +141,7 @@ const AdminLayout = ({ onLogout }) => {
               <Route path="/dashboard/usuarios/editar/:id" element={<UsuariosList />} />
               <Route path="/dashboard/usuarios/ver/:id" element={<UsuariosList />} />
               <Route path="/dashboard/configuracion" element={<ConfiguracionList />} />
-              <Route path="/grados" element={<GestionGrados />} />
-              <Route path="/cursos" element={<GestionCursos />} />
+              <Route path="/dashboard/grados" element={<GradosList />} />
               <Route path="/reportes" element={<Reportes />} />
               <Route path="/perfil" element={<MiPerfil />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

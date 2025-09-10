@@ -280,4 +280,37 @@ export const nivelesService = {
   },
 };
 
+// Servicios de grados
+export const gradosService = {
+  getGrados: async (params = {}) => {
+    const response = await api.get('/grados', { params });
+    return response.data;
+  },
+
+  getGrado: async (id) => {
+    const response = await api.get(`/grados/${id}`);
+    return response.data;
+  },
+
+  createGrado: async (gradoData) => {
+    const response = await api.post('/grados', gradoData);
+    return response.data;
+  },
+
+  updateGrado: async (id, gradoData) => {
+    const response = await api.put(`/grados/${id}`, gradoData);
+    return response.data;
+  },
+
+  deleteGrado: async (id) => {
+    const response = await api.delete(`/grados/${id}`);
+    return response.data;
+  },
+
+  getGradosByNivel: async (nivelId) => {
+    const response = await api.get(`/grados/nivel/${nivelId}`);
+    return response.data;
+  },
+};
+
 export default api;
