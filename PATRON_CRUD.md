@@ -28,6 +28,10 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 
 **SISTEMA DE GAMIFICACIÓN EDUCATIVA (FUTURO):** Planificación de un sistema de gamificación que convertirá cada bimestre en un "mundo" explorable estilo videojuego, con progresión lineal, elementos lúdicos (retos, puntos, avatares), y experiencia inmersiva para motivar el aprendizaje de los estudiantes.
 
+**PWA (PROGRESSIVE WEB APP) - FUTURO:** Planificación para convertir el sistema web en aplicación móvil instalable con funcionalidad offline, notificaciones push, y experiencia nativa en dispositivos móviles.
+
+**JUEGOS INTERACTIVOS EDUCATIVOS (FUTURO):** Desarrollo de mini-juegos educativos, simuladores virtuales, y elementos lúdicos integrados al sistema de aprendizaje para aumentar el engagement y motivación de los estudiantes.
+
 ---
 
 ## 🗂️ **1. ESTRUCTURA DE CARPETAS**
