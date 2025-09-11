@@ -341,4 +341,32 @@ export const areasService = {
   },
 };
 
+// Servicios de turnos
+export const turnosService = {
+  getTurnos: async (params = {}) => {
+    const response = await api.get('/turnos', { params });
+    return response.data;
+  },
+
+  getTurno: async (id) => {
+    const response = await api.get(`/turnos/${id}`);
+    return response.data;
+  },
+
+  createTurno: async (turnoData) => {
+    const response = await api.post('/turnos', turnoData);
+    return response.data;
+  },
+
+  updateTurno: async (id, turnoData) => {
+    const response = await api.put(`/turnos/${id}`, turnoData);
+    return response.data;
+  },
+
+  deleteTurno: async (id) => {
+    const response = await api.delete(`/turnos/${id}`);
+    return response.data;
+  },
+};
+
 export default api;

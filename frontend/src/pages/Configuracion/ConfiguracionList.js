@@ -43,7 +43,7 @@ import {
   Clear as ClearIcon
 } from '@mui/icons-material';
 import { getUser } from '../../services/authService';
-import { configuracionService, nivelesService } from '../../services/apiService';
+import { configuracionService, nivelesService, turnosService } from '../../services/apiService';
 import { fileService } from '../../services/apiService';
 import { useConfiguracion } from '../../contexts/ConfiguracionContext';
 import { getColegioLogoUrl } from '../../utils/imageUtils';
@@ -100,6 +100,21 @@ const ConfiguracionList = () => {
     rowsPerPage: 5
   });
 
+  // Estados para gestión de turnos
+  const [turnos, setTurnos] = useState([]);
+  const [loadingTurnos, setLoadingTurnos] = useState(true);
+  const [turnoMode, setTurnoMode] = useState(false);
+  const [editingTurno, setEditingTurno] = useState(null);
+  const [turnoForm, setTurnoForm] = useState({
+    nombre: '',
+    abreviatura: ''
+  });
+  const [turnoSearchTerm, setTurnoSearchTerm] = useState('');
+  const [turnoPagination, setTurnoPagination] = useState({
+    page: 0,
+    rowsPerPage: 5
+  });
+
   const loadConfiguraciones = async () => {
     try {
       setLoading(true);
@@ -150,6 +165,188 @@ const ConfiguracionList = () => {
       setLoadingNiveles(false);
     }
   };
+
+  const loadTurnos = async () => {
+    try {
+      setLoadingTurnos(true);
+      console.log('Cargando turnos...');
+
+      const response = await turnosService.getTurnos();
+      console.log('Respuesta de turnos:', response);
+
+      if (response.success) {
+        setTurnos(response.turnos);
+      }
+    } catch (error) {
+      console.error('Error cargando turnos:', error);
+      toast.error('Error al cargar turnos');
+    } finally {
+      setLoadingTurnos(false);
+    }
+  };
+
+  // Funciones para CRUD de turnos
+  const handleTurnoInputChange = (field, value) => {
+    setTurnoForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleCreateTurno = () => {
+    setEditingTurno(null);
+    setTurnoForm({
+      nombre: '',
+      abreviatura: ''
+    });
+    setTurnoMode(true);
+  };
+
+  const handleEditTurno = (turno) => {
+    setEditingTurno(turno);
+    setTurnoForm({
+      nombre: turno.nombre,
+      abreviatura: turno.abreviatura
+    });
+    setTurnoMode(true);
+  };
+
+  const handleSaveTurno = async () => {
+    try {
+      setSaving(true);
+
+      // Validaciones
+      if (!turnoForm.nombre.trim()) {
+        Swal.fire({
+          title: 'Error',
+          text: 'El nombre del turno es requerido',
+          icon: 'error'
+        });
+        return;
+      }
+
+      if (!turnoForm.abreviatura.trim()) {
+        Swal.fire({
+          title: 'Error',
+          text: 'La abreviatura es requerida',
+          icon: 'error'
+        });
+        return;
+      }
+
+      if (editingTurno) {
+        // Actualizar turno existente
+        await turnosService.updateTurno(editingTurno.id, {
+          ...turnoForm,
+          activo: editingTurno.activo
+        });
+        
+        Swal.fire({
+          title: 'Éxito',
+          text: 'Turno actualizado correctamente',
+          icon: 'success'
+        });
+      } else {
+        // Crear nuevo turno
+        await turnosService.createTurno(turnoForm);
+        
+        Swal.fire({
+          title: 'Éxito',
+          text: 'Turno creado correctamente',
+          icon: 'success'
+        });
+      }
+
+      handleCancelTurno();
+      await loadTurnos();
+    } catch (error) {
+      console.error('Error guardando turno:', error);
+      Swal.fire({
+        title: 'Error',
+        text: error.response?.data?.message || 'Error al guardar el turno',
+        icon: 'error'
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCancelTurno = () => {
+    setTurnoMode(false);
+    setEditingTurno(null);
+    setTurnoForm({
+      nombre: '',
+      abreviatura: ''
+    });
+  };
+
+  const handleDeleteTurno = async (turno) => {
+    const result = await Swal.fire({
+      title: '¿Eliminar turno?',
+      text: `¿Estás seguro de que deseas eliminar el turno "${turno.nombre}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await turnosService.deleteTurno(turno.id);
+        
+        Swal.fire({
+          title: 'Eliminado',
+          text: 'Turno eliminado correctamente',
+          icon: 'success'
+        });
+        
+        await loadTurnos();
+      } catch (error) {
+        console.error('Error eliminando turno:', error);
+        Swal.fire({
+          title: 'Error',
+          text: error.response?.data?.message || 'Error al eliminar el turno',
+          icon: 'error'
+        });
+      }
+    }
+  };
+
+  const handleTurnoSearch = (event) => {
+    setTurnoSearchTerm(event.target.value);
+    setTurnoPagination(prev => ({ ...prev, page: 0 }));
+  };
+
+  const handleTurnoClear = () => {
+    setTurnoSearchTerm('');
+    setTurnoPagination(prev => ({ ...prev, page: 0 }));
+  };
+
+  const handleTurnoChangePage = (event, newPage) => {
+    setTurnoPagination(prev => ({ ...prev, page: newPage }));
+  };
+
+  const handleTurnoChangeRowsPerPage = (event) => {
+    setTurnoPagination(prev => ({
+      ...prev,
+      rowsPerPage: parseInt(event.target.value, 10),
+      page: 0
+    }));
+  };
+
+  // Filtrar turnos según término de búsqueda
+  const filteredTurnos = turnos.filter(turno =>
+    turno.nombre.toLowerCase().includes(turnoSearchTerm.toLowerCase()) ||
+    turno.abreviatura.toLowerCase().includes(turnoSearchTerm.toLowerCase())
+  );
+
+  // Obtener turnos paginados
+  const paginatedTurnos = filteredTurnos.slice(
+    turnoPagination.page * turnoPagination.rowsPerPage,
+    turnoPagination.page * turnoPagination.rowsPerPage + turnoPagination.rowsPerPage
+  );
 
   // Funciones para CRUD de niveles
   const handleNivelInputChange = (field, value) => {
@@ -351,6 +548,7 @@ const ConfiguracionList = () => {
   useEffect(() => {
     loadConfiguraciones();
     loadNiveles();
+    loadTurnos();
   }, []);
 
   const handleInputChange = (field, value) => {
@@ -1657,7 +1855,221 @@ const ConfiguracionList = () => {
         </Box>
       </Paper>
 
+      {/* Sección de Turnos */}
+      <Paper sx={{ mb: 2 }}>
+        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', backgroundColor: '#f5f5f5' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <CalendarIcon color="primary" sx={{ fontSize: 24 }} />
+              <Typography variant="h6" component="h2" color="primary">
+                Turnos Escolares
+              </Typography>
+            </Box>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleCreateTurno}
+              size="small"
+              disabled={saving}
+              sx={{ borderRadius: 2 }}
+            >
+              Nuevo Turno
+            </Button>
+          </Box>
+        </Box>
 
+        {/* Formulario de creación/edición */}
+        {turnoMode && (
+          <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', backgroundColor: 'grey.50' }}>
+            <Typography variant="h6" gutterBottom>
+              {editingTurno ? 'Editar Turno' : 'Nuevo Turno'}
+            </Typography>
+
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Nombre del Turno"
+                  value={turnoForm.nombre}
+                  onChange={(e) => handleTurnoInputChange('nombre', e.target.value)}
+                  size="small"
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Abreviatura"
+                  value={turnoForm.abreviatura}
+                  onChange={(e) => handleTurnoInputChange('abreviatura', e.target.value.toUpperCase())}
+                  size="small"
+                  required
+                  inputProps={{ maxLength: 10 }}
+                />
+              </Grid>
+            </Grid>
+
+            <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+              <Button
+                variant="contained"
+                onClick={handleSaveTurno}
+                disabled={saving}
+                startIcon={saving ? <CircularProgress size={16} /> : <CheckCircleIcon />}
+              >
+                {saving ? 'Guardando...' : 'Guardar'}
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={handleCancelTurno}
+                disabled={saving}
+              >
+                Cancelar
+              </Button>
+            </Box>
+          </Box>
+        )}
+
+        {/* Barra de búsqueda */}
+        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+          <TextField
+            placeholder="Buscar por nombre o abreviatura..."
+            variant="outlined"
+            size="small"
+            value={turnoSearchTerm}
+            onChange={handleTurnoSearch}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: 'text.secondary' }} />
+                </InputAdornment>
+              ),
+              endAdornment: turnoSearchTerm && (
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    onClick={handleTurnoClear}
+                    sx={{ color: 'text.secondary' }}
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            sx={{ width: 400 }}
+          />
+        </Box>
+
+        {/* Tabla */}
+        <TableContainer>
+          {loadingTurnos ? (
+            <Box sx={{ p: 4, textAlign: 'center' }}>
+              <CircularProgress />
+              <Typography sx={{ mt: 2 }}>Cargando turnos...</Typography>
+            </Box>
+          ) : filteredTurnos.length === 0 ? (
+            <Box sx={{
+              p: 4,
+              textAlign: 'center',
+              color: 'text.secondary'
+            }}>
+              <Typography variant="h6" gutterBottom>
+                No hay turnos disponibles
+              </Typography>
+              <Typography variant="body2">
+                {turnoSearchTerm ? 'No se encontraron turnos con ese criterio de búsqueda' : 'Comienza creando un nuevo turno'}
+              </Typography>
+            </Box>
+          ) : (
+            <Table>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+                  <TableCell align="center">Nombre</TableCell>
+                  <TableCell align="center">Abreviatura</TableCell>
+                  <TableCell align="center">Estado</TableCell>
+                  <TableCell align="center">Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedTurnos.map((turno) => (
+                  <TableRow
+                    key={turno.id}
+                    hover
+                    sx={{
+                      '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
+                      '&:hover': { backgroundColor: '#e3f2fd' }
+                    }}
+                  >
+                    <TableCell align="center">
+                      <Typography variant="body2" fontWeight="medium">
+                        {turno.nombre}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Chip
+                        label={turno.abreviatura}
+                        color="primary"
+                        size="small"
+                        variant="outlined"
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Chip
+                        label={turno.activo ? 'Activo' : 'Inactivo'}
+                        color={turno.activo ? 'success' : 'error'}
+                        size="small"
+                        variant="outlined"
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }}>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleEditTurno(turno)}
+                          sx={{ color: 'primary.main' }}
+                        >
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleDeleteTurno(turno)}
+                          sx={{ color: 'error.main' }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </TableContainer>
+
+        {/* Paginación */}
+        {filteredTurnos.length > 0 && (
+          <TablePagination
+            component="div"
+            count={filteredTurnos.length}
+            page={turnoPagination.page}
+            onPageChange={handleTurnoChangePage}
+            rowsPerPage={turnoPagination.rowsPerPage}
+            onRowsPerPageChange={handleTurnoChangeRowsPerPage}
+            rowsPerPageOptions={[5, 10, 25]}
+            labelRowsPerPage="Filas por página:"
+            labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+          />
+        )}
+
+        {/* Alerta informativa */}
+        <Box sx={{ p: 2, borderTop: '1px solid #e0e0e0' }}>
+          <Alert severity="info">
+            <Typography variant="body2">
+              <strong>Nota:</strong> Los turnos se utilizan para organizar los horarios escolares.
+              Cada turno debe tener un nombre descriptivo y una abreviatura única.
+            </Typography>
+          </Alert>
+        </Box>
+      </Paper>
 
     </Box>
   );

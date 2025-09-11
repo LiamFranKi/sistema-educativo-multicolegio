@@ -28,16 +28,16 @@
 
 ### 🎨 Frontend y UI
 
-- **Formulario Reorganizado**: 
+- **Formulario Reorganizado**:
   - Primera línea: Nombre, Código, Orden (sm=4 cada uno)
   - Segunda línea: Descripción (ancho completo)
   - Tercera línea: Configuración de Grados (Tipo Grados, Grado Mín/Máx)
   - Cuarta línea: Configuración de Calificaciones (5 campos en sm=2.4)
-- **Comboboxes Inteligentes**: 
+- **Comboboxes Inteligentes**:
   - Opciones A, B, C, D para calificaciones cualitativas
   - Opciones 0-20 para calificaciones cuantitativas
   - Reset automático de valores al cambiar tipo
-- **Grilla Actualizada**: 
+- **Grilla Actualizada**:
   - Removida columna "Código"
   - Agregada columna "Calificación Final"
   - Chips de colores para Tipo Grados y Tipo Calificación

@@ -62,6 +62,7 @@ app.use('/api/configuracion', require('./routes/configuracion'));
 app.use('/api/niveles', require('./routes/niveles'));
 app.use('/api/grados', require('./routes/grados'));
 app.use('/api/areas', require('./routes/areas'));
+app.use('/api/turnos', require('./routes/turnos'));
 
 // Ruta de salud
 app.get('/api/health', (req, res) => {

@@ -43,19 +43,19 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
   codigo: VARCHAR(10),       // "INI", "PRI", "SEC"
   orden: INTEGER,
   activo: BOOLEAN,
-  
+
   // Configuración de Grados
   tipo_grados: VARCHAR(20),  // "Grados" | "Años"
   grado_minimo: INTEGER,     // 0-10
   grado_maximo: INTEGER,     // 0-10
-  
+
   // Configuración de Calificaciones
   tipo_calificacion: VARCHAR(20), // "Cualitativa" | "Cuantitativa"
   calificacion_final: VARCHAR(20), // "Promedio" | "Porcentaje"
   nota_minima: VARCHAR(10),   // "A"-"D" | "0"-"20"
   nota_maxima: VARCHAR(10),   // "A"-"D" | "0"-"20"
   nota_aprobatoria: VARCHAR(10), // "A"-"D" | "0"-"20"
-  
+
   created_at: TIMESTAMP,
   updated_at: TIMESTAMP
 }
@@ -89,24 +89,48 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 // Estructura del formulario en líneas compactas
 <Grid container spacing={2}>
   {/* Línea 1: Campos principales */}
-  <Grid item xs={12} sm={4}>Nombre del Nivel</Grid>
-  <Grid item xs={12} sm={4}>Código</Grid>
-  <Grid item xs={12} sm={4}>Orden</Grid>
-  
+  <Grid item xs={12} sm={4}>
+    Nombre del Nivel
+  </Grid>
+  <Grid item xs={12} sm={4}>
+    Código
+  </Grid>
+  <Grid item xs={12} sm={4}>
+    Orden
+  </Grid>
+
   {/* Línea 2: Descripción */}
-  <Grid item xs={12}>Descripción</Grid>
-  
+  <Grid item xs={12}>
+    Descripción
+  </Grid>
+
   {/* Línea 3: Configuración de Grados */}
-  <Grid item xs={12} sm={6}>Tipo Grados</Grid>
-  <Grid item xs={12} sm={3}>Grado Mínimo</Grid>
-  <Grid item xs={12} sm={3}>Grado Máximo</Grid>
-  
+  <Grid item xs={12} sm={6}>
+    Tipo Grados
+  </Grid>
+  <Grid item xs={12} sm={3}>
+    Grado Mínimo
+  </Grid>
+  <Grid item xs={12} sm={3}>
+    Grado Máximo
+  </Grid>
+
   {/* Línea 4: Configuración de Calificaciones (5 campos en sm=2.4) */}
-  <Grid item xs={12} sm={2.4}>Tipo Calificación</Grid>
-  <Grid item xs={12} sm={2.4}>Calificación Final</Grid>
-  <Grid item xs={12} sm={2.4}>Nota Mínima</Grid>
-  <Grid item xs={12} sm={2.4}>Nota Máxima</Grid>
-  <Grid item xs={12} sm={2.4}>Nota Aprobatoria</Grid>
+  <Grid item xs={12} sm={2.4}>
+    Tipo Calificación
+  </Grid>
+  <Grid item xs={12} sm={2.4}>
+    Calificación Final
+  </Grid>
+  <Grid item xs={12} sm={2.4}>
+    Nota Mínima
+  </Grid>
+  <Grid item xs={12} sm={2.4}>
+    Nota Máxima
+  </Grid>
+  <Grid item xs={12} sm={2.4}>
+    Nota Aprobatoria
+  </Grid>
 </Grid>
 ```
 
@@ -115,38 +139,38 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 ```javascript
 // Lógica de opciones dinámicas
 const getNotaOptions = (tipo) => {
-  if (tipo === 'Cualitativa') {
+  if (tipo === "Cualitativa") {
     return [
-      { value: 'A', label: 'A' },
-      { value: 'B', label: 'B' },
-      { value: 'C', label: 'C' },
-      { value: 'D', label: 'D' }
+      { value: "A", label: "A" },
+      { value: "B", label: "B" },
+      { value: "C", label: "C" },
+      { value: "D", label: "D" },
     ];
   } else {
     return Array.from({ length: 21 }, (_, i) => ({
       value: i.toString(),
-      label: i.toString()
+      label: i.toString(),
     }));
   }
 };
 
 // Reset automático al cambiar tipo
 const handleTipoChange = (newType) => {
-  if (newType === 'Cualitativa') {
+  if (newType === "Cualitativa") {
     setFormData({
       ...formData,
       tipo_calificacion: newType,
-      nota_minima: 'D',
-      nota_maxima: 'A',
-      nota_aprobatoria: 'B'
+      nota_minima: "D",
+      nota_maxima: "A",
+      nota_aprobatoria: "B",
     });
   } else {
     setFormData({
       ...formData,
       tipo_calificacion: newType,
-      nota_minima: '0',
-      nota_maxima: '20',
-      nota_aprobatoria: '11'
+      nota_minima: "0",
+      nota_maxima: "20",
+      nota_aprobatoria: "11",
     });
   }
 };
@@ -168,15 +192,15 @@ const columns = [
 ];
 
 // Chips de colores
-<Chip 
-  label={row.tipo_grados} 
-  color="primary" 
-  variant="outlined" 
+<Chip
+  label={row.tipo_grados}
+  color="primary"
+  variant="outlined"
 />
-<Chip 
-  label={row.tipo_calificacion} 
-  color={row.tipo_calificacion === 'Cualitativa' ? 'secondary' : 'success'} 
-  variant="outlined" 
+<Chip
+  label={row.tipo_calificacion}
+  color={row.tipo_calificacion === 'Cualitativa' ? 'secondary' : 'success'}
+  variant="outlined"
 />
 ```
 
