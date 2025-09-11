@@ -293,7 +293,7 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
                     null)}
                   sx={{ width: 80, height: 80, fontSize: '2rem' }}
                 >
-                  {!previewImage && (formData.nombre ? formData.nombre.charAt(0).toUpperCase() : 'G')}
+                  {!previewImage && (!formData.foto || formData.foto === 'default-grado.png') && (formData.nombre ? formData.nombre.charAt(0).toUpperCase() : 'G')}
                 </Avatar>
                 <Box>
                   <Typography variant="subtitle2" gutterBottom>

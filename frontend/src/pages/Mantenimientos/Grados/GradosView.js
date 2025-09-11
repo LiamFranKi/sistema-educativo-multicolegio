@@ -49,7 +49,7 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
             }
             sx={{ width: 60, height: 60, fontSize: '1.8rem' }}
           >
-            {grado.nombre ? grado.nombre.charAt(0).toUpperCase() : 'G'}
+            {(!grado.foto || grado.foto === 'default-grado.png') && (grado.nombre ? grado.nombre.charAt(0).toUpperCase() : 'G')}
           </Avatar>
           <Box>
             <Typography variant="h5" component="div">
