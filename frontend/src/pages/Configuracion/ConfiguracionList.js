@@ -90,9 +90,9 @@ const ConfiguracionList = () => {
     grado_maximo: 10,
     tipo_calificacion: 'Cuantitativa',
     calificacion_final: 'Promedio',
-    nota_minima: 0,
-    nota_maxima: 20,
-    nota_aprobatoria: 11
+    nota_minima: '0',
+    nota_maxima: '20',
+    nota_aprobatoria: '11'
   });
   const [nivelSearchTerm, setNivelSearchTerm] = useState('');
   const [nivelPagination, setNivelPagination] = useState({
@@ -171,9 +171,9 @@ const ConfiguracionList = () => {
       grado_maximo: 10,
       tipo_calificacion: 'Cuantitativa',
       calificacion_final: 'Promedio',
-      nota_minima: 0,
-      nota_maxima: 20,
-      nota_aprobatoria: 11
+      nota_minima: '0',
+      nota_maxima: '20',
+      nota_aprobatoria: '11'
     });
     setNivelMode(true);
   };
@@ -190,9 +190,9 @@ const ConfiguracionList = () => {
       grado_maximo: nivel.grado_maximo || 10,
       tipo_calificacion: nivel.tipo_calificacion || 'Cuantitativa',
       calificacion_final: nivel.calificacion_final || 'Promedio',
-      nota_minima: nivel.nota_minima || 0,
-      nota_maxima: nivel.nota_maxima || 20,
-      nota_aprobatoria: nivel.nota_aprobatoria || 11
+      nota_minima: nivel.nota_minima || '0',
+      nota_maxima: nivel.nota_maxima || '20',
+      nota_aprobatoria: nivel.nota_aprobatoria || '11'
     });
     setNivelMode(true);
   };
@@ -1155,6 +1155,60 @@ const ConfiguracionList = () => {
                 </Grid>
               )}
 
+              {/* Campos de notas - Cualitativa (A, B, C, D) */}
+              {nivelForm.tipo_calificacion === 'Cualitativa' && (
+                <>
+                  <Grid item xs={12} sm={4}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel>Nota Mínima</InputLabel>
+                      <Select
+                        value={nivelForm.nota_minima}
+                        onChange={(e) => handleNivelInputChange('nota_minima', e.target.value)}
+                        label="Nota Mínima"
+                      >
+                        <MenuItem value="D">D</MenuItem>
+                        <MenuItem value="C">C</MenuItem>
+                        <MenuItem value="B">B</MenuItem>
+                        <MenuItem value="A">A</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+
+                  <Grid item xs={12} sm={4}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel>Nota Máxima</InputLabel>
+                      <Select
+                        value={nivelForm.nota_maxima}
+                        onChange={(e) => handleNivelInputChange('nota_maxima', e.target.value)}
+                        label="Nota Máxima"
+                      >
+                        <MenuItem value="D">D</MenuItem>
+                        <MenuItem value="C">C</MenuItem>
+                        <MenuItem value="B">B</MenuItem>
+                        <MenuItem value="A">A</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+
+                  <Grid item xs={12} sm={4}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel>Nota Aprobatoria</InputLabel>
+                      <Select
+                        value={nivelForm.nota_aprobatoria}
+                        onChange={(e) => handleNivelInputChange('nota_aprobatoria', e.target.value)}
+                        label="Nota Aprobatoria"
+                      >
+                        <MenuItem value="D">D</MenuItem>
+                        <MenuItem value="C">C</MenuItem>
+                        <MenuItem value="B">B</MenuItem>
+                        <MenuItem value="A">A</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </>
+              )}
+
+              {/* Campos de notas - Cuantitativa (0-20) */}
               {nivelForm.tipo_calificacion === 'Cuantitativa' && (
                 <>
                   <Grid item xs={12} sm={4}>
@@ -1162,11 +1216,11 @@ const ConfiguracionList = () => {
                       <InputLabel>Nota Mínima</InputLabel>
                       <Select
                         value={nivelForm.nota_minima}
-                        onChange={(e) => handleNivelInputChange('nota_minima', parseInt(e.target.value))}
+                        onChange={(e) => handleNivelInputChange('nota_minima', e.target.value)}
                         label="Nota Mínima"
                       >
                         {Array.from({ length: 21 }, (_, i) => (
-                          <MenuItem key={i} value={i}>{i}</MenuItem>
+                          <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -1177,11 +1231,11 @@ const ConfiguracionList = () => {
                       <InputLabel>Nota Máxima</InputLabel>
                       <Select
                         value={nivelForm.nota_maxima}
-                        onChange={(e) => handleNivelInputChange('nota_maxima', parseInt(e.target.value))}
+                        onChange={(e) => handleNivelInputChange('nota_maxima', e.target.value)}
                         label="Nota Máxima"
                       >
                         {Array.from({ length: 21 }, (_, i) => (
-                          <MenuItem key={i} value={i}>{i}</MenuItem>
+                          <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -1192,11 +1246,11 @@ const ConfiguracionList = () => {
                       <InputLabel>Nota Aprobatoria</InputLabel>
                       <Select
                         value={nivelForm.nota_aprobatoria}
-                        onChange={(e) => handleNivelInputChange('nota_aprobatoria', parseInt(e.target.value))}
+                        onChange={(e) => handleNivelInputChange('nota_aprobatoria', e.target.value)}
                         label="Nota Aprobatoria"
                       >
                         {Array.from({ length: 21 }, (_, i) => (
-                          <MenuItem key={i} value={i}>{i}</MenuItem>
+                          <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -1315,10 +1369,10 @@ const ConfiguracionList = () => {
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Chip 
-                        label={nivel.tipo_grados || 'Grados'} 
-                        size="small" 
-                        color="primary" 
+                      <Chip
+                        label={nivel.tipo_grados || 'Grados'}
+                        size="small"
+                        color="primary"
                         variant="outlined"
                       />
                     </TableCell>
@@ -1328,10 +1382,10 @@ const ConfiguracionList = () => {
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Chip 
-                        label={nivel.tipo_calificacion || 'Cuantitativa'} 
-                        size="small" 
-                        color={nivel.tipo_calificacion === 'Cualitativa' ? 'secondary' : 'success'} 
+                      <Chip
+                        label={nivel.tipo_calificacion || 'Cuantitativa'}
+                        size="small"
+                        color={nivel.tipo_calificacion === 'Cualitativa' ? 'secondary' : 'success'}
                         variant="outlined"
                       />
                     </TableCell>
