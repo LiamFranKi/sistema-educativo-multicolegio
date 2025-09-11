@@ -59,7 +59,7 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
       ...prev,
       [field]: value
     }));
-    
+
     // Limpiar error del campo
     if (errors[field]) {
       setErrors(prev => ({
@@ -97,13 +97,13 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
   const generateCodigo = (nivelId, orden) => {
     const nivel = niveles.find(n => n.id === parseInt(nivelId));
     if (!nivel) return '';
-    
+
     const prefijos = {
       'Inicial': 'INI',
       'Primaria': 'PRI',
       'Secundaria': 'SEC'
     };
-    
+
     const prefijo = prefijos[nivel.nombre] || 'GEN';
     const numero = orden.toString().padStart(2, '0');
     return `${prefijo}-${numero}`;
@@ -129,13 +129,13 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
 
     setLoading(true);
-    
+
     try {
       if (isEdit) {
         await gradosService.updateGrado(grado.id, formData);
@@ -144,7 +144,7 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
         await gradosService.createGrado(formData);
         Swal.fire('Creado', 'El grado ha sido creado exitosamente', 'success');
       }
-      
+
       onSuccess();
     } catch (error) {
       console.error('Error guardando grado:', error);
@@ -247,9 +247,14 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
             <Grid item xs={12}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                 <Avatar
-                  src={formData.foto ? `/uploads/${formData.foto}` : '/default-grado.png'}
-                  sx={{ width: 80, height: 80 }}
-                />
+                  src={formData.foto && formData.foto !== 'default-grado.png' ? 
+                    `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${formData.foto}` : 
+                    null
+                  }
+                  sx={{ width: 80, height: 80, fontSize: '2rem' }}
+                >
+                  {formData.nombre ? formData.nombre.charAt(0).toUpperCase() : 'G'}
+                </Avatar>
                 <Box>
                   <Typography variant="subtitle2" gutterBottom>
                     Foto del Grado

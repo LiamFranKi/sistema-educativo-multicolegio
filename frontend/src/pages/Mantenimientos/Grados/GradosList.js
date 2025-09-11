@@ -319,9 +319,14 @@ const GradosList = () => {
                 <TableRow key={grado.id} hover>
                   <TableCell align="center">
                     <Avatar
-                      src={grado.foto ? `/uploads/${grado.foto}` : '/default-grado.png'}
-                      sx={{ width: 50, height: 50, mx: 'auto' }}
-                    />
+                      src={grado.foto && grado.foto !== 'default-grado.png' ? 
+                        `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${grado.foto}` : 
+                        null
+                      }
+                      sx={{ width: 50, height: 50, mx: 'auto', fontSize: '1.2rem' }}
+                    >
+                      {grado.nombre ? grado.nombre.charAt(0).toUpperCase() : 'G'}
+                    </Avatar>
                   </TableCell>
                   <TableCell align="center">
                     <Typography variant="body1" fontWeight="medium">

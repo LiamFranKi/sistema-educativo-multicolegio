@@ -43,9 +43,14 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
       <DialogTitle>
         <Box display="flex" alignItems="center" gap={2}>
           <Avatar
-            src={grado.foto ? `/uploads/${grado.foto}` : '/default-grado.png'}
-            sx={{ width: 60, height: 60 }}
-          />
+            src={grado.foto && grado.foto !== 'default-grado.png' ? 
+              `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${grado.foto}` : 
+              null
+            }
+            sx={{ width: 60, height: 60, fontSize: '1.8rem' }}
+          >
+            {grado.nombre ? grado.nombre.charAt(0).toUpperCase() : 'G'}
+          </Avatar>
           <Box>
             <Typography variant="h5" component="div">
               {grado.nombre}
@@ -77,9 +82,9 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
                         Código:
                       </Typography>
                     </Box>
-                    <Chip 
-                      label={grado.codigo} 
-                      color="primary" 
+                    <Chip
+                      label={grado.codigo}
+                      color="primary"
                       variant="outlined"
                       size="small"
                     />
@@ -92,8 +97,8 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
                         Nivel:
                       </Typography>
                     </Box>
-                    <Chip 
-                      label={nivelNombre} 
+                    <Chip
+                      label={nivelNombre}
                       color="secondary"
                       size="small"
                     />
@@ -122,8 +127,8 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
                         Estado:
                       </Typography>
                     </Box>
-                    <Chip 
-                      label={grado.activo ? 'Activo' : 'Inactivo'} 
+                    <Chip
+                      label={grado.activo ? 'Activo' : 'Inactivo'}
                       color={grado.activo ? 'success' : 'default'}
                       size="small"
                     />
