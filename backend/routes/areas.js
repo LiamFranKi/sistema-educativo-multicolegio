@@ -1,68 +1,65 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../database/database');
+const { pool } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
 
-// Middleware de autenticación para todas las rutas
+// Proteger todas las rutas
 router.use(authenticateToken);
 
 // GET /api/areas - Listar áreas con filtros y paginación
 router.get('/', async (req, res) => {
   try {
     const { search, estado, page = 1, limit = 10 } = req.query;
-    const offset = (page - 1) * limit;
-    
-    let whereClause = '1=1';
+
+    const whereParts = [];
     const params = [];
-    
-    // Filtro por búsqueda
+
     if (search) {
-      whereClause += ' AND (nombre LIKE ? OR descripcion LIKE ? OR codigo LIKE ?)';
-      const searchTerm = `%${search}%`;
-      params.push(searchTerm, searchTerm, searchTerm);
+      params.push(`%${search}%`);
+      whereParts.push(`(nombre ILIKE $${params.length} OR descripcion ILIKE $${params.length} OR codigo ILIKE $${params.length})`);
     }
-    
-    // Filtro por estado
+
     if (estado) {
-      whereClause += ' AND estado = ?';
       params.push(estado);
+      whereParts.push(`estado = $${params.length}`);
     }
-    
-    // Consulta principal con paginación
-    const query = `
+
+    const whereClause = whereParts.length ? `WHERE ${whereParts.join(' AND ')}` : '';
+
+    // Total
+    const countSql = `SELECT COUNT(*)::int AS total FROM areas ${whereClause}`;
+    const countResult = await pool.query(countSql, params);
+    const total = countResult.rows[0]?.total || 0;
+
+    // Paginación
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const offset = (pageNum - 1) * limitNum;
+
+    const dataSql = `
       SELECT id, nombre, descripcion, codigo, estado, created_at, updated_at
-      FROM areas 
-      WHERE ${whereClause}
+      FROM areas
+      ${whereClause}
       ORDER BY nombre ASC
-      LIMIT ? OFFSET ?
+      LIMIT $${params.length + 1} OFFSET $${params.length + 2}
     `;
-    
-    const countQuery = `SELECT COUNT(*) as total FROM areas WHERE ${whereClause}`;
-    
-    const [areas, countResult] = await Promise.all([
-      db.all(query, [...params, limit, offset]),
-      db.get(countQuery, params)
-    ]);
-    
-    const total = countResult.total;
-    const totalPages = Math.ceil(total / limit);
-    
-    res.json({
+
+    const dataParams = [...params, limitNum, offset];
+    const dataResult = await pool.query(dataSql, dataParams);
+
+    return res.json({
       success: true,
-      areas,
+      areas: dataResult.rows,
       pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
+        page: pageNum,
+        limit: limitNum,
         total,
-        totalPages
+        totalPages: Math.ceil(total / (limitNum || 1))
       }
     });
   } catch (error) {
     console.error('Error al obtener áreas:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor'
-    });
+    return res.status(500).json({ success: false, message: 'Error interno del servidor' });
   }
 });
 
@@ -70,29 +67,22 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    
-    const area = await db.get(
-      'SELECT id, nombre, descripcion, codigo, estado, created_at, updated_at FROM areas WHERE id = ?',
-      [id]
-    );
-    
-    if (!area) {
-      return res.status(404).json({
-        success: false,
-        message: 'Área no encontrada'
-      });
+
+    const sql = `
+      SELECT id, nombre, descripcion, codigo, estado, created_at, updated_at
+      FROM areas
+      WHERE id = $1
+    `;
+
+    const result = await pool.query(sql, [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Área no encontrada' });
     }
-    
-    res.json({
-      success: true,
-      area
-    });
+
+    return res.json({ success: true, area: result.rows[0] });
   } catch (error) {
     console.error('Error al obtener área:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor'
-    });
+    return res.status(500).json({ success: false, message: 'Error interno del servidor' });
   }
 });
 
@@ -100,78 +90,40 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { nombre, descripcion, codigo, estado = 'activo' } = req.body;
-    
-    // Validaciones
+
     if (!nombre || !codigo) {
-      return res.status(400).json({
-        success: false,
-        message: 'Nombre y código son requeridos'
-      });
+      return res.status(400).json({ success: false, message: 'Nombre y código son requeridos' });
     }
-    
     if (nombre.length > 100) {
-      return res.status(400).json({
-        success: false,
-        message: 'El nombre no puede exceder 100 caracteres'
-      });
+      return res.status(400).json({ success: false, message: 'El nombre no puede exceder 100 caracteres' });
     }
-    
     if (codigo.length > 10) {
-      return res.status(400).json({
-        success: false,
-        message: 'El código no puede exceder 10 caracteres'
-      });
+      return res.status(400).json({ success: false, message: 'El código no puede exceder 10 caracteres' });
     }
-    
-    // Verificar si el nombre ya existe
-    const existingArea = await db.get(
-      'SELECT id FROM areas WHERE nombre = ?',
-      [nombre]
-    );
-    
-    if (existingArea) {
-      return res.status(400).json({
-        success: false,
-        message: 'Ya existe un área con ese nombre'
-      });
+
+    // Unicidad de nombre
+    let check = await pool.query('SELECT id FROM areas WHERE nombre = $1', [nombre]);
+    if (check.rows.length > 0) {
+      return res.status(400).json({ success: false, message: 'Ya existe un área con ese nombre' });
     }
-    
-    // Verificar si el código ya existe
-    const existingCode = await db.get(
-      'SELECT id FROM areas WHERE codigo = ?',
-      [codigo]
-    );
-    
-    if (existingCode) {
-      return res.status(400).json({
-        success: false,
-        message: 'Ya existe un área con ese código'
-      });
+
+    // Unicidad de código
+    check = await pool.query('SELECT id FROM areas WHERE codigo = $1', [codigo]);
+    if (check.rows.length > 0) {
+      return res.status(400).json({ success: false, message: 'Ya existe un área con ese código' });
     }
-    
-    // Crear área
-    const result = await db.run(
-      'INSERT INTO areas (nombre, descripcion, codigo, estado) VALUES (?, ?, ?, ?)',
-      [nombre, descripcion || '', codigo, estado]
-    );
-    
-    // Obtener el área creada
-    const newArea = await db.get(
-      'SELECT id, nombre, descripcion, codigo, estado, created_at, updated_at FROM areas WHERE id = ?',
-      [result.lastID]
-    );
-    
-    res.status(201).json({
-      success: true,
-      message: 'Área creada exitosamente',
-      area: newArea
-    });
+
+    const insertSql = `
+      INSERT INTO areas (nombre, descripcion, codigo, estado)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id, nombre, descripcion, codigo, estado, created_at, updated_at
+    `;
+    const insertRes = await pool.query(insertSql, [nombre, descripcion || '', codigo, estado]);
+
+    return res.status(201).json({ success: true, message: 'Área creada exitosamente', area: insertRes.rows[0] });
   } catch (error) {
     console.error('Error al crear área:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor'
-    });
+    return res.status(500).json({ success: false, message: 'Error interno del servidor' });
   }
 });
 
@@ -180,91 +132,52 @@ router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { nombre, descripcion, codigo, estado } = req.body;
-    
-    // Verificar si el área existe
-    const existingArea = await db.get(
-      'SELECT id FROM areas WHERE id = ?',
-      [id]
-    );
-    
-    if (!existingArea) {
-      return res.status(404).json({
-        success: false,
-        message: 'Área no encontrada'
-      });
+
+    // Verificar existencia
+    const exists = await pool.query('SELECT id FROM areas WHERE id = $1', [id]);
+    if (exists.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Área no encontrada' });
     }
-    
-    // Validaciones
+
     if (!nombre || !codigo) {
-      return res.status(400).json({
-        success: false,
-        message: 'Nombre y código son requeridos'
-      });
+      return res.status(400).json({ success: false, message: 'Nombre y código son requeridos' });
     }
-    
     if (nombre.length > 100) {
-      return res.status(400).json({
-        success: false,
-        message: 'El nombre no puede exceder 100 caracteres'
-      });
+      return res.status(400).json({ success: false, message: 'El nombre no puede exceder 100 caracteres' });
     }
-    
     if (codigo.length > 10) {
-      return res.status(400).json({
-        success: false,
-        message: 'El código no puede exceder 10 caracteres'
-      });
+      return res.status(400).json({ success: false, message: 'El código no puede exceder 10 caracteres' });
     }
-    
-    // Verificar si el nombre ya existe en otra área
-    const existingName = await db.get(
-      'SELECT id FROM areas WHERE nombre = ? AND id != ?',
-      [nombre, id]
-    );
-    
-    if (existingName) {
-      return res.status(400).json({
-        success: false,
-        message: 'Ya existe otra área con ese nombre'
-      });
+
+    // Unicidad de nombre en otra fila
+    let check = await pool.query('SELECT id FROM areas WHERE nombre = $1 AND id != $2', [nombre, id]);
+    if (check.rows.length > 0) {
+      return res.status(400).json({ success: false, message: 'Ya existe otra área con ese nombre' });
     }
-    
-    // Verificar si el código ya existe en otra área
-    const existingCode = await db.get(
-      'SELECT id FROM areas WHERE codigo = ? AND id != ?',
-      [codigo, id]
-    );
-    
-    if (existingCode) {
-      return res.status(400).json({
-        success: false,
-        message: 'Ya existe otra área con ese código'
-      });
+
+    // Unicidad de código en otra fila
+    check = await pool.query('SELECT id FROM areas WHERE codigo = $1 AND id != $2', [codigo, id]);
+    if (check.rows.length > 0) {
+      return res.status(400).json({ success: false, message: 'Ya existe otra área con ese código' });
     }
-    
-    // Actualizar área
-    await db.run(
-      'UPDATE areas SET nombre = ?, descripcion = ?, codigo = ?, estado = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-      [nombre, descripcion || '', codigo, estado, id]
-    );
-    
-    // Obtener el área actualizada
-    const updatedArea = await db.get(
-      'SELECT id, nombre, descripcion, codigo, estado, created_at, updated_at FROM areas WHERE id = ?',
-      [id]
-    );
-    
-    res.json({
-      success: true,
-      message: 'Área actualizada exitosamente',
-      area: updatedArea
-    });
+
+    const updateSql = `
+      UPDATE areas
+      SET nombre = $1,
+          descripcion = $2,
+          codigo = $3,
+          estado = $4,
+          updated_at = CURRENT_TIMESTAMP
+      WHERE id = $5
+      RETURNING id, nombre, descripcion, codigo, estado, created_at, updated_at
+    `;
+
+    const updateRes = await pool.query(updateSql, [nombre, descripcion || '', codigo, estado, id]);
+
+    return res.json({ success: true, message: 'Área actualizada exitosamente', area: updateRes.rows[0] });
   } catch (error) {
     console.error('Error al actualizar área:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor'
-    });
+    return res.status(500).json({ success: false, message: 'Error interno del servidor' });
   }
 });
 
@@ -272,33 +185,18 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    
-    // Verificar si el área existe
-    const existingArea = await db.get(
-      'SELECT id FROM areas WHERE id = ?',
-      [id]
-    );
-    
-    if (!existingArea) {
-      return res.status(404).json({
-        success: false,
-        message: 'Área no encontrada'
-      });
+
+    // Verificar
+    const exists = await pool.query('SELECT id FROM areas WHERE id = $1', [id]);
+    if (exists.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Área no encontrada' });
     }
-    
-    // Eliminar área
-    await db.run('DELETE FROM areas WHERE id = ?', [id]);
-    
-    res.json({
-      success: true,
-      message: 'Área eliminada exitosamente'
-    });
+
+    await pool.query('DELETE FROM areas WHERE id = $1', [id]);
+    return res.json({ success: true, message: 'Área eliminada exitosamente' });
   } catch (error) {
     console.error('Error al eliminar área:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor'
-    });
+    return res.status(500).json({ success: false, message: 'Error interno del servidor' });
   }
 });
 

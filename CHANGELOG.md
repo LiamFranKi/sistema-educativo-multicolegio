@@ -1,5 +1,36 @@
 # CHANGELOG
 
+## [2025-09-11] - Mejora del Módulo de Grados con Campo Foto
+
+### ✨ Nuevas Características
+
+- **Campo Foto en Grados**: Agregado campo `foto` a la tabla `grados` con imagen por defecto
+- **Gestión de Imágenes**: Formulario de grados con selector de foto y preview
+- **Visualización Mejorada**: Avatar circular en lista, formulario y vista de grados
+- **Imagen por Defecto**: `default-grado.png` para grados sin foto personalizada
+
+### 🔌 API y Backend
+
+- **Campo Foto**: Agregado a todas las consultas de grados (GET, POST, PUT)
+- **Valor por Defecto**: `default-grado.png` para nuevos grados
+- **Migración**: `add_foto_to_grados.sql` para actualizar tabla existente
+- **Índice**: Optimizado para búsquedas por campo foto
+
+### 🎨 Frontend y UI
+
+- **Formulario**: Selector de foto con preview y botón "Cambiar Foto"
+- **Lista**: Columna de foto con Avatar circular (50x50px)
+- **Vista**: Avatar en header del diálogo de detalles (60x60px)
+- **Patrón Consistente**: Mismo estilo que módulo de usuarios
+
+### 📊 Base de Datos
+
+- **Campo**: `foto VARCHAR(255) DEFAULT 'default-grado.png'`
+- **Índice**: `idx_grados_foto` para optimización
+- **Actualización**: Grados existentes con imagen por defecto
+
+---
+
 ## [2025-09-11] - Implementación del Módulo de Áreas Educativas
 
 ### ✨ Nuevas Características

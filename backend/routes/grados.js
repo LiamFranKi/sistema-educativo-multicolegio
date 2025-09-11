@@ -63,6 +63,7 @@ router.get('/', async (req, res) => {
         n.codigo as nivel_codigo,
         g.orden,
         g.activo,
+        g.foto,
         g.created_at,
         g.updated_at
       FROM grados g
@@ -107,6 +108,7 @@ router.get('/:id', async (req, res) => {
         n.codigo as nivel_codigo,
         g.orden,
         g.activo,
+        g.foto,
         g.created_at,
         g.updated_at
       FROM grados g
@@ -131,7 +133,7 @@ router.get('/:id', async (req, res) => {
 // POST /api/grados - Crear un nuevo grado
 router.post('/', async (req, res) => {
   try {
-    const { nombre, descripcion, codigo, nivel_id, orden } = req.body;
+    const { nombre, descripcion, codigo, nivel_id, orden, foto = 'default-grado.png' } = req.body;
     
     // Validaciones
     if (!nombre || !codigo || !nivel_id) {
@@ -153,12 +155,12 @@ router.post('/', async (req, res) => {
     }
 
     const query = `
-      INSERT INTO grados (nombre, descripcion, codigo, nivel_id, orden, activo)
-      VALUES ($1, $2, $3, $4, $5, true)
+      INSERT INTO grados (nombre, descripcion, codigo, nivel_id, orden, activo, foto)
+      VALUES ($1, $2, $3, $4, $5, true, $6)
       RETURNING *
     `;
     
-    const result = await pool.query(query, [nombre, descripcion, codigo, nivel_id, orden || 1]);
+    const result = await pool.query(query, [nombre, descripcion, codigo, nivel_id, orden || 1, foto]);
     
     res.status(201).json(result.rows[0]);
     
@@ -172,7 +174,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion, codigo, nivel_id, orden, activo } = req.body;
+    const { nombre, descripcion, codigo, nivel_id, orden, activo, foto } = req.body;
     
     // Verificar que el grado existe
     const gradoCheck = await pool.query('SELECT id FROM grados WHERE id = $1', [id]);
@@ -205,12 +207,13 @@ router.put('/:id', async (req, res) => {
         nivel_id = COALESCE($4, nivel_id),
         orden = COALESCE($5, orden),
         activo = COALESCE($6, activo),
+        foto = COALESCE($7, foto),
         updated_at = CURRENT_TIMESTAMP
-      WHERE id = $7
+      WHERE id = $8
       RETURNING *
     `;
     
-    const result = await pool.query(query, [nombre, descripcion, codigo, nivel_id, orden, activo, id]);
+    const result = await pool.query(query, [nombre, descripcion, codigo, nivel_id, orden, activo, foto, id]);
     
     res.json(result.rows[0]);
     
@@ -254,7 +257,8 @@ router.get('/nivel/:nivel_id', async (req, res) => {
         g.descripcion,
         g.codigo,
         g.orden,
-        g.activo
+        g.activo,
+        g.foto
       FROM grados g
       WHERE g.nivel_id = $1 AND g.activo = true
       ORDER BY g.orden

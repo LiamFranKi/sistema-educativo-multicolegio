@@ -16,9 +16,11 @@ import {
   Grid,
   Alert,
   CircularProgress,
-  Divider
+  Divider,
+  Avatar,
+  IconButton
 } from '@mui/material';
-import { Save as SaveIcon, Cancel as CancelIcon } from '@mui/icons-material';
+import { Save as SaveIcon, Cancel as CancelIcon, PhotoCamera as PhotoCameraIcon } from '@mui/icons-material';
 import { gradosService } from '../../../services/apiService';
 import Swal from 'sweetalert2';
 
@@ -29,7 +31,8 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
     codigo: '',
     nivel_id: '',
     orden: 1,
-    activo: true
+    activo: true,
+    foto: 'default-grado.png'
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -44,7 +47,8 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
         codigo: grado.codigo || '',
         nivel_id: grado.nivel_id || '',
         orden: grado.orden || 1,
-        activo: grado.activo !== undefined ? grado.activo : true
+        activo: grado.activo !== undefined ? grado.activo : true,
+        foto: grado.foto || 'default-grado.png'
       });
     }
   }, [grado]);
@@ -238,6 +242,45 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
                 rows={3}
                 helperText="Descripción opcional del grado"
               />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                <Avatar
+                  src={formData.foto ? `/uploads/${formData.foto}` : '/default-grado.png'}
+                  sx={{ width: 80, height: 80 }}
+                />
+                <Box>
+                  <Typography variant="subtitle2" gutterBottom>
+                    Foto del Grado
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    Imagen representativa del grado educativo
+                  </Typography>
+                  <input
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    id="foto-upload"
+                    type="file"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setFormData(prev => ({ ...prev, foto: file.name }));
+                      }
+                    }}
+                  />
+                  <label htmlFor="foto-upload">
+                    <Button
+                      variant="outlined"
+                      component="span"
+                      startIcon={<PhotoCameraIcon />}
+                      size="small"
+                    >
+                      Cambiar Foto
+                    </Button>
+                  </label>
+                </Box>
+              </Box>
             </Grid>
 
             <Grid item xs={12}>

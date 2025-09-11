@@ -29,7 +29,8 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Divider
+  Divider,
+  Avatar
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -305,6 +306,7 @@ const GradosList = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell><strong>Foto</strong></TableCell>
                 <TableCell><strong>Grado</strong></TableCell>
                 <TableCell><strong>Código</strong></TableCell>
                 <TableCell><strong>Nivel</strong></TableCell>
@@ -316,6 +318,12 @@ const GradosList = () => {
             <TableBody>
               {grados.map((grado) => (
                 <TableRow key={grado.id} hover>
+                  <TableCell>
+                    <Avatar
+                      src={grado.foto ? `/uploads/${grado.foto}` : '/default-grado.png'}
+                      sx={{ width: 50, height: 50 }}
+                    />
+                  </TableCell>
                   <TableCell>
                     <Typography variant="body1" fontWeight="medium">
                       {grado.nombre}

@@ -11,7 +11,8 @@ import {
   Divider,
   Card,
   CardContent,
-  CardHeader
+  CardHeader,
+  Avatar
 } from '@mui/material';
 import {
   Close as CloseIcon,
@@ -40,8 +41,11 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
   return (
     <>
       <DialogTitle>
-        <Box display="flex" alignItems="center" gap={1}>
-          <SchoolIcon color="primary" />
+        <Box display="flex" alignItems="center" gap={2}>
+          <Avatar
+            src={grado.foto ? `/uploads/${grado.foto}` : '/default-grado.png'}
+            sx={{ width: 60, height: 60 }}
+          />
           <Box>
             <Typography variant="h5" component="div">
               {grado.nombre}
