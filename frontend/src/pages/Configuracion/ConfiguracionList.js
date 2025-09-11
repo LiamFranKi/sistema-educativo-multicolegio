@@ -1119,18 +1119,13 @@ const ConfiguracionList = () => {
                 </Divider>
               </Grid>
 
-              <Grid item xs={12} sm={3}>
+              {/* Todos los campos de calificaciones en la misma línea */}
+              <Grid item xs={12} sm={2.4}>
                 <FormControl fullWidth size="small">
                   <InputLabel>Tipo Calificación</InputLabel>
                   <Select
                     value={nivelForm.tipo_calificacion}
-                    onChange={(e) => {
-                      handleNivelInputChange('tipo_calificacion', e.target.value);
-                      // Reset calificación final si cambia a Cualitativa
-                      if (e.target.value === 'Cualitativa') {
-                        handleNivelInputChange('calificacion_final', 'Promedio');
-                      }
-                    }}
+                    onChange={(e) => handleNivelInputChange('tipo_calificacion', e.target.value)}
                     label="Tipo Calificación"
                   >
                     <MenuItem value="Cualitativa">Cualitativa</MenuItem>
@@ -1139,124 +1134,91 @@ const ConfiguracionList = () => {
                 </FormControl>
               </Grid>
 
-              {nivelForm.tipo_calificacion === 'Cuantitativa' && (
-                <Grid item xs={12} sm={3}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel>Calificación Final</InputLabel>
-                    <Select
-                      value={nivelForm.calificacion_final}
-                      onChange={(e) => handleNivelInputChange('calificacion_final', e.target.value)}
-                      label="Calificación Final"
-                    >
-                      <MenuItem value="Promedio">Promedio</MenuItem>
-                      <MenuItem value="Porcentaje">Porcentaje</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-              )}
+              <Grid item xs={12} sm={2.4}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Calificación Final</InputLabel>
+                  <Select
+                    value={nivelForm.calificacion_final}
+                    onChange={(e) => handleNivelInputChange('calificacion_final', e.target.value)}
+                    label="Calificación Final"
+                  >
+                    <MenuItem value="Promedio">Promedio</MenuItem>
+                    <MenuItem value="Porcentaje">Porcentaje</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
 
-              {/* Campos de notas - Cualitativa (A, B, C, D) */}
-              {nivelForm.tipo_calificacion === 'Cualitativa' && (
-                <>
-                  <Grid item xs={12} sm={3}>
-                    <FormControl fullWidth size="small">
-                      <InputLabel>Nota Mínima</InputLabel>
-                      <Select
-                        value={nivelForm.nota_minima}
-                        onChange={(e) => handleNivelInputChange('nota_minima', e.target.value)}
-                        label="Nota Mínima"
-                      >
+              <Grid item xs={12} sm={2.4}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Nota Mínima</InputLabel>
+                  <Select
+                    value={nivelForm.nota_minima}
+                    onChange={(e) => handleNivelInputChange('nota_minima', e.target.value)}
+                    label="Nota Mínima"
+                  >
+                    {nivelForm.tipo_calificacion === 'Cualitativa' ? (
+                      <>
                         <MenuItem value="A">A</MenuItem>
                         <MenuItem value="B">B</MenuItem>
                         <MenuItem value="C">C</MenuItem>
                         <MenuItem value="D">D</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
+                      </>
+                    ) : (
+                      Array.from({ length: 21 }, (_, i) => (
+                        <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
+                      ))
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
 
-                  <Grid item xs={12} sm={3}>
-                    <FormControl fullWidth size="small">
-                      <InputLabel>Nota Máxima</InputLabel>
-                      <Select
-                        value={nivelForm.nota_maxima}
-                        onChange={(e) => handleNivelInputChange('nota_maxima', e.target.value)}
-                        label="Nota Máxima"
-                      >
+              <Grid item xs={12} sm={2.4}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Nota Máxima</InputLabel>
+                  <Select
+                    value={nivelForm.nota_maxima}
+                    onChange={(e) => handleNivelInputChange('nota_maxima', e.target.value)}
+                    label="Nota Máxima"
+                  >
+                    {nivelForm.tipo_calificacion === 'Cualitativa' ? (
+                      <>
                         <MenuItem value="A">A</MenuItem>
                         <MenuItem value="B">B</MenuItem>
                         <MenuItem value="C">C</MenuItem>
                         <MenuItem value="D">D</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
+                      </>
+                    ) : (
+                      Array.from({ length: 21 }, (_, i) => (
+                        <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
+                      ))
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
 
-                  <Grid item xs={12} sm={3}>
-                    <FormControl fullWidth size="small">
-                      <InputLabel>Nota Aprobatoria</InputLabel>
-                      <Select
-                        value={nivelForm.nota_aprobatoria}
-                        onChange={(e) => handleNivelInputChange('nota_aprobatoria', e.target.value)}
-                        label="Nota Aprobatoria"
-                      >
+              <Grid item xs={12} sm={2.4}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Nota Aprobatoria</InputLabel>
+                  <Select
+                    value={nivelForm.nota_aprobatoria}
+                    onChange={(e) => handleNivelInputChange('nota_aprobatoria', e.target.value)}
+                    label="Nota Aprobatoria"
+                  >
+                    {nivelForm.tipo_calificacion === 'Cualitativa' ? (
+                      <>
                         <MenuItem value="A">A</MenuItem>
                         <MenuItem value="B">B</MenuItem>
                         <MenuItem value="C">C</MenuItem>
                         <MenuItem value="D">D</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </>
-              )}
-
-              {/* Campos de notas - Cuantitativa (0-20) */}
-              {nivelForm.tipo_calificacion === 'Cuantitativa' && (
-                <>
-                  <Grid item xs={12} sm={3}>
-                    <FormControl fullWidth size="small">
-                      <InputLabel>Nota Mínima</InputLabel>
-                      <Select
-                        value={nivelForm.nota_minima}
-                        onChange={(e) => handleNivelInputChange('nota_minima', e.target.value)}
-                        label="Nota Mínima"
-                      >
-                        {Array.from({ length: 21 }, (_, i) => (
-                          <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-
-                  <Grid item xs={12} sm={3}>
-                    <FormControl fullWidth size="small">
-                      <InputLabel>Nota Máxima</InputLabel>
-                      <Select
-                        value={nivelForm.nota_maxima}
-                        onChange={(e) => handleNivelInputChange('nota_maxima', e.target.value)}
-                        label="Nota Máxima"
-                      >
-                        {Array.from({ length: 21 }, (_, i) => (
-                          <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-
-                  <Grid item xs={12} sm={3}>
-                    <FormControl fullWidth size="small">
-                      <InputLabel>Nota Aprobatoria</InputLabel>
-                      <Select
-                        value={nivelForm.nota_aprobatoria}
-                        onChange={(e) => handleNivelInputChange('nota_aprobatoria', e.target.value)}
-                        label="Nota Aprobatoria"
-                      >
-                        {Array.from({ length: 21 }, (_, i) => (
-                          <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </>
-              )}
+                      </>
+                    ) : (
+                      Array.from({ length: 21 }, (_, i) => (
+                        <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
+                      ))
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
             </Grid>
 
             <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
