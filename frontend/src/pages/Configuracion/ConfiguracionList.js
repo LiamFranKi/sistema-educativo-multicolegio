@@ -1166,10 +1166,10 @@ const ConfiguracionList = () => {
                         onChange={(e) => handleNivelInputChange('nota_minima', e.target.value)}
                         label="Nota Mínima"
                       >
-                        <MenuItem value="D">D</MenuItem>
-                        <MenuItem value="C">C</MenuItem>
-                        <MenuItem value="B">B</MenuItem>
                         <MenuItem value="A">A</MenuItem>
+                        <MenuItem value="B">B</MenuItem>
+                        <MenuItem value="C">C</MenuItem>
+                        <MenuItem value="D">D</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
@@ -1182,10 +1182,10 @@ const ConfiguracionList = () => {
                         onChange={(e) => handleNivelInputChange('nota_maxima', e.target.value)}
                         label="Nota Máxima"
                       >
-                        <MenuItem value="D">D</MenuItem>
-                        <MenuItem value="C">C</MenuItem>
-                        <MenuItem value="B">B</MenuItem>
                         <MenuItem value="A">A</MenuItem>
+                        <MenuItem value="B">B</MenuItem>
+                        <MenuItem value="C">C</MenuItem>
+                        <MenuItem value="D">D</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
@@ -1198,10 +1198,10 @@ const ConfiguracionList = () => {
                         onChange={(e) => handleNivelInputChange('nota_aprobatoria', e.target.value)}
                         label="Nota Aprobatoria"
                       >
-                        <MenuItem value="D">D</MenuItem>
-                        <MenuItem value="C">C</MenuItem>
-                        <MenuItem value="B">B</MenuItem>
                         <MenuItem value="A">A</MenuItem>
+                        <MenuItem value="B">B</MenuItem>
+                        <MenuItem value="C">C</MenuItem>
+                        <MenuItem value="D">D</MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
@@ -1364,10 +1364,10 @@ const ConfiguracionList = () => {
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Chip 
-                        label={nivel.tipo_grados || 'Grados'} 
-                        size="small" 
-                        color="primary" 
+                      <Chip
+                        label={nivel.tipo_grados || 'Grados'}
+                        size="small"
+                        color="primary"
                         variant="outlined"
                       />
                     </TableCell>
@@ -1377,10 +1377,10 @@ const ConfiguracionList = () => {
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Chip 
-                        label={nivel.tipo_calificacion || 'Cuantitativa'} 
-                        size="small" 
-                        color={nivel.tipo_calificacion === 'Cualitativa' ? 'secondary' : 'success'} 
+                      <Chip
+                        label={nivel.tipo_calificacion || 'Cuantitativa'}
+                        size="small"
+                        color={nivel.tipo_calificacion === 'Cualitativa' ? 'secondary' : 'success'}
                         variant="outlined"
                       />
                     </TableCell>
