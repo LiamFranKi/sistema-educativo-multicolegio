@@ -11,7 +11,7 @@ Unificar el diseño visual de todos los componentes reutilizables del sistema pa
 **MÓDULO DE NIVELES EDUCATIVOS:** Implementación completa con interfaz de tabla profesional, búsqueda en tiempo real, paginación y CRUD completo para gestión de niveles educativos.
 **MÓDULO DE GRADOS EDUCATIVOS:** Diseño alineado al patrón de mantenimiento: header con icono `School`, búsqueda, filtro por nivel (`Select`), botón "Nuevo Grado", tabla con Chips de código/estado y paginación. Formulario con generación automática de `codigo` y helper texts.
 
-**MÓDULO DE ÁREAS EDUCATIVAS:** Diseño consistente con patrón de mantenimiento: header con icono `Category`, búsqueda por nombre/descripción/código, filtro por estado (`Select`), botón "Nueva Área", tabla con Chips de código/estado y paginación. Formulario con validaciones de códigos únicos y helper texts informativos.
+**MÓDULO DE ÁREAS EDUCATIVAS:** Diseño consistente con patrón de mantenimiento: header con icono `Category`, búsqueda por nombre/descripción/código, filtro por estado (`Select`), botón "Nueva Área", tabla con Chips de código/estado y paginación. Formulario con validaciones de códigos únicos y helper texts informativos. Notificaciones con SweetAlert2 y modo vista corregido para mostrar datos del área seleccionada.
 
 **FORMATO DE GRILLA/TABLA:** Conversión de módulos de Configuración a formato de tabla profesional para optimización de espacio y mejor escalabilidad, siguiendo patrones de diseño establecidos.
 

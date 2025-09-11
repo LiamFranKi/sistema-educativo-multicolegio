@@ -36,7 +36,7 @@ import {
   Visibility as ViewIcon,
   Category as CategoryIcon,
 } from '@mui/icons-material';
-import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 import { areasService } from '../../../services/apiService';
 import AreasForm from './AreasForm';
 
@@ -59,7 +59,7 @@ const AreasList = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const params = {
         page: page + 1,
         limit: rowsPerPage,
@@ -68,7 +68,7 @@ const AreasList = () => {
       };
 
       const response = await areasService.getAreas(params);
-      
+
       if (response.success) {
         setAreas(response.areas || []);
         setTotalItems(response.pagination?.total || 0);
@@ -78,7 +78,6 @@ const AreasList = () => {
     } catch (error) {
       console.error('Error cargando áreas:', error);
       setError('Error al cargar las áreas');
-      toast.error('Error al cargar las áreas');
     } finally {
       setLoading(false);
     }
@@ -136,26 +135,40 @@ const AreasList = () => {
   };
 
   // Confirmar eliminación
-  const handleDelete = (area) => {
-    setAreaToDelete(area);
-    setDeleteDialog(true);
+  const handleDelete = async (area) => {
+    const result = await Swal.fire({
+      title: '¿Eliminar Área?',
+      text: `¿Estás seguro de que deseas eliminar el área "${area.nombre}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
+      confirmDelete(area);
+    }
   };
 
   // Ejecutar eliminación
-  const confirmDelete = async () => {
+  const confirmDelete = async (area) => {
     try {
       setLoading(true);
-      const response = await areasService.deleteArea(areaToDelete.id);
-      
+      const response = await areasService.deleteArea(area.id);
+
       if (response.success) {
-        toast.success('Área eliminada exitosamente');
+        Swal.fire('Eliminada', 'El área ha sido eliminada exitosamente', 'success');
         loadAreas(); // Recargar lista
       } else {
-        toast.error(response.message || 'Error al eliminar área');
+        const msg = response.message || 'Error al eliminar el área';
+        Swal.fire('Error', msg, 'error');
       }
     } catch (error) {
       console.error('Error eliminando área:', error);
-      toast.error('Error al eliminar el área');
+      const msg = error.response?.data?.message || 'Error al eliminar el área';
+      Swal.fire('Error', msg, 'error');
     } finally {
       setLoading(false);
       setDeleteDialog(false);
@@ -229,7 +242,7 @@ const AreasList = () => {
               }}
               sx={{ width: 400, minWidth: 300 }}
             />
-            
+
             <FormControl sx={{ minWidth: 150 }}>
               <InputLabel>Estado</InputLabel>
               <Select
@@ -276,10 +289,10 @@ const AreasList = () => {
                 areas.map((area) => (
                   <TableRow key={area.id} hover>
                     <TableCell align="center">
-                      <Chip 
-                        label={area.codigo} 
-                        color="primary" 
-                        variant="outlined" 
+                      <Chip
+                        label={area.codigo}
+                        color="primary"
+                        variant="outlined"
                         size="small"
                       />
                     </TableCell>
@@ -348,7 +361,7 @@ const AreasList = () => {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           labelRowsPerPage="Filas por página:"
-          labelDisplayedRows={({ from, to, count }) => 
+          labelDisplayedRows={({ from, to, count }) =>
             `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`
           }
         />
@@ -372,7 +385,7 @@ const AreasList = () => {
         />
       )}
 
-      {/* Diálogo de confirmación de eliminación */}
+      {/* Diálogo de confirmación de eliminación (fallback) */}
       <Dialog open={deleteDialog} onClose={() => setDeleteDialog(false)}>
         <DialogTitle>Confirmar Eliminación</DialogTitle>
         <DialogContent>
@@ -385,9 +398,9 @@ const AreasList = () => {
           <Button onClick={() => setDeleteDialog(false)}>
             Cancelar
           </Button>
-          <Button 
-            onClick={confirmDelete} 
-            color="error" 
+          <Button
+            onClick={() => areaToDelete && confirmDelete(areaToDelete)}
+            color="error"
             variant="contained"
             disabled={loading}
           >

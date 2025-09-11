@@ -21,7 +21,7 @@ import {
   Save as SaveIcon,
   Category as CategoryIcon,
 } from '@mui/icons-material';
-import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 import { areasService } from '../../../services/apiService';
 
 const AreasForm = ({ open, mode, area, onClose, onSuccess }) => {
@@ -37,7 +37,7 @@ const AreasForm = ({ open, mode, area, onClose, onSuccess }) => {
   // Resetear formulario cuando se abre/cierra
   useEffect(() => {
     if (open) {
-      if (mode === 'edit' && area) {
+      if ((mode === 'edit' || mode === 'view') && area) {
         setFormData({
           nombre: area.nombre || '',
           descripcion: area.descripcion || '',
@@ -84,7 +84,7 @@ const AreasForm = ({ open, mode, area, onClose, onSuccess }) => {
   const handleChange = (field) => (event) => {
     const value = event.target.value;
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     // Limpiar error del campo cuando el usuario empiece a escribir
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
@@ -94,13 +94,13 @@ const AreasForm = ({ open, mode, area, onClose, onSuccess }) => {
   // Manejar envío del formulario
   const handleSubmit = async () => {
     if (!validateForm()) {
-      toast.error('Por favor corrige los errores en el formulario');
+      Swal.fire('Validación', 'Por favor corrige los errores en el formulario', 'warning');
       return;
     }
 
     try {
       setLoading(true);
-      
+
       let response;
       if (mode === 'edit') {
         response = await areasService.updateArea(area.id, formData);
@@ -109,18 +109,20 @@ const AreasForm = ({ open, mode, area, onClose, onSuccess }) => {
       }
 
       if (response.success) {
-        toast.success(
-          mode === 'edit' 
-            ? 'Área actualizada exitosamente' 
-            : 'Área creada exitosamente'
+        Swal.fire(
+          mode === 'edit' ? 'Actualizada' : 'Creada',
+          mode === 'edit' ? 'El área ha sido actualizada' : 'El área ha sido creada',
+          'success'
         );
         onSuccess();
       } else {
-        toast.error(response.message || 'Error al guardar el área');
+        const msg = response.message || 'Error al guardar el área';
+        Swal.fire('Error', msg, 'error');
       }
     } catch (error) {
       console.error('Error guardando área:', error);
-      toast.error('Error al guardar el área');
+      const msg = error.response?.data?.message || 'Error al guardar el área';
+      Swal.fire('Error', msg, 'error');
     } finally {
       setLoading(false);
     }
@@ -156,18 +158,18 @@ const AreasForm = ({ open, mode, area, onClose, onSuccess }) => {
   const isReadOnly = mode === 'view';
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={onClose} 
-      maxWidth="sm" 
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
       fullWidth
       PaperProps={{
         sx: { borderRadius: 2 }
       }}
     >
-      <DialogTitle sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
+      <DialogTitle sx={{
+        display: 'flex',
+        alignItems: 'center',
         justifyContent: 'space-between',
         pb: 1
       }}>

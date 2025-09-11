@@ -32,6 +32,8 @@
   - Validaciones en tiempo real
 - **Navegación**: Ruta `/dashboard/areas` integrada en AdminLayout y AdminSidebar
 - **Servicios**: `areasService` en `apiService.js` con métodos CRUD completos
+- **Notificaciones**: Integración con SweetAlert2 para confirmaciones y alertas (alineado con patrón de Grados)
+- **Modo Vista**: Corrección para mostrar datos del área seleccionada en diálogo de detalles
 
 ### 📊 Base de Datos
 
