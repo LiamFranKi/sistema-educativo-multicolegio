@@ -21,7 +21,7 @@ import {
   IconButton
 } from '@mui/material';
 import { Save as SaveIcon, Cancel as CancelIcon, PhotoCamera as PhotoCameraIcon } from '@mui/icons-material';
-import { gradosService } from '../../../services/apiService';
+import { gradosService, fileService } from '../../../services/apiService';
 import Swal from 'sweetalert2';
 
 const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
@@ -75,7 +75,7 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
   };
 
   // Función para manejar subida de imagen
-  const handleImageUpload = (event) => {
+  const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
       // Validar tipo de archivo
@@ -105,8 +105,40 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
       };
       reader.readAsDataURL(file);
 
-      // Actualizar el nombre del archivo en formData
-      setFormData(prev => ({ ...prev, foto: file.name }));
+      // Subir archivo al servidor
+      try {
+        setLoading(true);
+        const response = await fileService.uploadFile(file, 'grados');
+
+        if (response.success) {
+          setFormData(prev => ({
+            ...prev,
+            foto: response.filename // Guardar el nombre del archivo subido
+          }));
+          Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: 'Foto subida correctamente'
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error al subir la foto'
+          });
+          setPreviewImage(''); // Limpiar preview si falla
+        }
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error al subir la foto'
+        });
+        setPreviewImage(''); // Limpiar preview si falla
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -288,8 +320,8 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
             <Grid item xs={12}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                 <Avatar
-                  src={previewImage || (formData.foto && formData.foto !== 'default-grado.png' ? 
-                    `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${formData.foto}` : 
+                  src={previewImage || (formData.foto && formData.foto !== 'default-grado.png' ?
+                    `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${formData.foto}` :
                     null)}
                   sx={{ width: 80, height: 80, fontSize: '2rem' }}
                 >
