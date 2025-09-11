@@ -32,7 +32,7 @@ router.use(authenticateToken);
 router.get('/', async (req, res) => {
   try {
     const { search, nivel_id, page = 1, limit = 10 } = req.query;
-    
+
     let whereClause = 'WHERE 1=1';
     const queryParams = [];
     let paramCount = 0;
@@ -53,7 +53,7 @@ router.get('/', async (req, res) => {
 
     // Consulta principal con JOIN
     const query = `
-      SELECT 
+      SELECT
         g.id,
         g.nombre,
         g.descripcion,
@@ -73,11 +73,11 @@ router.get('/', async (req, res) => {
     `;
 
     const result = await pool.query(query, queryParams);
-    
+
     // Paginación
     const offset = (page - 1) * limit;
     const paginatedResults = result.rows.slice(offset, offset + parseInt(limit));
-    
+
     res.json({
       grados: paginatedResults,
       total: result.rows.length,
@@ -96,9 +96,9 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const query = `
-      SELECT 
+      SELECT
         g.id,
         g.nombre,
         g.descripcion,
@@ -115,15 +115,15 @@ router.get('/:id', async (req, res) => {
       JOIN niveles n ON g.nivel_id = n.id
       WHERE g.id = $1
     `;
-    
+
     const result = await pool.query(query, [id]);
-    
+
     if (result.rows.length === 0) {
       return res.status(404).json({ message: 'Grado no encontrado' });
     }
-    
+
     res.json(result.rows[0]);
-    
+
   } catch (error) {
     console.error('Error obteniendo grado:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
@@ -134,11 +134,11 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { nombre, descripcion, codigo, nivel_id, orden, foto = 'default-grado.png' } = req.body;
-    
+
     // Validaciones
     if (!nombre || !codigo || !nivel_id) {
-      return res.status(400).json({ 
-        message: 'Nombre, código y nivel son requeridos' 
+      return res.status(400).json({
+        message: 'Nombre, código y nivel son requeridos'
       });
     }
 
@@ -159,11 +159,11 @@ router.post('/', async (req, res) => {
       VALUES ($1, $2, $3, $4, $5, true, $6)
       RETURNING *
     `;
-    
+
     const result = await pool.query(query, [nombre, descripcion, codigo, nivel_id, orden || 1, foto]);
-    
+
     res.status(201).json(result.rows[0]);
-    
+
   } catch (error) {
     console.error('Error creando grado:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
@@ -175,7 +175,7 @@ router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { nombre, descripcion, codigo, nivel_id, orden, activo, foto } = req.body;
-    
+
     // Verificar que el grado existe
     const gradoCheck = await pool.query('SELECT id FROM grados WHERE id = $1', [id]);
     if (gradoCheck.rows.length === 0) {
@@ -199,8 +199,8 @@ router.put('/:id', async (req, res) => {
     }
 
     const query = `
-      UPDATE grados 
-      SET 
+      UPDATE grados
+      SET
         nombre = COALESCE($1, nombre),
         descripcion = COALESCE($2, descripcion),
         codigo = COALESCE($3, codigo),
@@ -212,11 +212,11 @@ router.put('/:id', async (req, res) => {
       WHERE id = $8
       RETURNING *
     `;
-    
+
     const result = await pool.query(query, [nombre, descripcion, codigo, nivel_id, orden, activo, foto, id]);
-    
+
     res.json(result.rows[0]);
-    
+
   } catch (error) {
     console.error('Error actualizando grado:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
@@ -227,7 +227,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Verificar que el grado existe
     const gradoCheck = await pool.query('SELECT id FROM grados WHERE id = $1', [id]);
     if (gradoCheck.rows.length === 0) {
@@ -236,9 +236,9 @@ router.delete('/:id', async (req, res) => {
 
     // Eliminar el grado
     await pool.query('DELETE FROM grados WHERE id = $1', [id]);
-    
+
     res.json({ message: 'Grado eliminado exitosamente' });
-    
+
   } catch (error) {
     console.error('Error eliminando grado:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
@@ -249,9 +249,9 @@ router.delete('/:id', async (req, res) => {
 router.get('/nivel/:nivel_id', async (req, res) => {
   try {
     const { nivel_id } = req.params;
-    
+
     const query = `
-      SELECT 
+      SELECT
         g.id,
         g.nombre,
         g.descripcion,
@@ -263,10 +263,10 @@ router.get('/nivel/:nivel_id', async (req, res) => {
       WHERE g.nivel_id = $1 AND g.activo = true
       ORDER BY g.orden
     `;
-    
+
     const result = await pool.query(query, [nivel_id]);
     res.json(result.rows);
-    
+
   } catch (error) {
     console.error('Error obteniendo grados por nivel:', error);
     res.status(500).json({ message: 'Error interno del servidor' });
