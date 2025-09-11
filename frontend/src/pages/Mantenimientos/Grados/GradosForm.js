@@ -256,6 +256,8 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
+                id="nombre-grado"
+                name="nombre"
                 label="Nombre del Grado"
                 value={formData.nombre}
                 onChange={handleInputChange('nombre')}
@@ -268,6 +270,8 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
+                id="codigo-grado"
+                name="codigo"
                 label="Código"
                 value={formData.codigo}
                 onChange={handleInputChange('codigo')}
@@ -281,6 +285,7 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
                       edge="end"
                       title="Generar código automáticamente"
                       disabled={!formData.nivel_id}
+                      aria-label="Generar código automáticamente"
                     >
                       <AutoFixHighIcon />
                     </IconButton>
@@ -291,8 +296,11 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
 
             <Grid item xs={12} md={6}>
               <FormControl fullWidth required error={Boolean(errors.nivel_id)}>
-                <InputLabel>Nivel Educativo</InputLabel>
+                <InputLabel id="nivel-educativo-label">Nivel Educativo</InputLabel>
                 <Select
+                  id="nivel-educativo"
+                  name="nivel_id"
+                  labelId="nivel-educativo-label"
                   value={formData.nivel_id}
                   onChange={handleNivelChange}
                   label="Nivel Educativo"
@@ -314,6 +322,8 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
+                id="orden-grado"
+                name="orden"
                 label="Orden"
                 type="number"
                 value={formData.orden}
@@ -328,6 +338,8 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
+                id="descripcion-grado"
+                name="descripcion"
                 label="Descripción"
                 value={formData.descripcion}
                 onChange={handleInputChange('descripcion')}
@@ -358,6 +370,7 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
                     accept="image/*"
                     style={{ display: 'none' }}
                     id="foto-upload"
+                    name="foto"
                     type="file"
                     onChange={handleImageUpload}
                   />
@@ -379,12 +392,15 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
               <FormControlLabel
                 control={
                   <Switch
+                    id="activo-grado"
+                    name="activo"
                     checked={formData.activo}
                     onChange={handleInputChange('activo')}
                     color="primary"
                   />
                 }
                 label="Grado activo"
+                htmlFor="activo-grado"
               />
             </Grid>
           </Grid>
