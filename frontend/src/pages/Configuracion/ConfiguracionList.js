@@ -1335,10 +1335,10 @@ const ConfiguracionList = () => {
                 <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
                   <TableCell align="center">Orden</TableCell>
                   <TableCell align="center">Nombre</TableCell>
-                  <TableCell align="center">Código</TableCell>
                   <TableCell align="center">Tipo Grados</TableCell>
                   <TableCell align="center">Grados</TableCell>
                   <TableCell align="center">Tipo Calificación</TableCell>
+                  <TableCell align="center">Calificación Final</TableCell>
                   <TableCell align="center">Estado</TableCell>
                   <TableCell align="center">Acciones</TableCell>
                 </TableRow>
@@ -1364,15 +1364,10 @@ const ConfiguracionList = () => {
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Typography variant="body2">
-                        {nivel.codigo}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Chip
-                        label={nivel.tipo_grados || 'Grados'}
-                        size="small"
-                        color="primary"
+                      <Chip 
+                        label={nivel.tipo_grados || 'Grados'} 
+                        size="small" 
+                        color="primary" 
                         variant="outlined"
                       />
                     </TableCell>
@@ -1382,12 +1377,17 @@ const ConfiguracionList = () => {
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Chip
-                        label={nivel.tipo_calificacion || 'Cuantitativa'}
-                        size="small"
-                        color={nivel.tipo_calificacion === 'Cualitativa' ? 'secondary' : 'success'}
+                      <Chip 
+                        label={nivel.tipo_calificacion || 'Cuantitativa'} 
+                        size="small" 
+                        color={nivel.tipo_calificacion === 'Cualitativa' ? 'secondary' : 'success'} 
                         variant="outlined"
                       />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography variant="body2">
+                        {nivel.calificacion_final || '-'}
+                      </Typography>
                     </TableCell>
                     <TableCell align="center">
                       <Chip
