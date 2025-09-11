@@ -22,11 +22,163 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 
 **MÓDULO DE CONFIGURACIÓN OPTIMIZADO:** El módulo de Configuración ha sido optimizado con layout compacto, logo dinámico, layout de 2 columnas para colores y fondo, y vista previa mejorada para una mejor experiencia de usuario.
 
-**MÓDULO DE NIVELES EDUCATIVOS:** Implementación completa del CRUD para niveles educativos (Inicial, Primaria, Secundaria) con base de datos, API y interfaz de tabla profesional con búsqueda y paginación.
+**MÓDULO DE NIVELES EDUCATIVOS:** Implementación completa del CRUD para niveles educativos (Inicial, Primaria, Secundaria) con configuración avanzada: tipos de grados (Grados/Años), rango de grados (0-10), sistema dual de calificaciones (Cualitativa A-D/Cuantitativa 0-20), calificación final (Promedio/Porcentaje), notas configurables (mínima/máxima/aprobatoria), formulario optimizado con campos en líneas compactas, grilla actualizada con chips de colores, y accesibilidad mejorada con atributos HTML apropiados.
 
 **MÓDULO DE GRADOS EDUCATIVOS:** Implementación completa del CRUD para grados, relacionado a niveles educativos, con generación automática de códigos por nivel y orden (INI-03, PRI-01, SEC-05), filtros por nivel, búsqueda, paginación y validaciones de unicidad de código en backend. Incluye campo foto con Avatar circular, imagen por defecto y gestión de imágenes en formulario.
 
 **MÓDULO DE ÁREAS EDUCATIVAS:** Implementación completa del CRUD para áreas curriculares con 12 áreas predefinidas (Comunicación, Matemática, Ciencias, etc.), códigos únicos cortos (MAT, COM, ART), búsqueda por nombre/descripción/código, filtro por estado, paginación y validaciones de unicidad en backend. Notificaciones con SweetAlert2 y modo vista corregido para mostrar datos.
+
+---
+
+## 📚 **MÓDULO DE NIVELES EDUCATIVOS - CONFIGURACIÓN AVANZADA**
+
+### **Estructura de Datos:**
+
+```javascript
+// Campos base
+{
+  id: INTEGER,
+  nombre: VARCHAR(100),      // "Inicial", "Primaria", "Secundaria"
+  descripcion: TEXT,
+  codigo: VARCHAR(10),       // "INI", "PRI", "SEC"
+  orden: INTEGER,
+  activo: BOOLEAN,
+  
+  // Configuración de Grados
+  tipo_grados: VARCHAR(20),  // "Grados" | "Años"
+  grado_minimo: INTEGER,     // 0-10
+  grado_maximo: INTEGER,     // 0-10
+  
+  // Configuración de Calificaciones
+  tipo_calificacion: VARCHAR(20), // "Cualitativa" | "Cuantitativa"
+  calificacion_final: VARCHAR(20), // "Promedio" | "Porcentaje"
+  nota_minima: VARCHAR(10),   // "A"-"D" | "0"-"20"
+  nota_maxima: VARCHAR(10),   // "A"-"D" | "0"-"20"
+  nota_aprobatoria: VARCHAR(10), // "A"-"D" | "0"-"20"
+  
+  created_at: TIMESTAMP,
+  updated_at: TIMESTAMP
+}
+```
+
+### **Configuración por Defecto:**
+
+```javascript
+// Inicial
+{
+  tipo_calificacion: "Cualitativa",
+  calificacion_final: "Promedio",
+  nota_minima: "D",
+  nota_maxima: "A",
+  nota_aprobatoria: "B"
+}
+
+// Primaria y Secundaria
+{
+  tipo_calificacion: "Cuantitativa",
+  calificacion_final: "Porcentaje",
+  nota_minima: "0",
+  nota_maxima: "20",
+  nota_aprobatoria: "11"
+}
+```
+
+### **Formulario Optimizado:**
+
+```javascript
+// Estructura del formulario en líneas compactas
+<Grid container spacing={2}>
+  {/* Línea 1: Campos principales */}
+  <Grid item xs={12} sm={4}>Nombre del Nivel</Grid>
+  <Grid item xs={12} sm={4}>Código</Grid>
+  <Grid item xs={12} sm={4}>Orden</Grid>
+  
+  {/* Línea 2: Descripción */}
+  <Grid item xs={12}>Descripción</Grid>
+  
+  {/* Línea 3: Configuración de Grados */}
+  <Grid item xs={12} sm={6}>Tipo Grados</Grid>
+  <Grid item xs={12} sm={3}>Grado Mínimo</Grid>
+  <Grid item xs={12} sm={3}>Grado Máximo</Grid>
+  
+  {/* Línea 4: Configuración de Calificaciones (5 campos en sm=2.4) */}
+  <Grid item xs={12} sm={2.4}>Tipo Calificación</Grid>
+  <Grid item xs={12} sm={2.4}>Calificación Final</Grid>
+  <Grid item xs={12} sm={2.4}>Nota Mínima</Grid>
+  <Grid item xs={12} sm={2.4}>Nota Máxima</Grid>
+  <Grid item xs={12} sm={2.4}>Nota Aprobatoria</Grid>
+</Grid>
+```
+
+### **Comboboxes Inteligentes:**
+
+```javascript
+// Lógica de opciones dinámicas
+const getNotaOptions = (tipo) => {
+  if (tipo === 'Cualitativa') {
+    return [
+      { value: 'A', label: 'A' },
+      { value: 'B', label: 'B' },
+      { value: 'C', label: 'C' },
+      { value: 'D', label: 'D' }
+    ];
+  } else {
+    return Array.from({ length: 21 }, (_, i) => ({
+      value: i.toString(),
+      label: i.toString()
+    }));
+  }
+};
+
+// Reset automático al cambiar tipo
+const handleTipoChange = (newType) => {
+  if (newType === 'Cualitativa') {
+    setFormData({
+      ...formData,
+      tipo_calificacion: newType,
+      nota_minima: 'D',
+      nota_maxima: 'A',
+      nota_aprobatoria: 'B'
+    });
+  } else {
+    setFormData({
+      ...formData,
+      tipo_calificacion: newType,
+      nota_minima: '0',
+      nota_maxima: '20',
+      nota_aprobatoria: '11'
+    });
+  }
+};
+```
+
+### **Grilla Actualizada:**
+
+```javascript
+// Estructura de columnas
+const columns = [
+  { field: 'orden', headerName: 'Orden', width: 80 },
+  { field: 'nombre', headerName: 'Nombre', width: 150 },
+  { field: 'tipo_grados', headerName: 'Tipo Grados', width: 120 },
+  { field: 'grados', headerName: 'Grados', width: 100 }, // "1-6"
+  { field: 'tipo_calificacion', headerName: 'Tipo Calificación', width: 150 },
+  { field: 'calificacion_final', headerName: 'Calificación Final', width: 150 },
+  { field: 'activo', headerName: 'Estado', width: 100 },
+  { field: 'actions', headerName: 'Acciones', width: 150 }
+];
+
+// Chips de colores
+<Chip 
+  label={row.tipo_grados} 
+  color="primary" 
+  variant="outlined" 
+/>
+<Chip 
+  label={row.tipo_calificacion} 
+  color={row.tipo_calificacion === 'Cualitativa' ? 'secondary' : 'success'} 
+  variant="outlined" 
+/>
+```
 
 **FORMATO DE GRILLA/TABLA:** Conversión de módulos de Configuración a formato de tabla profesional para ahorro de espacio y mejor escalabilidad, siguiendo el patrón establecido de otros módulos de mantenimiento.
 

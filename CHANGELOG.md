@@ -1,5 +1,60 @@
 # CHANGELOG
 
+## [2025-09-11] - Mejora del Módulo de Niveles con Configuración Avanzada
+
+### ✨ Nuevas Características
+
+- **Configuración Avanzada de Niveles**: Sistema completo de configuración para niveles educativos
+- **Tipos de Grados**: Configuración entre "Grados" o "Años" para cada nivel
+- **Rango de Grados**: Configuración de grado mínimo y máximo (0-10)
+- **Sistema de Calificaciones Dual**: Soporte para calificaciones cualitativas (A, B, C, D) y cuantitativas (0-20)
+- **Calificación Final**: Opciones "Promedio" o "Porcentaje" para ambos tipos
+- **Notas Configurables**: Nota mínima, máxima y aprobatoria personalizables por nivel
+- **Formulario Optimizado**: Todos los campos en líneas compactas para mejor UX
+
+### 🔌 API y Backend
+
+- **Campos Extendidos**: Agregados 8 nuevos campos a la tabla `niveles`:
+  - `tipo_grados` (VARCHAR): "Grados" o "Años"
+  - `grado_minimo` (INTEGER): Rango 0-10
+  - `grado_maximo` (INTEGER): Rango 0-10
+  - `tipo_calificacion` (VARCHAR): "Cualitativa" o "Cuantitativa"
+  - `calificacion_final` (VARCHAR): "Promedio" o "Porcentaje"
+  - `nota_minima` (VARCHAR): A-D o 0-20
+  - `nota_maxima` (VARCHAR): A-D o 0-20
+  - `nota_aprobatoria` (VARCHAR): A-D o 0-20
+- **Endpoints Actualizados**: Todos los endpoints incluyen los nuevos campos
+- **Validaciones**: Valores por defecto y restricciones apropiadas
+
+### 🎨 Frontend y UI
+
+- **Formulario Reorganizado**: 
+  - Primera línea: Nombre, Código, Orden (sm=4 cada uno)
+  - Segunda línea: Descripción (ancho completo)
+  - Tercera línea: Configuración de Grados (Tipo Grados, Grado Mín/Máx)
+  - Cuarta línea: Configuración de Calificaciones (5 campos en sm=2.4)
+- **Comboboxes Inteligentes**: 
+  - Opciones A, B, C, D para calificaciones cualitativas
+  - Opciones 0-20 para calificaciones cuantitativas
+  - Reset automático de valores al cambiar tipo
+- **Grilla Actualizada**: 
+  - Removida columna "Código"
+  - Agregada columna "Calificación Final"
+  - Chips de colores para Tipo Grados y Tipo Calificación
+- **Accesibilidad**: Atributos `id`, `name`, `labelId`, `htmlFor` en todos los campos
+
+### 📊 Base de Datos
+
+- **Migración**: Script SQL para agregar nuevos campos a tabla existente
+- **Configuración por Defecto**:
+  - **Inicial**: Cualitativa, Promedio, D-A-B (A, B, C, D)
+  - **Primaria**: Cuantitativa, Porcentaje, 0-20-11 (0-20)
+  - **Secundaria**: Cuantitativa, Porcentaje, 0-20-11 (0-20)
+- **Índices**: Optimización para búsquedas por tipo de calificación
+- **Compatibilidad**: Campos VARCHAR para soportar tanto letras como números
+
+---
+
 ## [2025-09-11] - Mejora del Módulo de Grados con Campo Foto
 
 ### ✨ Nuevas Características
