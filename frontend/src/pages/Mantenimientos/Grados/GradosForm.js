@@ -36,6 +36,7 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [previewImage, setPreviewImage] = useState('');
 
   const isEdit = Boolean(grado);
 
@@ -50,6 +51,10 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
         activo: grado.activo !== undefined ? grado.activo : true,
         foto: grado.foto || 'default-grado.png'
       });
+      // Construir URL de imagen existente
+      const existingImageUrl = grado.foto && grado.foto !== 'default-grado.png' ?
+        `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${grado.foto}` : '';
+      setPreviewImage(existingImageUrl);
     }
   }, [grado]);
 
@@ -66,6 +71,42 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
         ...prev,
         [field]: ''
       }));
+    }
+  };
+
+  // Función para manejar subida de imagen
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Validar tipo de archivo
+      if (!file.type.startsWith('image/')) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Por favor selecciona un archivo de imagen válido'
+        });
+        return;
+      }
+
+      // Validar tamaño (máximo 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'La imagen debe ser menor a 2MB'
+        });
+        return;
+      }
+
+      // Crear preview inmediato
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+
+      // Actualizar el nombre del archivo en formData
+      setFormData(prev => ({ ...prev, foto: file.name }));
     }
   };
 
@@ -247,13 +288,12 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
             <Grid item xs={12}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                 <Avatar
-                  src={formData.foto && formData.foto !== 'default-grado.png' ? 
+                  src={previewImage || (formData.foto && formData.foto !== 'default-grado.png' ? 
                     `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${formData.foto}` : 
-                    null
-                  }
+                    null)}
                   sx={{ width: 80, height: 80, fontSize: '2rem' }}
                 >
-                  {formData.nombre ? formData.nombre.charAt(0).toUpperCase() : 'G'}
+                  {!previewImage && (formData.nombre ? formData.nombre.charAt(0).toUpperCase() : 'G')}
                 </Avatar>
                 <Box>
                   <Typography variant="subtitle2" gutterBottom>
@@ -267,12 +307,7 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
                     style={{ display: 'none' }}
                     id="foto-upload"
                     type="file"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        setFormData(prev => ({ ...prev, foto: file.name }));
-                      }
-                    }}
+                    onChange={handleImageUpload}
                   />
                   <label htmlFor="foto-upload">
                     <Button
