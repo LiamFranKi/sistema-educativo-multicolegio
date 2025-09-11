@@ -84,7 +84,15 @@ const ConfiguracionList = () => {
     nombre: '',
     descripcion: '',
     codigo: '',
-    orden: 0
+    orden: 0,
+    tipo_grados: 'Grados',
+    grado_minimo: 1,
+    grado_maximo: 10,
+    tipo_calificacion: 'Cuantitativa',
+    calificacion_final: 'Promedio',
+    nota_minima: 0,
+    nota_maxima: 20,
+    nota_aprobatoria: 11
   });
   const [nivelSearchTerm, setNivelSearchTerm] = useState('');
   const [nivelPagination, setNivelPagination] = useState({
@@ -157,7 +165,15 @@ const ConfiguracionList = () => {
       nombre: '',
       descripcion: '',
       codigo: '',
-      orden: niveles.length + 1
+      orden: niveles.length + 1,
+      tipo_grados: 'Grados',
+      grado_minimo: 1,
+      grado_maximo: 10,
+      tipo_calificacion: 'Cuantitativa',
+      calificacion_final: 'Promedio',
+      nota_minima: 0,
+      nota_maxima: 20,
+      nota_aprobatoria: 11
     });
     setNivelMode(true);
   };
@@ -168,7 +184,15 @@ const ConfiguracionList = () => {
       nombre: nivel.nombre,
       descripcion: nivel.descripcion || '',
       codigo: nivel.codigo,
-      orden: nivel.orden
+      orden: nivel.orden,
+      tipo_grados: nivel.tipo_grados || 'Grados',
+      grado_minimo: nivel.grado_minimo || 1,
+      grado_maximo: nivel.grado_maximo || 10,
+      tipo_calificacion: nivel.tipo_calificacion || 'Cuantitativa',
+      calificacion_final: nivel.calificacion_final || 'Promedio',
+      nota_minima: nivel.nota_minima || 0,
+      nota_maxima: nivel.nota_maxima || 20,
+      nota_aprobatoria: nivel.nota_aprobatoria || 11
     });
     setNivelMode(true);
   };
@@ -1033,6 +1057,152 @@ const ConfiguracionList = () => {
                   inputProps={{ min: 1 }}
                 />
               </Grid>
+
+              {/* Nuevos campos para configuración de niveles */}
+              <Grid item xs={12}>
+                <Divider sx={{ my: 2 }}>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Configuración de Grados
+                  </Typography>
+                </Divider>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Tipo Grados</InputLabel>
+                  <Select
+                    value={nivelForm.tipo_grados}
+                    onChange={(e) => handleNivelInputChange('tipo_grados', e.target.value)}
+                    label="Tipo Grados"
+                  >
+                    <MenuItem value="Grados">Grados</MenuItem>
+                    <MenuItem value="Años">Años</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={3}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Grado Mínimo</InputLabel>
+                  <Select
+                    value={nivelForm.grado_minimo}
+                    onChange={(e) => handleNivelInputChange('grado_minimo', parseInt(e.target.value))}
+                    label="Grado Mínimo"
+                  >
+                    {Array.from({ length: 11 }, (_, i) => (
+                      <MenuItem key={i} value={i}>{i}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={3}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Grado Máximo</InputLabel>
+                  <Select
+                    value={nivelForm.grado_maximo}
+                    onChange={(e) => handleNivelInputChange('grado_maximo', parseInt(e.target.value))}
+                    label="Grado Máximo"
+                  >
+                    {Array.from({ length: 11 }, (_, i) => (
+                      <MenuItem key={i} value={i}>{i}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Divider sx={{ my: 2 }}>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Configuración de Calificaciones
+                  </Typography>
+                </Divider>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Tipo Calificación</InputLabel>
+                  <Select
+                    value={nivelForm.tipo_calificacion}
+                    onChange={(e) => {
+                      handleNivelInputChange('tipo_calificacion', e.target.value);
+                      // Reset calificación final si cambia a Cualitativa
+                      if (e.target.value === 'Cualitativa') {
+                        handleNivelInputChange('calificacion_final', 'Promedio');
+                      }
+                    }}
+                    label="Tipo Calificación"
+                  >
+                    <MenuItem value="Cualitativa">Cualitativa</MenuItem>
+                    <MenuItem value="Cuantitativa">Cuantitativa</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              {nivelForm.tipo_calificacion === 'Cuantitativa' && (
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Calificación Final</InputLabel>
+                    <Select
+                      value={nivelForm.calificacion_final}
+                      onChange={(e) => handleNivelInputChange('calificacion_final', e.target.value)}
+                      label="Calificación Final"
+                    >
+                      <MenuItem value="Promedio">Promedio</MenuItem>
+                      <MenuItem value="Porcentaje">Porcentaje</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
+
+              {nivelForm.tipo_calificacion === 'Cuantitativa' && (
+                <>
+                  <Grid item xs={12} sm={4}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel>Nota Mínima</InputLabel>
+                      <Select
+                        value={nivelForm.nota_minima}
+                        onChange={(e) => handleNivelInputChange('nota_minima', parseInt(e.target.value))}
+                        label="Nota Mínima"
+                      >
+                        {Array.from({ length: 21 }, (_, i) => (
+                          <MenuItem key={i} value={i}>{i}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+
+                  <Grid item xs={12} sm={4}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel>Nota Máxima</InputLabel>
+                      <Select
+                        value={nivelForm.nota_maxima}
+                        onChange={(e) => handleNivelInputChange('nota_maxima', parseInt(e.target.value))}
+                        label="Nota Máxima"
+                      >
+                        {Array.from({ length: 21 }, (_, i) => (
+                          <MenuItem key={i} value={i}>{i}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+
+                  <Grid item xs={12} sm={4}>
+                    <FormControl fullWidth size="small">
+                      <InputLabel>Nota Aprobatoria</InputLabel>
+                      <Select
+                        value={nivelForm.nota_aprobatoria}
+                        onChange={(e) => handleNivelInputChange('nota_aprobatoria', parseInt(e.target.value))}
+                        label="Nota Aprobatoria"
+                      >
+                        {Array.from({ length: 21 }, (_, i) => (
+                          <MenuItem key={i} value={i}>{i}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </>
+              )}
             </Grid>
 
             <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
@@ -1112,7 +1282,9 @@ const ConfiguracionList = () => {
                   <TableCell align="center">Orden</TableCell>
                   <TableCell align="center">Nombre</TableCell>
                   <TableCell align="center">Código</TableCell>
-                  <TableCell align="center">Descripción</TableCell>
+                  <TableCell align="center">Tipo Grados</TableCell>
+                  <TableCell align="center">Grados</TableCell>
+                  <TableCell align="center">Tipo Calificación</TableCell>
                   <TableCell align="center">Estado</TableCell>
                   <TableCell align="center">Acciones</TableCell>
                 </TableRow>
@@ -1143,9 +1315,25 @@ const ConfiguracionList = () => {
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Typography variant="body2" color="text.secondary">
-                        {nivel.descripcion || '-'}
+                      <Chip 
+                        label={nivel.tipo_grados || 'Grados'} 
+                        size="small" 
+                        color="primary" 
+                        variant="outlined"
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography variant="body2">
+                        {nivel.grado_minimo || 1} - {nivel.grado_maximo || 10}
                       </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Chip 
+                        label={nivel.tipo_calificacion || 'Cuantitativa'} 
+                        size="small" 
+                        color={nivel.tipo_calificacion === 'Cualitativa' ? 'secondary' : 'success'} 
+                        variant="outlined"
+                      />
                     </TableCell>
                     <TableCell align="center">
                       <Chip

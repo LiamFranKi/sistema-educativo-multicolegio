@@ -16,7 +16,10 @@ const pool = new Pool({
 router.get('/', authenticateToken, async (req, res) => {
   try {
     const query = `
-      SELECT id, nombre, descripcion, codigo, orden, activo, created_at, updated_at
+      SELECT id, nombre, descripcion, codigo, orden, activo, 
+             tipo_grados, grado_minimo, grado_maximo, tipo_calificacion, 
+             calificacion_final, nota_minima, nota_maxima, nota_aprobatoria,
+             created_at, updated_at
       FROM niveles 
       ORDER BY orden ASC
     `;
@@ -42,7 +45,10 @@ router.get('/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
     
     const query = `
-      SELECT id, nombre, descripcion, codigo, orden, activo, created_at, updated_at
+      SELECT id, nombre, descripcion, codigo, orden, activo, 
+             tipo_grados, grado_minimo, grado_maximo, tipo_calificacion, 
+             calificacion_final, nota_minima, nota_maxima, nota_aprobatoria,
+             created_at, updated_at
       FROM niveles 
       WHERE id = $1
     `;
@@ -72,7 +78,12 @@ router.get('/:id', authenticateToken, async (req, res) => {
 // POST /api/niveles - Crear un nuevo nivel
 router.post('/', authenticateToken, async (req, res) => {
   try {
-    const { nombre, descripcion, codigo, orden } = req.body;
+    const { 
+      nombre, descripcion, codigo, orden, 
+      tipo_grados, grado_minimo, grado_maximo, 
+      tipo_calificacion, calificacion_final, 
+      nota_minima, nota_maxima, nota_aprobatoria 
+    } = req.body;
     
     // Validaciones
     if (!nombre || !codigo) {
@@ -109,12 +120,22 @@ router.post('/', authenticateToken, async (req, res) => {
     }
     
     const query = `
-      INSERT INTO niveles (nombre, descripcion, codigo, orden, activo)
-      VALUES ($1, $2, $3, $4, true)
-      RETURNING id, nombre, descripcion, codigo, orden, activo, created_at, updated_at
+      INSERT INTO niveles (nombre, descripcion, codigo, orden, activo, 
+                          tipo_grados, grado_minimo, grado_maximo, tipo_calificacion, 
+                          calificacion_final, nota_minima, nota_maxima, nota_aprobatoria)
+      VALUES ($1, $2, $3, $4, true, $5, $6, $7, $8, $9, $10, $11, $12)
+      RETURNING id, nombre, descripcion, codigo, orden, activo, 
+                tipo_grados, grado_minimo, grado_maximo, tipo_calificacion, 
+                calificacion_final, nota_minima, nota_maxima, nota_aprobatoria,
+                created_at, updated_at
     `;
     
-    const result = await pool.query(query, [nombre, descripcion, codigo, orden || 0]);
+    const result = await pool.query(query, [
+      nombre, descripcion, codigo, orden || 0,
+      tipo_grados || 'Grados', grado_minimo || 1, grado_maximo || 10,
+      tipo_calificacion || 'Cuantitativa', calificacion_final || 'Promedio',
+      nota_minima || 0, nota_maxima || 20, nota_aprobatoria || 11
+    ]);
     
     res.status(201).json({
       success: true,
@@ -134,7 +155,12 @@ router.post('/', authenticateToken, async (req, res) => {
 router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion, codigo, orden, activo } = req.body;
+    const { 
+      nombre, descripcion, codigo, orden, activo,
+      tipo_grados, grado_minimo, grado_maximo, 
+      tipo_calificacion, calificacion_final, 
+      nota_minima, nota_maxima, nota_aprobatoria 
+    } = req.body;
     
     // Validaciones
     if (!nombre || !codigo) {
@@ -185,12 +211,23 @@ router.put('/:id', authenticateToken, async (req, res) => {
     
     const query = `
       UPDATE niveles 
-      SET nombre = $1, descripcion = $2, codigo = $3, orden = $4, activo = $5, updated_at = CURRENT_TIMESTAMP
-      WHERE id = $6
-      RETURNING id, nombre, descripcion, codigo, orden, activo, created_at, updated_at
+      SET nombre = $1, descripcion = $2, codigo = $3, orden = $4, activo = $5, 
+          tipo_grados = $6, grado_minimo = $7, grado_maximo = $8, tipo_calificacion = $9, 
+          calificacion_final = $10, nota_minima = $11, nota_maxima = $12, nota_aprobatoria = $13,
+          updated_at = CURRENT_TIMESTAMP
+      WHERE id = $14
+      RETURNING id, nombre, descripcion, codigo, orden, activo, 
+                tipo_grados, grado_minimo, grado_maximo, tipo_calificacion, 
+                calificacion_final, nota_minima, nota_maxima, nota_aprobatoria,
+                created_at, updated_at
     `;
     
-    const result = await pool.query(query, [nombre, descripcion, codigo, orden || 0, activo !== false, id]);
+    const result = await pool.query(query, [
+      nombre, descripcion, codigo, orden || 0, activo !== false,
+      tipo_grados, grado_minimo, grado_maximo, tipo_calificacion,
+      calificacion_final, nota_minima, nota_maxima, nota_aprobatoria,
+      id
+    ]);
     
     res.json({
       success: true,
