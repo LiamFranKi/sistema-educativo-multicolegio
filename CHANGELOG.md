@@ -1,5 +1,47 @@
 # CHANGELOG
 
+## [2025-09-11] - Implementación del Módulo de Áreas Educativas
+
+### ✨ Nuevas Características
+
+- **Módulo de Áreas Educativas**: CRUD completo para gestionar áreas curriculares del sistema educativo
+- **12 Áreas Predefinidas**: Comunicación, Ciencia y Tecnología, Arte y Cultura, Computación, Ciencias Sociales, Formación en Valores, Educación Física, Matemática, Personal Social, Psicomotricidad, Inglés, Desarrollo Personal Ciudadanía y Cívica
+- **Búsqueda y filtros**: Soporte de parámetros `search`, `estado`, `page`, `limit`
+- **Códigos únicos**: Sistema de códigos cortos para identificación rápida (MAT, COM, ART, etc.)
+
+### 🔌 API y Backend
+
+- **Rutas**: `backend/routes/areas.js` con endpoints protegidos por token:
+  - `GET /api/areas` (listado con filtros y paginación)
+  - `GET /api/areas/:id` (detalle)
+  - `POST /api/areas` (crear)
+  - `PUT /api/areas/:id` (actualizar)
+  - `DELETE /api/areas/:id` (eliminar)
+- **Validaciones**: existencia de nombre/código, longitud de campos, estado válido
+- **Base de datos**: Tabla `areas` con índices optimizados
+- **Migración**: `create_areas_table.sql` con datos iniciales
+
+### 🎨 Frontend y UI
+
+- **Componentes**: `AreasList.js` y `AreasForm.js` siguiendo patrones establecidos
+- **Funcionalidades**:
+  - Lista con búsqueda en tiempo real y filtro por estado
+  - Formulario modal para crear/editar/ver áreas
+  - Chips para códigos y estados con colores distintivos
+  - Paginación completa con controles personalizados
+  - Validaciones en tiempo real
+- **Navegación**: Ruta `/dashboard/areas` integrada en AdminLayout y AdminSidebar
+- **Servicios**: `areasService` en `apiService.js` con métodos CRUD completos
+
+### 📊 Base de Datos
+
+- **Tabla**: `areas` con campos: id, nombre, descripcion, codigo, estado, created_at, updated_at
+- **Índices**: Optimizados para búsquedas por estado, código y nombre
+- **Datos iniciales**: 12 áreas educativas predefinidas con códigos únicos
+- **Restricciones**: UNIQUE en nombre y código, CHECK en estado
+
+---
+
 ## [2025-09-11] - Implementación del Módulo de Grados Educativos
 
 ### ✨ Nuevas Características

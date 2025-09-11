@@ -26,6 +26,8 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 
 **MÓDULO DE GRADOS EDUCATIVOS:** Implementación completa del CRUD para grados, relacionado a niveles educativos, con generación automática de códigos por nivel y orden (INI-03, PRI-01, SEC-05), filtros por nivel, búsqueda, paginación y validaciones de unicidad de código en backend.
 
+**MÓDULO DE ÁREAS EDUCATIVAS:** Implementación completa del CRUD para áreas curriculares con 12 áreas predefinidas (Comunicación, Matemática, Ciencias, etc.), códigos únicos cortos (MAT, COM, ART), búsqueda por nombre/descripción/código, filtro por estado, paginación y validaciones de unicidad en backend.
+
 **FORMATO DE GRILLA/TABLA:** Conversión de módulos de Configuración a formato de tabla profesional para ahorro de espacio y mejor escalabilidad, siguiendo el patrón establecido de otros módulos de mantenimiento.
 
 **SISTEMA DE GAMIFICACIÓN EDUCATIVA (FUTURO):** Planificación de un sistema de gamificación que convertirá cada bimestre en un "mundo" explorable estilo videojuego, con progresión lineal, elementos lúdicos (retos, puntos, avatares), y experiencia inmersiva para motivar el aprendizaje de los estudiantes.
@@ -43,13 +45,17 @@ frontend/src/
 ├── pages/
 │   ├── Mantenimientos/
 │   │   ├── Usuarios/
-│   │   └── Grados/
-│   │       ├── GradosList.js          # Lista principal
-│   │       ├── GradosForm.js          # Formulario (Nuevo/Editar)
-│   │       └── GradosView.js          # Vista de solo lectura
-│   │       ├── UsuariosList.js      # Lista principal con tabla
-│   │       ├── UsuarioForm.js       # Formulario (Nuevo/Editar)
-│   │       └── UsuarioView.js       # Vista detallada (solo lectura)
+│   │   │   ├── UsuariosList.js      # Lista principal con tabla
+│   │   │   ├── UsuarioForm.js       # Formulario (Nuevo/Editar)
+│   │   │   └── UsuarioView.js       # Vista detallada (solo lectura)
+│   │   ├── Grados/
+│   │   │   ├── GradosList.js          # Lista principal
+│   │   │   ├── GradosForm.js          # Formulario (Nuevo/Editar)
+│   │   │   └── GradosView.js          # Vista de solo lectura
+│   │   └── Areas/
+│   │       ├── AreasList.js           # Lista principal
+│   │       ├── AreasForm.js           # Formulario (Nuevo/Editar)
+│   │       └── index.js               # Exportaciones
 │   ├── Configuracion/
 │   │   └── ConfiguracionList.js     # Configuración del colegio
 │   └── MiPerfil.js                  # Módulo de perfil de usuario
@@ -204,19 +210,19 @@ frontend/src/
 // Estados principales:
 const [editing, setEditing] = useState(false);
 const [showPasswords, setShowPasswords] = useState(false);
-const [previewImage, setPreviewImage] = useState('');
+const [previewImage, setPreviewImage] = useState("");
 const [formData, setFormData] = useState({
-  nombres: '',
-  apellidos: '',
-  dni: '',
-  email: '',
-  telefono: '',
-  fecha_nacimiento: '',
-  direccion: '',
-  genero: '',
-  estado_civil: '',
-  profesion: '',
-  foto: ''
+  nombres: "",
+  apellidos: "",
+  dni: "",
+  email: "",
+  telefono: "",
+  fecha_nacimiento: "",
+  direccion: "",
+  genero: "",
+  estado_civil: "",
+  profesion: "",
+  foto: "",
 });
 
 // Integración con UserContext:
@@ -230,17 +236,17 @@ const { user, updateUser } = useUser();
 const loadUserData = useCallback(() => {
   if (user) {
     setFormData({
-      nombres: user.nombres || '',
-      apellidos: user.apellidos || '',
-      dni: user.dni || '',
-      email: user.email || '',
-      telefono: user.telefono || '',
-      fecha_nacimiento: user.fecha_nacimiento || '',
-      direccion: user.direccion || '',
-      genero: user.genero || '',
-      estado_civil: user.estado_civil || '',
-      profesion: user.profesion || '',
-      foto: user.foto || ''
+      nombres: user.nombres || "",
+      apellidos: user.apellidos || "",
+      dni: user.dni || "",
+      email: user.email || "",
+      telefono: user.telefono || "",
+      fecha_nacimiento: user.fecha_nacimiento || "",
+      direccion: user.direccion || "",
+      genero: user.genero || "",
+      estado_civil: user.estado_civil || "",
+      profesion: user.profesion || "",
+      foto: user.foto || "",
     });
   }
 }, [user]);
@@ -248,13 +254,13 @@ const loadUserData = useCallback(() => {
 // Actualización de perfil:
 const handleSaveProfile = async () => {
   if (!validateForm()) {
-    toast.error('Por favor corrige los errores en el formulario');
+    toast.error("Por favor corrige los errores en el formulario");
     return;
   }
-  
+
   const response = await userService.updateUser(userId, formData);
   if (response.success) {
-    toast.success('Perfil actualizado correctamente');
+    toast.success("Perfil actualizado correctamente");
     updateUser(response.user); // Actualizar contexto global
     setEditing(false);
   }
@@ -269,25 +275,25 @@ const handlePhotoUpload = async (event) => {
   const file = event.target.files[0];
   if (file) {
     // Validaciones
-    if (!file.type.startsWith('image/')) {
-      toast.error('Solo se permiten archivos de imagen');
+    if (!file.type.startsWith("image/")) {
+      toast.error("Solo se permiten archivos de imagen");
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('La imagen no puede ser mayor a 5MB');
+      toast.error("La imagen no puede ser mayor a 5MB");
       return;
     }
-    
+
     // Preview inmediato
     const reader = new FileReader();
     reader.onload = (e) => setPreviewImage(e.target.result);
     reader.readAsDataURL(file);
-    
+
     // Subida real
-    const response = await fileService.uploadFile(file, 'profile');
+    const response = await fileService.uploadFile(file, "profile");
     if (response.success) {
-      setFormData(prev => ({ ...prev, foto: response.filename }));
-      toast.success('Foto actualizada correctamente');
+      setFormData((prev) => ({ ...prev, foto: response.filename }));
+      toast.success("Foto actualizada correctamente");
       updateUser({ ...user, foto: response.filename });
     }
   }
@@ -298,17 +304,18 @@ const handlePhotoUpload = async (event) => {
 
 ```javascript
 // Estados para contraseñas:
-const [currentPassword, setCurrentPassword] = useState('');
-const [newPassword, setNewPassword] = useState('');
-const [confirmPassword, setConfirmPassword] = useState('');
+const [currentPassword, setCurrentPassword] = useState("");
+const [newPassword, setNewPassword] = useState("");
+const [confirmPassword, setConfirmPassword] = useState("");
 
 // Validación de contraseñas:
 const validatePasswordForm = () => {
   const errors = {};
-  if (!currentPassword) errors.currentPassword = 'Contraseña actual requerida';
-  if (!newPassword) errors.newPassword = 'Nueva contraseña requerida';
-  if (newPassword.length < 6) errors.newPassword = 'Mínimo 6 caracteres';
-  if (newPassword !== confirmPassword) errors.confirmPassword = 'Las contraseñas no coinciden';
+  if (!currentPassword) errors.currentPassword = "Contraseña actual requerida";
+  if (!newPassword) errors.newPassword = "Nueva contraseña requerida";
+  if (newPassword.length < 6) errors.newPassword = "Mínimo 6 caracteres";
+  if (newPassword !== confirmPassword)
+    errors.confirmPassword = "Las contraseñas no coinciden";
   setErrors(errors);
   return Object.keys(errors).length === 0;
 };
@@ -316,18 +323,18 @@ const validatePasswordForm = () => {
 // Cambio de contraseña:
 const handlePasswordChange = async () => {
   if (!validatePasswordForm()) return;
-  
+
   const response = await userService.changePassword(userId, {
     currentPassword,
-    newPassword
+    newPassword,
   });
-  
+
   if (response.success) {
-    toast.success('Contraseña actualizada correctamente');
+    toast.success("Contraseña actualizada correctamente");
     setShowPasswords(false);
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
   }
 };
 ```
@@ -338,16 +345,16 @@ const handlePasswordChange = async () => {
 // Validación general del formulario:
 const validateForm = () => {
   const errors = {};
-  
-  if (!formData.nombres.trim()) errors.nombres = 'Nombres requeridos';
-  if (!formData.email.trim()) errors.email = 'Email requerido';
+
+  if (!formData.nombres.trim()) errors.nombres = "Nombres requeridos";
+  if (!formData.email.trim()) errors.email = "Email requerido";
   if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
-    errors.email = 'Email inválido';
+    errors.email = "Email inválido";
   }
   if (formData.telefono && formData.telefono.length < 9) {
-    errors.telefono = 'Teléfono inválido';
+    errors.telefono = "Teléfono inválido";
   }
-  
+
   setErrors(errors);
   return Object.keys(errors).length === 0;
 };
@@ -359,28 +366,28 @@ const validateForm = () => {
 // En UserContext.js:
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  
+
   const updateUser = (updatedUser) => {
     setUser(updatedUser);
-    localStorage.setItem('usuario', JSON.stringify(updatedUser));
+    localStorage.setItem("usuario", JSON.stringify(updatedUser));
   };
-  
+
   const loadUserData = async () => {
     const userId = getUserId();
     if (userId) {
       const response = await userService.getUserById(userId);
       if (response.success) {
         setUser(response.user);
-        localStorage.setItem('usuario', JSON.stringify(response.user));
+        localStorage.setItem("usuario", JSON.stringify(response.user));
       }
     }
   };
-  
+
   // Siempre cargar datos frescos del servidor
   useEffect(() => {
     loadUserData();
   }, []);
-  
+
   return (
     <UserContext.Provider value={{ user, updateUser, loadUserData }}>
       {children}
@@ -397,15 +404,15 @@ const { user } = useUser();
 
 // Mostrar nombre completo:
 <Typography variant="h6">
-  {user?.nombres && user?.apellidos 
-    ? `${user.nombres} ${user.apellidos}` 
+  {user?.nombres && user?.apellidos
+    ? `${user.nombres} ${user.apellidos}`
     : user?.nombres || 'Administrador'
   }
 </Typography>
 
 // Mostrar foto actualizada:
-<Avatar 
-  src={getImageUrl(user?.foto)} 
+<Avatar
+  src={getImageUrl(user?.foto)}
   sx={{ width: 80, height: 80 }}
 />
 ```
@@ -437,20 +444,21 @@ const loadUserStats = async () => {
   try {
     setLoading(true);
     const response = await userService.getUsers();
-    
+
     if (response.success) {
       const usuarios = response.usuarios || [];
       const statsData = {
-        administradores: usuarios.filter(u => u.rol === 'Administrador').length,
-        docentes: usuarios.filter(u => u.rol === 'Docente').length,
-        alumnos: usuarios.filter(u => u.rol === 'Alumno').length,
-        apoderados: usuarios.filter(u => u.rol === 'Apoderado').length,
-        tutores: usuarios.filter(u => u.rol === 'Tutor').length,
+        administradores: usuarios.filter((u) => u.rol === "Administrador")
+          .length,
+        docentes: usuarios.filter((u) => u.rol === "Docente").length,
+        alumnos: usuarios.filter((u) => u.rol === "Alumno").length,
+        apoderados: usuarios.filter((u) => u.rol === "Apoderado").length,
+        tutores: usuarios.filter((u) => u.rol === "Tutor").length,
       };
       setStats(statsData);
     }
   } catch (error) {
-    toast.error('Error al cargar estadísticas');
+    toast.error("Error al cargar estadísticas");
   } finally {
     setLoading(false);
   }
@@ -461,17 +469,19 @@ const loadUserStats = async () => {
 
 ```javascript
 // Grid responsive para 5 tarjetas:
-<Box sx={{
-  display: 'grid',
-  gridTemplateColumns: {
-    xs: '1fr',           // 1 columna en móvil
-    sm: 'repeat(2, 1fr)', // 2 columnas en tablet
-    md: 'repeat(3, 1fr)', // 3 columnas en desktop
-    lg: 'repeat(5, 1fr)'  // 5 columnas en pantalla grande
-  },
-  gap: { xs: 1, sm: 2, md: 2 },
-  mb: 4,
-}}>
+<Box
+  sx={{
+    display: "grid",
+    gridTemplateColumns: {
+      xs: "1fr", // 1 columna en móvil
+      sm: "repeat(2, 1fr)", // 2 columnas en tablet
+      md: "repeat(3, 1fr)", // 3 columnas en desktop
+      lg: "repeat(5, 1fr)", // 5 columnas en pantalla grande
+    },
+    gap: { xs: 1, sm: 2, md: 2 },
+    mb: 4,
+  }}
+>
   {/* 5 tarjetas de estadísticas */}
 </Box>
 ```
@@ -480,20 +490,33 @@ const loadUserStats = async () => {
 
 ```javascript
 // Patrón de tarjeta de estadística:
-<Card sx={{ 
-  background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
-  color: 'white',
-  textAlign: 'center',
-  p: 3,
-  borderRadius: 2,
-  boxShadow: 3,
-  '&:hover': { transform: 'translateY(-4px)', boxShadow: 6 }
-}}>
-  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
+<Card
+  sx={{
+    background: "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
+    color: "white",
+    textAlign: "center",
+    p: 3,
+    borderRadius: 2,
+    boxShadow: 3,
+    "&:hover": { transform: "translateY(-4px)", boxShadow: 6 },
+  }}
+>
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      mb: 2,
+    }}
+  >
     <AdminPanelSettingsIcon sx={{ fontSize: 40, mr: 1 }} />
   </Box>
-  <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', mb: 1 }}>
-    {loading ? <CircularProgress size={24} color="inherit" /> : stats.administradores}
+  <Typography variant="h4" component="div" sx={{ fontWeight: "bold", mb: 1 }}>
+    {loading ? (
+      <CircularProgress size={24} color="inherit" />
+    ) : (
+      stats.administradores
+    )}
   </Typography>
   <Typography variant="h6" sx={{ opacity: 0.9 }}>
     Administradores
@@ -506,11 +529,11 @@ const loadUserStats = async () => {
 ```javascript
 // Colores específicos por rol:
 const cardColors = {
-  administradores: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)', // Azul
-  docentes: 'linear-gradient(135deg, #dc004e 0%, #c2185b 100%)',        // Rojo
-  alumnos: 'linear-gradient(135deg, #2e7d32 0%, #388e3c 100%)',         // Verde
-  apoderados: 'linear-gradient(135deg, #ed6c02 0%, #f57c00 100%)',       // Naranja
-  tutores: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',         // Morado
+  administradores: "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)", // Azul
+  docentes: "linear-gradient(135deg, #dc004e 0%, #c2185b 100%)", // Rojo
+  alumnos: "linear-gradient(135deg, #2e7d32 0%, #388e3c 100%)", // Verde
+  apoderados: "linear-gradient(135deg, #ed6c02 0%, #f57c00 100%)", // Naranja
+  tutores: "linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)", // Morado
 };
 ```
 
@@ -518,19 +541,21 @@ const cardColors = {
 
 ```javascript
 // Loading spinner global:
-{loading && (
-  <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
-    <CircularProgress size={60} />
-  </Box>
-)}
+{
+  loading && (
+    <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+      <CircularProgress size={60} />
+    </Box>
+  );
+}
 
 // Manejo de errores:
 try {
   const response = await userService.getUsers();
   // ... procesar datos
 } catch (error) {
-  console.error('Error cargando estadísticas:', error);
-  toast.error('Error al cargar estadísticas de usuarios');
+  console.error("Error cargando estadísticas:", error);
+  toast.error("Error al cargar estadísticas de usuarios");
 }
 ```
 
@@ -614,7 +639,7 @@ export const gradosAPI = {
   create: (data) => api.post("/grados", data),
   update: (id, data) => api.put(`/grados/${id}`, data),
   delete: (id) => api.delete(`/grados/${id}`),
-  getByNivel: (nivelId) => api.get(`/grados/nivel/${nivelId}`)
+  getByNivel: (nivelId) => api.get(`/grados/nivel/${nivelId}`),
 };
 ```
 
@@ -704,8 +729,8 @@ const handleSave = async (formData) => {
 
 // Ejemplo de filtro por nivel (Grados)
 const handleNivelFilter = (event) => {
-  setFilters(prev => ({ ...prev, nivel_id: event.target.value }));
-  setPagination(prev => ({ ...prev, page: 0 }));
+  setFilters((prev) => ({ ...prev, nivel_id: event.target.value }));
+  setPagination((prev) => ({ ...prev, page: 0 }));
 };
 ```
 
@@ -753,7 +778,7 @@ const handleNivelFilter = (event) => {
 - `EntidadList.js` - Lista principal
 - `EntidadForm.js` - Formulario
 - `EntidadView.js` - Vista detallada
-// Para Grados:
+  // Para Grados:
 - `GradosList.js`, `GradosForm.js`, `GradosView.js`
 
 ### **Variables:**

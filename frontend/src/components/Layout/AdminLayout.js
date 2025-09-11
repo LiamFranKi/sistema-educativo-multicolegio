@@ -13,6 +13,7 @@ import AdminDashboard from '../../pages/Admin/AdminDashboard';
 import UsuariosList from '../../pages/Mantenimientos/Usuarios/UsuariosList';
 import ConfiguracionList from '../../pages/Configuracion/ConfiguracionList';
 import { GradosList } from '../../pages/Mantenimientos/Grados';
+import { AreasList } from '../../pages/Mantenimientos/Areas';
 import Reportes from '../../pages/Admin/Reportes';
 import MiPerfil from '../../pages/MiPerfil';
 
@@ -142,6 +143,7 @@ const AdminLayout = ({ onLogout }) => {
               <Route path="/dashboard/usuarios/ver/:id" element={<UsuariosList />} />
               <Route path="/dashboard/configuracion" element={<ConfiguracionList />} />
               <Route path="/dashboard/grados" element={<GradosList />} />
+              <Route path="/dashboard/areas" element={<AreasList />} />
               <Route path="/reportes" element={<Reportes />} />
               <Route path="/perfil" element={<MiPerfil />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

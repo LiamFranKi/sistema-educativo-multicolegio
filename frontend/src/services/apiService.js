@@ -313,4 +313,32 @@ export const gradosService = {
   },
 };
 
+// Servicios de áreas educativas
+export const areasService = {
+  getAreas: async (params = {}) => {
+    const response = await api.get('/areas', { params });
+    return response.data;
+  },
+
+  getArea: async (id) => {
+    const response = await api.get(`/areas/${id}`);
+    return response.data;
+  },
+
+  createArea: async (areaData) => {
+    const response = await api.post('/areas', areaData);
+    return response.data;
+  },
+
+  updateArea: async (id, areaData) => {
+    const response = await api.put(`/areas/${id}`, areaData);
+    return response.data;
+  },
+
+  deleteArea: async (id) => {
+    const response = await api.delete(`/areas/${id}`);
+    return response.data;
+  },
+};
+
 export default api;

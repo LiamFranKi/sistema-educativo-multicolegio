@@ -11,6 +11,8 @@ Unificar el diseño visual de todos los componentes reutilizables del sistema pa
 **MÓDULO DE NIVELES EDUCATIVOS:** Implementación completa con interfaz de tabla profesional, búsqueda en tiempo real, paginación y CRUD completo para gestión de niveles educativos.
 **MÓDULO DE GRADOS EDUCATIVOS:** Diseño alineado al patrón de mantenimiento: header con icono `School`, búsqueda, filtro por nivel (`Select`), botón "Nuevo Grado", tabla con Chips de código/estado y paginación. Formulario con generación automática de `codigo` y helper texts.
 
+**MÓDULO DE ÁREAS EDUCATIVAS:** Diseño consistente con patrón de mantenimiento: header con icono `Category`, búsqueda por nombre/descripción/código, filtro por estado (`Select`), botón "Nueva Área", tabla con Chips de código/estado y paginación. Formulario con validaciones de códigos únicos y helper texts informativos.
+
 **FORMATO DE GRILLA/TABLA:** Conversión de módulos de Configuración a formato de tabla profesional para optimización de espacio y mejor escalabilidad, siguiendo patrones de diseño establecidos.
 
 **SISTEMA DE GAMIFICACIÓN EDUCATIVA (FUTURO):** Planificación de un sistema de gamificación que convertirá cada bimestre en un "mundo" explorable estilo videojuego, con progresión lineal, elementos lúdicos (retos, puntos, avatares), y experiencia inmersiva para motivar el aprendizaje de los estudiantes.
@@ -128,36 +130,38 @@ spacing: 8,                 // Unidad base de espaciado (8px)
 const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
   width: drawerWidth,
   flexShrink: 0,
-  '& .MuiDrawer-paper': {
+  "& .MuiDrawer-paper": {
     width: drawerWidth,
-    boxSizing: 'border-box',
-    backgroundColor: '#0165a1', // Azul elegante
-    borderRight: '1px solid #014a7a',
-    '&::-webkit-scrollbar': {
-      width: '3px',
+    boxSizing: "border-box",
+    backgroundColor: "#0165a1", // Azul elegante
+    borderRight: "1px solid #014a7a",
+    "&::-webkit-scrollbar": {
+      width: "3px",
     },
-    '&::-webkit-scrollbar-track': {
-      background: '#0165a1', // Mismo color que el fondo
+    "&::-webkit-scrollbar-track": {
+      background: "#0165a1", // Mismo color que el fondo
     },
-    '&::-webkit-scrollbar-thumb': {
-      background: '#0165a1', // Invisible
-      '&:hover': {
-        background: '#014a7a',
+    "&::-webkit-scrollbar-thumb": {
+      background: "#0165a1", // Invisible
+      "&:hover": {
+        background: "#014a7a",
       },
     },
   },
 }));
 
 // Información del usuario con padding mejorado
-<Box sx={{ 
-  p: 2, 
-  textAlign: "center", 
-  borderBottom: "1px solid #014a7a",
-  background: "rgba(1, 101, 161, 0.3)",
-  pt: 4, // Más padding superior
-  pb: 2,
-  px: 2
-}}>
+<Box
+  sx={{
+    p: 2,
+    textAlign: "center",
+    borderBottom: "1px solid #014a7a",
+    background: "rgba(1, 101, 161, 0.3)",
+    pt: 4, // Más padding superior
+    pb: 2,
+    px: 2,
+  }}
+>
   <Avatar
     sx={{
       width: 120, // 100% más grande que el original (60px)
@@ -184,16 +188,20 @@ const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
         }}
       />
     ) : (
-      <AccountCircleIcon sx={{ fontSize: 60, color: 'white' }} />
+      <AccountCircleIcon sx={{ fontSize: 60, color: "white" }} />
     )}
   </Avatar>
   <Typography variant="h6" color="white" fontWeight="bold" sx={{ mb: 0.5 }}>
     {user?.nombres || "Administrador"}
   </Typography>
-  <Typography variant="body2" color="rgba(255, 255, 255, 0.7)" sx={{ fontSize: '0.75rem', fontWeight: 500 }}>
+  <Typography
+    variant="body2"
+    color="rgba(255, 255, 255, 0.7)"
+    sx={{ fontSize: "0.75rem", fontWeight: 500 }}
+  >
     ADMINISTRADOR
   </Typography>
-</Box>
+</Box>;
 ```
 
 #### **Iconos del Menú con Colores Vibrantes:**
@@ -202,25 +210,25 @@ const StyledDrawer = styled(Drawer)(({ theme, open }) => ({
 // Función para colores vibrantes de iconos
 const getIconColor = (iconName) => {
   const colors = {
-    'Dashboard': '#00E676', // Verde brillante
-    'Mi Perfil': '#00B0FF', // Azul brillante
-    'Matrículas': '#FF6D00', // Naranja vibrante
-    'Usuarios': '#D500F9', // Púrpura vibrante
-    'Avatars': '#FF1744', // Rosa vibrante
-    'Grados': '#00E5FF', // Cian brillante
-    'Areas': '#FF8F00', // Naranja dorado
-    'Cursos': '#00C853', // Verde esmeralda
-    'Asignaturas': '#651FFF', // Índigo vibrante
-    'Publicaciones': '#FF3D00', // Rojo vibrante
-    'Eventos': '#76FF03', // Verde lima
-    'Comunicados': '#FFD600', // Amarillo dorado
-    'Mensajes': '#00E676', // Verde agua
-    'Alertas': '#FF1744', // Rojo intenso
-    'Notificaciones': '#7C4DFF', // Púrpura brillante
-    'Reportes': '#FF9100', // Naranja intenso
-    'Configuración': '#00BCD4', // Cian profundo
+    Dashboard: "#00E676", // Verde brillante
+    "Mi Perfil": "#00B0FF", // Azul brillante
+    Matrículas: "#FF6D00", // Naranja vibrante
+    Usuarios: "#D500F9", // Púrpura vibrante
+    Avatars: "#FF1744", // Rosa vibrante
+    Grados: "#00E5FF", // Cian brillante
+    Areas: "#FF8F00", // Naranja dorado
+    Cursos: "#00C853", // Verde esmeralda
+    Asignaturas: "#651FFF", // Índigo vibrante
+    Publicaciones: "#FF3D00", // Rojo vibrante
+    Eventos: "#76FF03", // Verde lima
+    Comunicados: "#FFD600", // Amarillo dorado
+    Mensajes: "#00E676", // Verde agua
+    Alertas: "#FF1744", // Rojo intenso
+    Notificaciones: "#7C4DFF", // Púrpura brillante
+    Reportes: "#FF9100", // Naranja intenso
+    Configuración: "#00BCD4", // Cian profundo
   };
-  return colors[iconName] || 'white';
+  return colors[iconName] || "white";
 };
 
 // Estilos de iconos con efectos visuales
@@ -228,19 +236,19 @@ const getIconColor = (iconName) => {
   sx={{
     color: getIconColor(item.text),
     minWidth: 40,
-    '& .MuiSvgIcon-root': {
-      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
-      textShadow: '0 1px 2px rgba(0,0,0,0.5)',
-      transition: 'all 0.2s ease-in-out',
-      '&:hover': {
-        transform: 'scale(1.1)',
-        filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))',
-      }
-    }
+    "& .MuiSvgIcon-root": {
+      filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
+      textShadow: "0 1px 2px rgba(0,0,0,0.5)",
+      transition: "all 0.2s ease-in-out",
+      "&:hover": {
+        transform: "scale(1.1)",
+        filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.4))",
+      },
+    },
   }}
 >
   {item.icon}
-</ListItemIcon>
+</ListItemIcon>;
 ```
 
 ### **B) Barra de Título Mejorada (AdminLayout.js)**
@@ -255,7 +263,7 @@ const getIconColor = (iconName) => {
     width: { sm: `calc(100% - ${drawerWidth}px)` },
     ml: { sm: `${drawerWidth}px` },
     zIndex: (theme) => theme.zIndex.drawer + 1,
-    backgroundColor: '#0165a1', // Mismo color que el sidebar
+    backgroundColor: "#0165a1", // Mismo color que el sidebar
   }}
 >
   <Toolbar>
@@ -343,17 +351,19 @@ const getIconColor = (iconName) => {
   </Typography>
 
   {/* Grid de estadísticas responsivo */}
-  <Box sx={{
-    display: 'grid',
-    gridTemplateColumns: {
-      xs: '1fr',           // 1 columna en móvil
-      sm: 'repeat(2, 1fr)', // 2 columnas en tablet
-      md: 'repeat(3, 1fr)', // 3 columnas en desktop
-      lg: 'repeat(5, 1fr)'  // 5 columnas en pantalla grande
-    },
-    gap: { xs: 1, sm: 2, md: 2 },
-    mb: 4,
-  }}>
+  <Box
+    sx={{
+      display: "grid",
+      gridTemplateColumns: {
+        xs: "1fr", // 1 columna en móvil
+        sm: "repeat(2, 1fr)", // 2 columnas en tablet
+        md: "repeat(3, 1fr)", // 3 columnas en desktop
+        lg: "repeat(5, 1fr)", // 5 columnas en pantalla grande
+      },
+      gap: { xs: 1, sm: 2, md: 2 },
+      mb: 4,
+    }}
+  >
     {/* 5 tarjetas de estadísticas */}
   </Box>
 </Box>
@@ -363,24 +373,37 @@ const getIconColor = (iconName) => {
 
 ```javascript
 // Patrón de tarjeta de estadística
-<Card sx={{ 
-  background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
-  color: 'white',
-  textAlign: 'center',
-  p: 3,
-  borderRadius: 2,
-  boxShadow: 3,
-  '&:hover': { 
-    transform: 'translateY(-4px)', 
-    boxShadow: 6,
-    transition: 'all 0.3s ease'
-  }
-}}>
-  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 2 }}>
+<Card
+  sx={{
+    background: "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
+    color: "white",
+    textAlign: "center",
+    p: 3,
+    borderRadius: 2,
+    boxShadow: 3,
+    "&:hover": {
+      transform: "translateY(-4px)",
+      boxShadow: 6,
+      transition: "all 0.3s ease",
+    },
+  }}
+>
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      mb: 2,
+    }}
+  >
     <AdminPanelSettingsIcon sx={{ fontSize: 40, mr: 1 }} />
   </Box>
-  <Typography variant="h4" component="div" sx={{ fontWeight: 'bold', mb: 1 }}>
-    {loading ? <CircularProgress size={24} color="inherit" /> : stats.administradores}
+  <Typography variant="h4" component="div" sx={{ fontWeight: "bold", mb: 1 }}>
+    {loading ? (
+      <CircularProgress size={24} color="inherit" />
+    ) : (
+      stats.administradores
+    )}
   </Typography>
   <Typography variant="h6" sx={{ opacity: 0.9 }}>
     Administradores
@@ -394,25 +417,25 @@ const getIconColor = (iconName) => {
 // Paleta de colores específica para cada rol
 const cardStyles = {
   administradores: {
-    background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)', // Azul
-    icon: <AdminPanelSettingsIcon />
+    background: "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)", // Azul
+    icon: <AdminPanelSettingsIcon />,
   },
   docentes: {
-    background: 'linear-gradient(135deg, #dc004e 0%, #c2185b 100%)', // Rojo
-    icon: <SchoolIcon />
+    background: "linear-gradient(135deg, #dc004e 0%, #c2185b 100%)", // Rojo
+    icon: <SchoolIcon />,
   },
   alumnos: {
-    background: 'linear-gradient(135deg, #2e7d32 0%, #388e3c 100%)', // Verde
-    icon: <PeopleIcon />
+    background: "linear-gradient(135deg, #2e7d32 0%, #388e3c 100%)", // Verde
+    icon: <PeopleIcon />,
   },
   apoderados: {
-    background: 'linear-gradient(135deg, #ed6c02 0%, #f57c00 100%)', // Naranja
-    icon: <FamilyIcon />
+    background: "linear-gradient(135deg, #ed6c02 0%, #f57c00 100%)", // Naranja
+    icon: <FamilyIcon />,
   },
   tutores: {
-    background: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)', // Morado
-    icon: <SupportIcon />
-  }
+    background: "linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)", // Morado
+    icon: <SupportIcon />,
+  },
 };
 ```
 
@@ -420,21 +443,25 @@ const cardStyles = {
 
 ```javascript
 // Spinner de carga global
-{loading && (
-  <Box sx={{ 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center',
-    minHeight: '200px',
-    flexDirection: 'column',
-    gap: 2
-  }}>
-    <CircularProgress size={60} />
-    <Typography variant="h6" color="text.secondary">
-      Cargando estadísticas...
-    </Typography>
-  </Box>
-)}
+{
+  loading && (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "200px",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
+      <CircularProgress size={60} />
+      <Typography variant="h6" color="text.secondary">
+        Cargando estadísticas...
+      </Typography>
+    </Box>
+  );
+}
 ```
 
 ---
@@ -1051,33 +1078,34 @@ export const theme = createTheme({
 // Contenedor principal del perfil
 <Box sx={{ p: 3 }}>
   {/* Header del perfil con avatar y botón de edición */}
-  <Box sx={{ 
-    display: 'flex', 
-    alignItems: 'center', 
-    justifyContent: 'space-between',
-    mb: 4,
-    p: 3,
-    backgroundColor: 'background.paper',
-    borderRadius: 2,
-    boxShadow: 1
-  }}>
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Avatar sx={{ width: 80, height: 80, mr: 3, bgcolor: 'primary.main' }}>
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      mb: 4,
+      p: 3,
+      backgroundColor: "background.paper",
+      borderRadius: 2,
+      boxShadow: 1,
+    }}
+  >
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Avatar sx={{ width: 80, height: 80, mr: 3, bgcolor: "primary.main" }}>
         {/* Foto del usuario o icono por defecto */}
       </Avatar>
       <Box>
         <Typography variant="h4" color="primary" gutterBottom>
-          {user?.nombres && user?.apellidos 
-            ? `${user.nombres} ${user.apellidos}` 
-            : user?.nombres || 'Usuario'
-          }
+          {user?.nombres && user?.apellidos
+            ? `${user.nombres} ${user.apellidos}`
+            : user?.nombres || "Usuario"}
         </Typography>
         <Typography variant="body1" color="text.secondary">
-          {user?.rol || 'Administrador'}
+          {user?.rol || "Administrador"}
         </Typography>
       </Box>
     </Box>
-    
+
     {/* Botón de edición */}
     <Button
       variant={editing ? "outlined" : "contained"}
@@ -1085,7 +1113,7 @@ export const theme = createTheme({
       onClick={editing ? handleCancelEdit : () => setEditing(true)}
       sx={{ borderRadius: 2 }}
     >
-      {editing ? 'Cancelar' : 'Editar Perfil'}
+      {editing ? "Cancelar" : "Editar Perfil"}
     </Button>
   </Box>
 </Box>
@@ -1099,40 +1127,52 @@ export const theme = createTheme({
   <Grid container spacing={3}>
     {/* Columna izquierda - Información personal */}
     <Grid item xs={12} md={6}>
-      <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', mb: 2 }}>
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ color: "primary.main", mb: 2 }}
+      >
         Información Personal
       </Typography>
-      
+
       {/* Campos de información básica */}
       <TextField
         fullWidth
         label="Nombres"
         value={formData.nombres}
-        onChange={(e) => setFormData(prev => ({ ...prev, nombres: e.target.value }))}
+        onChange={(e) =>
+          setFormData((prev) => ({ ...prev, nombres: e.target.value }))
+        }
         disabled={!editing}
         error={!!errors.nombres}
         helperText={errors.nombres}
         sx={{ mb: 2 }}
       />
-      
+
       <TextField
         fullWidth
         label="Apellidos"
         value={formData.apellidos}
-        onChange={(e) => setFormData(prev => ({ ...prev, apellidos: e.target.value }))}
+        onChange={(e) =>
+          setFormData((prev) => ({ ...prev, apellidos: e.target.value }))
+        }
         disabled={!editing}
         sx={{ mb: 2 }}
       />
-      
+
       {/* ... más campos */}
     </Grid>
-    
+
     {/* Columna derecha - Información adicional */}
     <Grid item xs={12} md={6}>
-      <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', mb: 2 }}>
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ color: "primary.main", mb: 2 }}
+      >
         Información Adicional
       </Typography>
-      
+
       {/* Campos de información adicional */}
       <TextField
         fullWidth
@@ -1140,16 +1180,20 @@ export const theme = createTheme({
         multiline
         rows={3}
         value={formData.direccion}
-        onChange={(e) => setFormData(prev => ({ ...prev, direccion: e.target.value }))}
+        onChange={(e) =>
+          setFormData((prev) => ({ ...prev, direccion: e.target.value }))
+        }
         disabled={!editing}
         sx={{ mb: 2 }}
       />
-      
+
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel>Género</InputLabel>
         <Select
           value={formData.genero}
-          onChange={(e) => setFormData(prev => ({ ...prev, genero: e.target.value }))}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, genero: e.target.value }))
+          }
           disabled={!editing}
           label="Género"
         >
@@ -1158,7 +1202,7 @@ export const theme = createTheme({
           <MenuItem value="Otro">Otro</MenuItem>
         </Select>
       </FormControl>
-      
+
       {/* ... más campos */}
     </Grid>
   </Grid>
@@ -1169,14 +1213,14 @@ export const theme = createTheme({
 
 ```javascript
 // Sección de foto con preview
-<Box sx={{ mt: 3, p: 3, backgroundColor: 'grey.50', borderRadius: 2 }}>
-  <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', mb: 2 }}>
+<Box sx={{ mt: 3, p: 3, backgroundColor: "grey.50", borderRadius: 2 }}>
+  <Typography variant="h6" gutterBottom sx={{ color: "primary.main", mb: 2 }}>
     Foto de Perfil
   </Typography>
-  
-  <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+
+  <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
     {/* Avatar actual */}
-    <Avatar sx={{ width: 100, height: 100, bgcolor: 'primary.main' }}>
+    <Avatar sx={{ width: 100, height: 100, bgcolor: "primary.main" }}>
       {previewImage ? (
         <img
           src={previewImage}
@@ -1203,12 +1247,12 @@ export const theme = createTheme({
         <AccountCircleIcon sx={{ fontSize: 50 }} />
       )}
     </Avatar>
-    
+
     {/* Botón de subida */}
     <Box>
       <input
         accept="image/*"
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
         id="photo-upload"
         type="file"
         onChange={handlePhotoUpload}
@@ -1222,10 +1266,14 @@ export const theme = createTheme({
           disabled={!editing}
           sx={{ borderRadius: 2 }}
         >
-          {editing ? 'Cambiar Foto' : 'Ver Foto'}
+          {editing ? "Cambiar Foto" : "Ver Foto"}
         </Button>
       </label>
-      <Typography variant="caption" display="block" sx={{ mt: 1, color: 'text.secondary' }}>
+      <Typography
+        variant="caption"
+        display="block"
+        sx={{ mt: 1, color: "text.secondary" }}
+      >
         Máximo 5MB. Formatos: JPG, PNG, GIF
       </Typography>
     </Box>
@@ -1237,135 +1285,153 @@ export const theme = createTheme({
 
 ```javascript
 // Sección de cambio de contraseña (solo en modo edición)
-{editing && (
-  <Box sx={{ mt: 3, p: 3, backgroundColor: 'warning.light', borderRadius: 2 }}>
-    <Typography variant="h6" gutterBottom sx={{ color: 'warning.dark', mb: 2 }}>
-      Cambio de Contraseña
-    </Typography>
-    
-    {!showPasswords ? (
-      <Button
-        variant="outlined"
-        startIcon={<LockIcon />}
-        onClick={() => setShowPasswords(true)}
-        sx={{ borderRadius: 2 }}
+{
+  editing && (
+    <Box
+      sx={{ mt: 3, p: 3, backgroundColor: "warning.light", borderRadius: 2 }}
+    >
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ color: "warning.dark", mb: 2 }}
       >
-        Cambiar Contraseña
-      </Button>
-    ) : (
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <TextField
-          fullWidth
-          label="Contraseña Actual"
-          type="password"
-          value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
-          error={!!errors.currentPassword}
-          helperText={errors.currentPassword}
-        />
-        <TextField
-          fullWidth
-          label="Nueva Contraseña"
-          type="password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          error={!!errors.newPassword}
-          helperText={errors.newPassword}
-        />
-        <TextField
-          fullWidth
-          label="Confirmar Nueva Contraseña"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          error={!!errors.confirmPassword}
-          helperText={errors.confirmPassword}
-        />
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button
-            variant="contained"
-            onClick={handlePasswordChange}
-            disabled={saving}
-            sx={{ borderRadius: 2 }}
-          >
-            {saving ? <CircularProgress size={20} /> : 'Cambiar Contraseña'}
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={() => setShowPasswords(false)}
-            sx={{ borderRadius: 2 }}
-          >
-            Cancelar
-          </Button>
+        Cambio de Contraseña
+      </Typography>
+
+      {!showPasswords ? (
+        <Button
+          variant="outlined"
+          startIcon={<LockIcon />}
+          onClick={() => setShowPasswords(true)}
+          sx={{ borderRadius: 2 }}
+        >
+          Cambiar Contraseña
+        </Button>
+      ) : (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <TextField
+            fullWidth
+            label="Contraseña Actual"
+            type="password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            error={!!errors.currentPassword}
+            helperText={errors.currentPassword}
+          />
+          <TextField
+            fullWidth
+            label="Nueva Contraseña"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            error={!!errors.newPassword}
+            helperText={errors.newPassword}
+          />
+          <TextField
+            fullWidth
+            label="Confirmar Nueva Contraseña"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            error={!!errors.confirmPassword}
+            helperText={errors.confirmPassword}
+          />
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button
+              variant="contained"
+              onClick={handlePasswordChange}
+              disabled={saving}
+              sx={{ borderRadius: 2 }}
+            >
+              {saving ? <CircularProgress size={20} /> : "Cambiar Contraseña"}
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => setShowPasswords(false)}
+              sx={{ borderRadius: 2 }}
+            >
+              Cancelar
+            </Button>
+          </Box>
         </Box>
-      </Box>
-    )}
-  </Box>
-)}
+      )}
+    </Box>
+  );
+}
 ```
 
 ### **Botones de Acción:**
 
 ```javascript
 // Botones de acción (solo en modo edición)
-{editing && (
-  <Box sx={{ 
-    display: 'flex', 
-    justifyContent: 'flex-end', 
-    gap: 2, 
-    mt: 4,
-    pt: 3,
-    borderTop: '1px solid #e0e0e0'
-  }}>
-    <Button
-      variant="outlined"
-      onClick={handleCancelEdit}
-      sx={{ borderRadius: 2 }}
+{
+  editing && (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "flex-end",
+        gap: 2,
+        mt: 4,
+        pt: 3,
+        borderTop: "1px solid #e0e0e0",
+      }}
     >
-      Cancelar
-    </Button>
-    <Button
-      variant="contained"
-      onClick={handleSaveProfile}
-      disabled={saving}
-      startIcon={saving ? <CircularProgress size={20} /> : <SaveIcon />}
-      sx={{ borderRadius: 2 }}
-    >
-      {saving ? 'Guardando...' : 'Guardar Cambios'}
-    </Button>
-  </Box>
-)}
+      <Button
+        variant="outlined"
+        onClick={handleCancelEdit}
+        sx={{ borderRadius: 2 }}
+      >
+        Cancelar
+      </Button>
+      <Button
+        variant="contained"
+        onClick={handleSaveProfile}
+        disabled={saving}
+        startIcon={saving ? <CircularProgress size={20} /> : <SaveIcon />}
+        sx={{ borderRadius: 2 }}
+      >
+        {saving ? "Guardando..." : "Guardar Cambios"}
+      </Button>
+    </Box>
+  );
+}
 ```
 
 ### **Estados Visuales del Perfil:**
 
 ```javascript
 // Estado de carga
-{loading && (
-  <Box sx={{ 
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center',
-    minHeight: '400px',
-    flexDirection: 'column',
-    gap: 2
-  }}>
-    <CircularProgress size={60} />
-    <Typography variant="h6" color="text.secondary">
-      Cargando perfil...
-    </Typography>
-  </Box>
-)}
+{
+  loading && (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "400px",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
+      <CircularProgress size={60} />
+      <Typography variant="h6" color="text.secondary">
+        Cargando perfil...
+      </Typography>
+    </Box>
+  );
+}
 
 // Estado de error
-{error && (
-  <Alert severity="error" sx={{ borderRadius: 2, mb: 3 }}>
-    <Typography variant="subtitle2" gutterBottom>
-      Error al cargar el perfil
-    </Typography>
-    <Typography variant="body2">{error}</Typography>
-  </Alert>
-)}
+{
+  error && (
+    <Alert severity="error" sx={{ borderRadius: 2, mb: 3 }}>
+      <Typography variant="subtitle2" gutterBottom>
+        Error al cargar el perfil
+      </Typography>
+      <Typography variant="body2">{error}</Typography>
+    </Alert>
+  );
+}
 ```
 
 ### **Responsive Design del Perfil:**
@@ -1391,8 +1457,8 @@ export const theme = createTheme({
 >
 
 // Botones responsivos
-<Box sx={{ 
-  display: 'flex', 
+<Box sx={{
+  display: 'flex',
   flexDirection: { xs: 'column', sm: 'row' },
   gap: 2,
   justifyContent: 'flex-end'
@@ -1430,20 +1496,22 @@ El sistema de gamificación transformará la experiencia de aprendizaje en una a
 // Componente principal del mundo de aprendizaje
 const LearningWorld = () => {
   return (
-    <Box sx={{ 
-      width: '100vw', 
-      height: '100vh', 
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      zIndex: 9999
-    }}>
+    <Box
+      sx={{
+        width: "100vw",
+        height: "100vh",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        zIndex: 9999,
+      }}
+    >
       {/* Mapa del mundo con islas flotantes */}
       <WorldMap>
         {/* Bimestre 1 - Mundo Desbloqueado */}
-        <FloatingIsland 
-          status="unlocked" 
+        <FloatingIsland
+          status="unlocked"
           progress={75}
           biome="forest"
           position={{ x: 100, y: 200 }}
@@ -1456,8 +1524,8 @@ const LearningWorld = () => {
         </FloatingIsland>
 
         {/* Bimestre 2 - Mundo Bloqueado */}
-        <FloatingIsland 
-          status="locked" 
+        <FloatingIsland
+          status="locked"
           progress={0}
           biome="desert"
           position={{ x: 400, y: 150 }}
@@ -1480,57 +1548,57 @@ const LearningWorld = () => {
 const GamificationElements = {
   // Barras de progreso
   progressBar: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: '20px',
-    height: '8px',
-    overflow: 'hidden',
-    '& .MuiLinearProgress-bar': {
-      background: 'linear-gradient(90deg, #4CAF50, #8BC34A)',
-      borderRadius: '20px'
-    }
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: "20px",
+    height: "8px",
+    overflow: "hidden",
+    "& .MuiLinearProgress-bar": {
+      background: "linear-gradient(90deg, #4CAF50, #8BC34A)",
+      borderRadius: "20px",
+    },
   },
 
   // Cristales de recompensa
   crystalReward: {
-    width: '40px',
-    height: '40px',
-    background: 'linear-gradient(45deg, #00E5FF, #2196F3)',
-    borderRadius: '50%',
-    boxShadow: '0 0 20px rgba(0, 229, 255, 0.6)',
-    animation: 'pulse 2s infinite',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-    fontSize: '20px'
+    width: "40px",
+    height: "40px",
+    background: "linear-gradient(45deg, #00E5FF, #2196F3)",
+    borderRadius: "50%",
+    boxShadow: "0 0 20px rgba(0, 229, 255, 0.6)",
+    animation: "pulse 2s infinite",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "white",
+    fontSize: "20px",
   },
 
   // Avatares desbloqueados
   avatarUnlocked: {
-    width: '60px',
-    height: '60px',
-    borderRadius: '50%',
-    border: '3px solid #4CAF50',
-    boxShadow: '0 0 15px rgba(76, 175, 80, 0.5)',
-    transition: 'all 0.3s ease',
-    '&:hover': {
-      transform: 'scale(1.1)',
-      boxShadow: '0 0 25px rgba(76, 175, 80, 0.8)'
-    }
+    width: "60px",
+    height: "60px",
+    borderRadius: "50%",
+    border: "3px solid #4CAF50",
+    boxShadow: "0 0 15px rgba(76, 175, 80, 0.5)",
+    transition: "all 0.3s ease",
+    "&:hover": {
+      transform: "scale(1.1)",
+      boxShadow: "0 0 25px rgba(76, 175, 80, 0.8)",
+    },
   },
 
   // Puntos y logros
   pointsDisplay: {
-    position: 'absolute',
-    top: '20px',
-    right: '20px',
-    background: 'rgba(0, 0, 0, 0.7)',
-    color: 'white',
-    padding: '10px 20px',
-    borderRadius: '25px',
-    fontSize: '18px',
-    fontWeight: 'bold'
-  }
+    position: "absolute",
+    top: "20px",
+    right: "20px",
+    background: "rgba(0, 0, 0, 0.7)",
+    color: "white",
+    padding: "10px 20px",
+    borderRadius: "25px",
+    fontSize: "18px",
+    fontWeight: "bold",
+  },
 };
 ```
 
@@ -1541,39 +1609,39 @@ const GamificationElements = {
 const ProgressStates = {
   locked: {
     opacity: 0.3,
-    filter: 'grayscale(100%)',
-    cursor: 'not-allowed',
-    '&:hover': {
-      transform: 'none'
-    }
+    filter: "grayscale(100%)",
+    cursor: "not-allowed",
+    "&:hover": {
+      transform: "none",
+    },
   },
-  
+
   unlocked: {
     opacity: 1,
-    filter: 'none',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    '&:hover': {
-      transform: 'scale(1.05)',
-      boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)'
-    }
+    filter: "none",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    "&:hover": {
+      transform: "scale(1.05)",
+      boxShadow: "0 10px 30px rgba(0, 0, 0, 0.3)",
+    },
   },
-  
+
   inProgress: {
     opacity: 0.8,
-    filter: 'none',
-    cursor: 'pointer',
-    border: '3px solid #FF9800',
-    animation: 'glow 2s infinite alternate'
+    filter: "none",
+    cursor: "pointer",
+    border: "3px solid #FF9800",
+    animation: "glow 2s infinite alternate",
   },
-  
+
   completed: {
     opacity: 1,
-    filter: 'none',
-    cursor: 'pointer',
-    border: '3px solid #4CAF50',
-    boxShadow: '0 0 20px rgba(76, 175, 80, 0.5)'
-  }
+    filter: "none",
+    cursor: "pointer",
+    border: "3px solid #4CAF50",
+    boxShadow: "0 0 20px rgba(76, 175, 80, 0.5)",
+  },
 };
 ```
 
@@ -1587,12 +1655,12 @@ const keyframes = `
     50% { transform: scale(1.1); }
     100% { transform: scale(1); }
   }
-  
+
   @keyframes glow {
     0% { box-shadow: 0 0 5px rgba(255, 152, 0, 0.5); }
     100% { box-shadow: 0 0 20px rgba(255, 152, 0, 0.8); }
   }
-  
+
   @keyframes float {
     0% { transform: translateY(0px); }
     50% { transform: translateY(-10px); }
@@ -1602,11 +1670,11 @@ const keyframes = `
 
 // Aplicación de animaciones
 const FloatingIsland = styled(Box)({
-  animation: 'float 3s ease-in-out infinite',
-  '&:hover': {
-    animation: 'none',
-    transform: 'translateY(-5px)'
-  }
+  animation: "float 3s ease-in-out infinite",
+  "&:hover": {
+    animation: "none",
+    transform: "translateY(-5px)",
+  },
 });
 ```
 
@@ -1616,65 +1684,65 @@ const FloatingIsland = styled(Box)({
 // Estructura de datos para el sistema de gamificación
 const GamificationData = {
   student: {
-    id: 'student_123',
-    name: 'Juan Pérez',
-    level: 'Secundaria',
+    id: "student_123",
+    name: "Juan Pérez",
+    level: "Secundaria",
     totalPoints: 1250,
     currentBimestre: 1,
-    unlockedAvatars: ['avatar_1', 'avatar_3'],
-    achievements: ['first_complete', 'perfect_score']
+    unlockedAvatars: ["avatar_1", "avatar_3"],
+    achievements: ["first_complete", "perfect_score"],
   },
-  
+
   course: {
-    id: 'math_001',
-    name: 'Matemáticas',
-    level: 'Secundaria',
+    id: "math_001",
+    name: "Matemáticas",
+    level: "Secundaria",
     bimestres: [
       {
-        id: 'bimestre_1',
-        name: 'Números Enteros',
-        status: 'in_progress', // locked, unlocked, in_progress, completed
+        id: "bimestre_1",
+        name: "Números Enteros",
+        status: "in_progress", // locked, unlocked, in_progress, completed
         progress: 75,
         world: {
-          biome: 'forest',
-          theme: 'green',
-          position: { x: 100, y: 200 }
+          biome: "forest",
+          theme: "green",
+          position: { x: 100, y: 200 },
         },
         topics: [
           {
-            id: 'topic_1',
-            name: 'Suma y Resta',
-            status: 'completed',
-            points: 100
+            id: "topic_1",
+            name: "Suma y Resta",
+            status: "completed",
+            points: 100,
           },
           {
-            id: 'topic_2',
-            name: 'Multiplicación',
-            status: 'in_progress',
-            points: 50
-          }
+            id: "topic_2",
+            name: "Multiplicación",
+            status: "in_progress",
+            points: 50,
+          },
         ],
         tasks: [
           {
-            id: 'task_1',
-            name: 'Ejercicios Prácticos',
-            status: 'pending',
+            id: "task_1",
+            name: "Ejercicios Prácticos",
+            status: "pending",
             points: 150,
-            type: 'practice'
-          }
+            type: "practice",
+          },
         ],
         exams: [
           {
-            id: 'exam_1',
-            name: 'Examen Bimestral',
-            status: 'locked',
+            id: "exam_1",
+            name: "Examen Bimestral",
+            status: "locked",
             points: 300,
-            type: 'final'
-          }
-        ]
-      }
-    ]
-  }
+            type: "final",
+          },
+        ],
+      },
+    ],
+  },
 };
 ```
 
@@ -1698,16 +1766,25 @@ El sistema implementa un formato de grilla/tabla profesional para módulos de co
 ### **Estructura de Tabla:**
 
 ```jsx
-<Paper sx={{ mb: 2, overflow: 'hidden', borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+<Paper
+  sx={{
+    mb: 2,
+    overflow: "hidden",
+    borderRadius: 2,
+    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+  }}
+>
   {/* Header con título y botón "Nuevo" */}
-  <Box sx={{
-    p: 2,
-    borderBottom: '1px solid #e0e0e0',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  }}>
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+  <Box
+    sx={{
+      p: 2,
+      borderBottom: "1px solid #e0e0e0",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}
+  >
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
       <IconComponent color="primary" sx={{ fontSize: 20 }} />
       <Typography variant="h6" color="primary">
         Título del Módulo
@@ -1720,20 +1797,26 @@ El sistema implementa un formato de grilla/tabla profesional para módulos de co
 
   {/* Formulario de creación/edición */}
   {mode && (
-    <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', backgroundColor: 'grey.50' }}>
+    <Box
+      sx={{
+        p: 2,
+        borderBottom: "1px solid #e0e0e0",
+        backgroundColor: "grey.50",
+      }}
+    >
       {/* Formulario aquí */}
     </Box>
   )}
 
   {/* Barra de búsqueda */}
-  <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+  <Box sx={{ p: 2, borderBottom: "1px solid #e0e0e0" }}>
     <TextField
       placeholder="Buscar..."
       variant="outlined"
       size="small"
       InputProps={{
         startAdornment: <SearchIcon />,
-        endAdornment: <ClearIcon />
+        endAdornment: <ClearIcon />,
       }}
       sx={{ width: 400 }}
     />
@@ -1743,15 +1826,13 @@ El sistema implementa un formato de grilla/tabla profesional para módulos de co
   <TableContainer>
     <Table>
       <TableHead>
-        <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+        <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
           <TableCell align="center">Columna 1</TableCell>
           <TableCell align="center">Columna 2</TableCell>
           <TableCell align="center">Acciones</TableCell>
         </TableRow>
       </TableHead>
-      <TableBody>
-        {/* Filas de datos */}
-      </TableBody>
+      <TableBody>{/* Filas de datos */}</TableBody>
     </Table>
   </TableContainer>
 
@@ -1791,4 +1872,5 @@ El sistema implementa un formato de grilla/tabla profesional para módulos de co
 
 - ✅ **Niveles Educativos**: CRUD completo con búsqueda y paginación
 - ✅ **Grados Educativos**: CRUD completo con filtro por nivel, Chips de estado/código y generación automática de códigos
+- ✅ **Áreas Educativas**: CRUD completo con 12 áreas predefinidas, códigos únicos y filtros por estado
 - ✅ **Gestión de Años Escolares**: Con ordenamiento por año descendente
