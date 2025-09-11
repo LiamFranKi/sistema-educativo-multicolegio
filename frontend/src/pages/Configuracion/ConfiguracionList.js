@@ -1014,7 +1014,7 @@ const ConfiguracionList = () => {
             </Typography>
 
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   fullWidth
                   label="Nombre del Nivel"
@@ -1024,7 +1024,7 @@ const ConfiguracionList = () => {
                   required
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   fullWidth
                   label="Código"
@@ -1033,6 +1033,17 @@ const ConfiguracionList = () => {
                   size="small"
                   required
                   inputProps={{ maxLength: 10 }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  fullWidth
+                  label="Orden"
+                  type="number"
+                  value={nivelForm.orden}
+                  onChange={(e) => handleNivelInputChange('orden', parseInt(e.target.value) || 0)}
+                  size="small"
+                  inputProps={{ min: 1 }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -1044,17 +1055,6 @@ const ConfiguracionList = () => {
                   size="small"
                   multiline
                   rows={2}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Orden"
-                  type="number"
-                  value={nivelForm.orden}
-                  onChange={(e) => handleNivelInputChange('orden', parseInt(e.target.value) || 0)}
-                  size="small"
-                  inputProps={{ min: 1 }}
                 />
               </Grid>
 
