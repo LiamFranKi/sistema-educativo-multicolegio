@@ -1125,7 +1125,21 @@ const ConfiguracionList = () => {
                   <InputLabel>Tipo Calificación</InputLabel>
                   <Select
                     value={nivelForm.tipo_calificacion}
-                    onChange={(e) => handleNivelInputChange('tipo_calificacion', e.target.value)}
+                    onChange={(e) => {
+                      const newType = e.target.value;
+                      handleNivelInputChange('tipo_calificacion', newType);
+
+                      // Reset valores de notas según el tipo
+                      if (newType === 'Cualitativa') {
+                        handleNivelInputChange('nota_minima', 'D');
+                        handleNivelInputChange('nota_maxima', 'A');
+                        handleNivelInputChange('nota_aprobatoria', 'B');
+                      } else {
+                        handleNivelInputChange('nota_minima', '0');
+                        handleNivelInputChange('nota_maxima', '20');
+                        handleNivelInputChange('nota_aprobatoria', '11');
+                      }
+                    }}
                     label="Tipo Calificación"
                   >
                     <MenuItem value="Cualitativa">Cualitativa</MenuItem>
