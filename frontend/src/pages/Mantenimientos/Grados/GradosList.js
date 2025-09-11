@@ -79,7 +79,7 @@ const GradosList = () => {
         search: searchTerm || undefined,
         nivel_id: nivelFilter || undefined
       };
-      
+
       const response = await gradosService.getGrados(params);
       setGrados(response.grados);
       setPagination(prev => ({
@@ -193,10 +193,10 @@ const GradosList = () => {
   const getNivelColor = (nivelId) => {
     const nivel = niveles.find(n => n.id === nivelId);
     if (!nivel) return 'default';
-    
+
     const colors = {
       'Inicial': 'primary',
-      'Primaria': 'success', 
+      'Primaria': 'success',
       'Secundaria': 'warning'
     };
     return colors[nivel.nombre] || 'default';
@@ -306,25 +306,24 @@ const GradosList = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell><strong>Foto</strong></TableCell>
-                <TableCell><strong>Grado</strong></TableCell>
-                <TableCell><strong>Código</strong></TableCell>
-                <TableCell><strong>Nivel</strong></TableCell>
-                <TableCell><strong>Orden</strong></TableCell>
-                <TableCell><strong>Estado</strong></TableCell>
+                <TableCell align="center"><strong>Foto</strong></TableCell>
+                <TableCell align="center"><strong>Grado</strong></TableCell>
+                <TableCell align="center"><strong>Código</strong></TableCell>
+                <TableCell align="center"><strong>Nivel</strong></TableCell>
+                <TableCell align="center"><strong>Estado</strong></TableCell>
                 <TableCell align="center"><strong>Acciones</strong></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {grados.map((grado) => (
                 <TableRow key={grado.id} hover>
-                  <TableCell>
+                  <TableCell align="center">
                     <Avatar
                       src={grado.foto ? `/uploads/${grado.foto}` : '/default-grado.png'}
-                      sx={{ width: 50, height: 50 }}
+                      sx={{ width: 50, height: 50, mx: 'auto' }}
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell align="center">
                     <Typography variant="body1" fontWeight="medium">
                       {grado.nombre}
                     </Typography>
@@ -334,30 +333,25 @@ const GradosList = () => {
                       </Typography>
                     )}
                   </TableCell>
-                  <TableCell>
-                    <Chip 
-                      label={grado.codigo} 
-                      size="small" 
-                      color="primary" 
+                  <TableCell align="center">
+                    <Chip
+                      label={grado.codigo}
+                      size="small"
+                      color="primary"
                       variant="outlined"
                     />
                   </TableCell>
-                  <TableCell>
-                    <Chip 
-                      label={getNivelNombre(grado.nivel_id)} 
-                      size="small" 
+                  <TableCell align="center">
+                    <Chip
+                      label={getNivelNombre(grado.nivel_id)}
+                      size="small"
                       color={getNivelColor(grado.nivel_id)}
                     />
                   </TableCell>
-                  <TableCell>
-                    <Typography variant="body2">
-                      {grado.orden}
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Chip 
-                      label={grado.activo ? 'Activo' : 'Inactivo'} 
-                      size="small" 
+                  <TableCell align="center">
+                    <Chip
+                      label={grado.activo ? 'Activo' : 'Inactivo'}
+                      size="small"
                       color={grado.activo ? 'success' : 'default'}
                     />
                   </TableCell>
@@ -392,7 +386,7 @@ const GradosList = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        
+
         <TablePagination
           rowsPerPageOptions={[5, 10, 25, 50]}
           component="div"
@@ -402,15 +396,15 @@ const GradosList = () => {
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
           labelRowsPerPage="Filas por página:"
-          labelDisplayedRows={({ from, to, count }) => 
+          labelDisplayedRows={({ from, to, count }) =>
             `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`
           }
         />
       </Paper>
 
       {/* Form Dialog */}
-      <Dialog 
-        open={formOpen} 
+      <Dialog
+        open={formOpen}
         onClose={handleFormClose}
         maxWidth="md"
         fullWidth
@@ -424,8 +418,8 @@ const GradosList = () => {
       </Dialog>
 
       {/* View Dialog */}
-      <Dialog 
-        open={viewOpen} 
+      <Dialog
+        open={viewOpen}
         onClose={handleViewClose}
         maxWidth="sm"
         fullWidth
