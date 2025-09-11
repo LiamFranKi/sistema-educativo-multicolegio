@@ -1170,18 +1170,15 @@ const ConfiguracionList = () => {
                     onChange={(e) => handleNivelInputChange('nota_minima', e.target.value)}
                     label="Nota Mínima"
                   >
-                    {nivelForm.tipo_calificacion === 'Cualitativa' ? (
-                      <>
-                        <MenuItem value="A">A</MenuItem>
-                        <MenuItem value="B">B</MenuItem>
-                        <MenuItem value="C">C</MenuItem>
-                        <MenuItem value="D">D</MenuItem>
-                      </>
-                    ) : (
-                      Array.from({ length: 21 }, (_, i) => (
-                        <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
-                      ))
-                    )}
+                    {/* Opciones Cualitativas */}
+                    <MenuItem value="A">A</MenuItem>
+                    <MenuItem value="B">B</MenuItem>
+                    <MenuItem value="C">C</MenuItem>
+                    <MenuItem value="D">D</MenuItem>
+                    {/* Opciones Cuantitativas */}
+                    {Array.from({ length: 21 }, (_, i) => (
+                      <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Grid>
@@ -1194,18 +1191,15 @@ const ConfiguracionList = () => {
                     onChange={(e) => handleNivelInputChange('nota_maxima', e.target.value)}
                     label="Nota Máxima"
                   >
-                    {nivelForm.tipo_calificacion === 'Cualitativa' ? (
-                      <>
-                        <MenuItem value="A">A</MenuItem>
-                        <MenuItem value="B">B</MenuItem>
-                        <MenuItem value="C">C</MenuItem>
-                        <MenuItem value="D">D</MenuItem>
-                      </>
-                    ) : (
-                      Array.from({ length: 21 }, (_, i) => (
-                        <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
-                      ))
-                    )}
+                    {/* Opciones Cualitativas */}
+                    <MenuItem value="A">A</MenuItem>
+                    <MenuItem value="B">B</MenuItem>
+                    <MenuItem value="C">C</MenuItem>
+                    <MenuItem value="D">D</MenuItem>
+                    {/* Opciones Cuantitativas */}
+                    {Array.from({ length: 21 }, (_, i) => (
+                      <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Grid>
@@ -1218,18 +1212,15 @@ const ConfiguracionList = () => {
                     onChange={(e) => handleNivelInputChange('nota_aprobatoria', e.target.value)}
                     label="Nota Aprobatoria"
                   >
-                    {nivelForm.tipo_calificacion === 'Cualitativa' ? (
-                      <>
-                        <MenuItem value="A">A</MenuItem>
-                        <MenuItem value="B">B</MenuItem>
-                        <MenuItem value="C">C</MenuItem>
-                        <MenuItem value="D">D</MenuItem>
-                      </>
-                    ) : (
-                      Array.from({ length: 21 }, (_, i) => (
-                        <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
-                      ))
-                    )}
+                    {/* Opciones Cualitativas */}
+                    <MenuItem value="A">A</MenuItem>
+                    <MenuItem value="B">B</MenuItem>
+                    <MenuItem value="C">C</MenuItem>
+                    <MenuItem value="D">D</MenuItem>
+                    {/* Opciones Cuantitativas */}
+                    {Array.from({ length: 21 }, (_, i) => (
+                      <MenuItem key={i} value={i.toString()}>{i}</MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Grid>
