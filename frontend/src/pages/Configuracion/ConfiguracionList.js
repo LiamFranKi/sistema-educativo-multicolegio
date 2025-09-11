@@ -1119,7 +1119,7 @@ const ConfiguracionList = () => {
                 </Divider>
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={3}>
                 <FormControl fullWidth size="small">
                   <InputLabel>Tipo Calificación</InputLabel>
                   <Select
@@ -1140,7 +1140,7 @@ const ConfiguracionList = () => {
               </Grid>
 
               {nivelForm.tipo_calificacion === 'Cuantitativa' && (
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={3}>
                   <FormControl fullWidth size="small">
                     <InputLabel>Calificación Final</InputLabel>
                     <Select
@@ -1158,7 +1158,7 @@ const ConfiguracionList = () => {
               {/* Campos de notas - Cualitativa (A, B, C, D) */}
               {nivelForm.tipo_calificacion === 'Cualitativa' && (
                 <>
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={3}>
                     <FormControl fullWidth size="small">
                       <InputLabel>Nota Mínima</InputLabel>
                       <Select
@@ -1174,7 +1174,7 @@ const ConfiguracionList = () => {
                     </FormControl>
                   </Grid>
 
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={3}>
                     <FormControl fullWidth size="small">
                       <InputLabel>Nota Máxima</InputLabel>
                       <Select
@@ -1190,7 +1190,7 @@ const ConfiguracionList = () => {
                     </FormControl>
                   </Grid>
 
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={3}>
                     <FormControl fullWidth size="small">
                       <InputLabel>Nota Aprobatoria</InputLabel>
                       <Select
@@ -1211,7 +1211,7 @@ const ConfiguracionList = () => {
               {/* Campos de notas - Cuantitativa (0-20) */}
               {nivelForm.tipo_calificacion === 'Cuantitativa' && (
                 <>
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={3}>
                     <FormControl fullWidth size="small">
                       <InputLabel>Nota Mínima</InputLabel>
                       <Select
@@ -1226,7 +1226,7 @@ const ConfiguracionList = () => {
                     </FormControl>
                   </Grid>
 
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={3}>
                     <FormControl fullWidth size="small">
                       <InputLabel>Nota Máxima</InputLabel>
                       <Select
@@ -1241,7 +1241,7 @@ const ConfiguracionList = () => {
                     </FormControl>
                   </Grid>
 
-                  <Grid item xs={12} sm={4}>
+                  <Grid item xs={12} sm={3}>
                     <FormControl fullWidth size="small">
                       <InputLabel>Nota Aprobatoria</InputLabel>
                       <Select
