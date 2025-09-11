@@ -24,6 +24,8 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 
 **MÓDULO DE NIVELES EDUCATIVOS:** Implementación completa del CRUD para niveles educativos (Inicial, Primaria, Secundaria) con base de datos, API y interfaz de tabla profesional con búsqueda y paginación.
 
+**MÓDULO DE GRADOS EDUCATIVOS:** Implementación completa del CRUD para grados, relacionado a niveles educativos, con generación automática de códigos por nivel y orden (INI-03, PRI-01, SEC-05), filtros por nivel, búsqueda, paginación y validaciones de unicidad de código en backend.
+
 **FORMATO DE GRILLA/TABLA:** Conversión de módulos de Configuración a formato de tabla profesional para ahorro de espacio y mejor escalabilidad, siguiendo el patrón establecido de otros módulos de mantenimiento.
 
 **SISTEMA DE GAMIFICACIÓN EDUCATIVA (FUTURO):** Planificación de un sistema de gamificación que convertirá cada bimestre en un "mundo" explorable estilo videojuego, con progresión lineal, elementos lúdicos (retos, puntos, avatares), y experiencia inmersiva para motivar el aprendizaje de los estudiantes.
@@ -40,7 +42,11 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 frontend/src/
 ├── pages/
 │   ├── Mantenimientos/
-│   │   └── Usuarios/
+│   │   ├── Usuarios/
+│   │   └── Grados/
+│   │       ├── GradosList.js          # Lista principal
+│   │       ├── GradosForm.js          # Formulario (Nuevo/Editar)
+│   │       └── GradosView.js          # Vista de solo lectura
 │   │       ├── UsuariosList.js      # Lista principal con tabla
 │   │       ├── UsuarioForm.js       # Formulario (Nuevo/Editar)
 │   │       └── UsuarioView.js       # Vista detallada (solo lectura)
@@ -77,6 +83,7 @@ frontend/src/
 - Filtros por estado/rol/etc.
 - Botones de acción por fila
 - Botón "Nuevo" en header
+- Filtros contextuales (ej. `nivel` para Grados)
 - Loading states
 - Manejo de errores
 ```
@@ -91,6 +98,7 @@ frontend/src/
 - Manejo de errores de API
 - Loading durante guardado
 - Modo: 'create' o 'edit'
+- Soporte de campos derivados (ej. generar `codigo` por `nivel` + `orden`)
 ```
 
 ### **C) Vista (View.js) - Modal de Solo Lectura**
@@ -598,6 +606,16 @@ export const colegiosAPI = {
   delete: (id) => api.delete(`/colegios/${id}`),
   search: (query) => api.get(`/colegios/search?q=${query}`),
 };
+
+// Ejemplo: Grados
+export const gradosAPI = {
+  getAll: (params) => api.get("/grados", { params }),
+  getById: (id) => api.get(`/grados/${id}`),
+  create: (data) => api.post("/grados", data),
+  update: (id, data) => api.put(`/grados/${id}`, data),
+  delete: (id) => api.delete(`/grados/${id}`),
+  getByNivel: (nivelId) => api.get(`/grados/nivel/${nivelId}`)
+};
 ```
 
 ---
@@ -617,6 +635,7 @@ const [pagination, setPagination] = useState({
   rowsPerPage: 10,
   total: 0,
 });
+const [filters, setFilters] = useState({ nivel_id: "", search: "" });
 ```
 
 ---
@@ -682,6 +701,12 @@ const handleSave = async (formData) => {
     toast.error("Error al guardar el registro");
   }
 };
+
+// Ejemplo de filtro por nivel (Grados)
+const handleNivelFilter = (event) => {
+  setFilters(prev => ({ ...prev, nivel_id: event.target.value }));
+  setPagination(prev => ({ ...prev, page: 0 }));
+};
 ```
 
 ---
@@ -728,6 +753,8 @@ const handleSave = async (formData) => {
 - `EntidadList.js` - Lista principal
 - `EntidadForm.js` - Formulario
 - `EntidadView.js` - Vista detallada
+// Para Grados:
+- `GradosList.js`, `GradosForm.js`, `GradosView.js`
 
 ### **Variables:**
 
@@ -760,6 +787,7 @@ const handleSave = async (formData) => {
 6. **Usar componentes reutilizables**
 7. **Aplicar validaciones**
 8. **Probar funcionalidad completa**
+9. **Para Grados**: generar `codigo` automáticamente según `nivel` y `orden`
 
 ---
 
@@ -800,6 +828,12 @@ const handleSave = async (formData) => {
 - Lista: Tabla con año, colegio, estado
 - Formulario: Selección de año y colegio
 - Vista: Detalles del año escolar
+
+### **Grados:**
+
+- Lista: Tabla con nombre, código (Chip), nivel (Chip por color), orden y estado
+- Formulario: Campos nombre, nivel (Select), orden (number), descripción, activo; `codigo` auto-generado y deshabilitado
+- Vista: Lectura de datos con nombre de nivel y metadatos
 
 ---
 

@@ -1,8 +1,49 @@
 # CHANGELOG
 
+## [2025-09-11] - Implementación del Módulo de Grados Educativos
+
+### ✨ Nuevas Características
+
+- **Módulo de Grados Educativos**: CRUD completo para gestionar grados por nivel (Inicial, Primaria, Secundaria)
+- **Integración con Niveles**: Filtros y visualización del nombre del nivel en listas y vistas
+- **Búsqueda y paginación**: Soporte de parámetros `search`, `nivel_id`, `page`, `limit`
+
+### 🔌 API y Backend
+
+- **Rutas**: `backend/routes/grados.js` con endpoints protegidos por token:
+  - `GET /api/grados` (listado con filtros y paginación)
+  - `GET /api/grados/:id` (detalle)
+  - `POST /api/grados` (crear)
+  - `PUT /api/grados/:id` (actualizar)
+  - `DELETE /api/grados/:id` (eliminar)
+  - `GET /api/grados/nivel/:nivel_id` (por nivel, solo activos)
+- **Validaciones**: existencia de `nivel_id`, unicidad de `codigo`, y verificación de entidades relacionadas
+- **Autenticación**: middleware mínimo para requerir token en todas las rutas de grados
+
+### 🗃️ Base de Datos
+
+- **Tabla `grados`**: `backend/migrations/create_grados_table.sql` (id, nombre, descripcion, codigo, nivel_id, orden, activo, timestamps)
+- **Índices**: sobre `nivel_id`, `activo`, `orden`, `codigo`, y compuesto (`nivel_id`, `orden`)
+- **Datos iniciales**: grados pre-cargados para Inicial, Primaria y Secundaria
+
+### 🖥️ Frontend
+
+- **Listado**: `frontend/src/pages/Mantenimientos/Grados/GradosList.js` con header, búsqueda, filtro por nivel, tabla y paginación
+- **Formulario**: `frontend/src/pages/Mantenimientos/Grados/GradosForm.js` con generación automática de `codigo` según nivel y `orden`, validaciones y estado activo
+- **Vista**: `frontend/src/pages/Mantenimientos/Grados/GradosView.js` (lectura) integrada desde el listado
+- **Servicio API**: `gradosService` en `frontend/src/services/apiService.js` con métodos `getGrados`, `getGrado`, `createGrado`, `updateGrado`, `deleteGrado`, `getGradosByNivel`
+
+### 🎨 Diseño
+
+- Chips de estado y códigos, iconografía y colores consistentes con los patrones visuales
+- Filtro de nivel mediante `Select`, botón de limpieza de filtros y helper texts en formulario
+
+---
+
 ## [2025-01-03] - Implementación de Niveles Educativos y Optimización de Configuración
 
 ### ✨ Nuevas Características
+
 - **Módulo de Niveles Educativos**: CRUD completo para gestión de niveles educativos (Inicial, Primaria, Secundaria)
 - **Base de datos de niveles**: Tabla `niveles` con campos id, nombre, descripción, código, orden, activo
 - **API de niveles**: Rutas completas para CRUD de niveles (`/api/niveles`)
@@ -11,6 +52,7 @@
 - **Ordenamiento inteligente**: Años escolares ordenados por año descendente (más reciente primero)
 
 ### 🎨 Mejoras de Diseño
+
 - **Interfaz de tabla profesional**: Reemplazo de cards por tablas con header, búsqueda y paginación
 - **Ahorro significativo de espacio**: Módulos más compactos y escalables
 - **Diseño consistente**: Mismo patrón visual en todos los módulos de mantenimiento
@@ -19,6 +61,7 @@
 - **Alertas contextuales**: Mensajes informativos movidos a sus secciones correspondientes
 
 ### 🔧 Cambios Técnicos
+
 - **Backend**: Nuevas rutas para CRUD de niveles con validaciones completas
 - **Frontend**: Servicio `nivelesService` para comunicación con la API
 - **Estados de paginación**: Implementación de paginación independiente para cada módulo
@@ -27,12 +70,14 @@
 - **Validaciones**: Campos requeridos y validaciones de duplicados en el backend
 
 ### 📊 Optimizaciones
+
 - **Espacio vertical reducido**: De múltiples cards a tablas compactas
 - **Escalabilidad mejorada**: Preparado para manejar muchos más registros
 - **UX optimizada**: Navegación más eficiente con búsqueda y paginación
 - **Mantenibilidad**: Código más limpio y reutilizable siguiendo patrones establecidos
 
 ### 🗃️ Base de Datos
+
 - **Tabla `niveles`**: Estructura completa con índices optimizados
 - **Datos iniciales**: 3 niveles educativos predefinidos (Inicial, Primaria, Secundaria)
 - **Relaciones preparadas**: Estructura lista para relacionar con grados futuros
@@ -42,6 +87,7 @@
 ## [FUTURO] - Funcionalidades Avanzadas Planificadas
 
 ### 📱 PWA (Progressive Web App)
+
 - **Conversión a PWA**: Transformar el sistema web en aplicación móvil instalable
 - **Manifest.json**: Configuración para instalación en dispositivos móviles
 - **Service Worker**: Funcionalidad offline y caché inteligente
@@ -50,9 +96,10 @@
 - **Funcionalidad Offline**: Acceso a datos guardados sin conexión a internet
 
 ### 🎮 Sistema de Gamificación y Juegos Interactivos
+
 - **Mundos Virtuales**: Cada bimestre como "mundo" explorable estilo videojuego
 - **Progresión Lineal**: Sistema de desbloqueo secuencial de contenido
-- **Elementos Lúdicos**: 
+- **Elementos Lúdicos**:
   - Sistema de puntos y XP por completar tareas
   - Badges y logros por hitos alcanzados
   - Avatares personalizables
@@ -74,6 +121,7 @@
   - Sistema de notificaciones para logros desbloqueados
 
 ### 🎯 Objetivos de las Funcionalidades Futuras
+
 1. **Experiencia Inmersiva**: Ocultar elementos de navegación tradicional para crear ambiente de videojuego
 2. **Motivación del Estudiante**: Elementos visuales atractivos que incentiven el aprendizaje
 3. **Progresión Visual**: Mostrar claramente el avance del estudiante
@@ -86,20 +134,23 @@
 ## [2025-01-03] - Mejoras de Diseño del Sidebar y Barra de Título
 
 ### ✨ Nuevas Características
+
 - **Barra de título con color consistente**: La barra de título ahora usa el mismo color azul (#0165a1) que el sidebar para mantener consistencia visual
-- **Iconos del menú mejorados**: 
+- **Iconos del menú mejorados**:
   - Colores más vibrantes y brillantes para mejor visibilidad
   - Efectos de sombra y profundidad para mayor contraste
   - Animaciones suaves al hacer hover (escala 1.1x)
   - Transiciones fluidas para mejor experiencia de usuario
 
 ### 🎨 Mejoras de Diseño
+
 - **Paleta de colores actualizada**: Iconos con colores más saturados y vibrantes
 - **Efectos visuales**: Sombras drop-shadow y text-shadow para mejor definición
 - **Interactividad mejorada**: Efectos hover con escalado y sombras intensificadas
 - **Consistencia visual**: Barra de título y sidebar con el mismo esquema de colores
 
 ### 🔧 Cambios Técnicos
+
 - Actualizado `AdminLayout.js` con `backgroundColor: '#0165a1'` en AppBar
 - Mejorada función `getIconColor()` en `AdminSidebar.js` con colores más vibrantes
 - Agregados estilos CSS avanzados para efectos visuales en iconos
@@ -110,18 +161,21 @@
 ## [2025-01-03] - Optimización del Módulo de Configuración
 
 ### ✨ Nuevas Características
+
 - **Layout compacto**: Reducción significativa del espacio vertical ocupado por el módulo de Configuración
 - **Logo dinámico**: Tamaño del logo se adapta según el modo (200% más grande en lectura, compacto en edición)
 - **Layout de 2 columnas**: Secciones "Configuración de Colores" y "Configuración de Fondo" ahora están lado a lado
 - **Vista previa mejorada**: Imagen de fondo con mejor posicionamiento y sin texto innecesario
 
 ### 🎨 Mejoras de Diseño
+
 - **Espaciado optimizado**: Reducción de padding, márgenes y gaps para mayor eficiencia espacial
 - **Componentes compactos**: TextFields, botones y elementos con `size="small"`
 - **Títulos ajustados**: Jerarquía visual optimizada (h4→h5, h5→h6, h6→subtitle1)
 - **Alturas equilibradas**: Ambos tabs de configuración con altura uniforme (minHeight: 200px)
 
 ### 🔧 Cambios Técnicos
+
 - **ConfiguracionList.js**: Reorganización completa del layout con Grid system
 - **Responsive design**: Layout adaptativo para móviles y desktop
 - **Flexbox layout**: Uso de flex para centrado y distribución de contenido
@@ -132,29 +186,34 @@
 ## [FUTURO] - Sistema de Gamificación Educativa (Planificación)
 
 ### 🎮 Concepto de Gamificación
+
 - **Experiencia inmersiva**: Ocultación de barra de menú para crear interfaz de videojuego
 - **Mundos de aprendizaje**: Cada bimestre convertido en un "mundo" explorable
 - **Progresión lineal**: Sistema de desbloqueo secuencial (no se puede avanzar sin completar el anterior)
 - **Elementos lúdicos**: Retos, puntos, avatares, tareas como "misiones"
 
 ### 📚 Estructura Educativa Peruana
+
 - **Niveles**: Inicial, Primaria, Secundaria
 - **Bimestres**: 4 bimestres por año académico
 - **Progresión**: Bimestre 1 → Bimestre 2 → Bimestre 3 → Bimestre 4
 
 ### 🗺️ Diseño de Interfaz
+
 - **Mapas estilo videojuego**: Interfaz visual atractiva con elementos fantásticos
 - **Navegación por mundos**: Cada bimestre como un "mundo" con temas, tareas y exámenes
 - **Sistema de recompensas**: Puntos, avatares y logros por completar retos
 - **Visualización de progreso**: Tracking visual del avance del estudiante
 
 ### 🛠️ Tecnologías Propuestas
+
 - **Frontend**: React + Three.js o Canvas para mapas 3D/2D
 - **Animaciones**: Framer Motion para transiciones suaves
 - **Gamificación**: Sistema de puntos, logros, avatares
 - **Base de datos**: Tracking de completitud y progresión
 
 ### 📋 Estructura de Implementación Futura
+
 ```
 📚 CURSO (ej: Matemáticas)
 ├── 🌍 BIMESTRE 1 (Mundo 1) - Desbloqueado
@@ -169,6 +228,7 @@
 ```
 
 ### 🎯 Objetivos de la Gamificación
+
 - **Motivación**: Hacer el aprendizaje más atractivo y dinámico
 - **Engagement**: Mantener el interés del estudiante a través de elementos lúdicos
 - **Progresión clara**: Visualización del avance y logros
@@ -179,20 +239,23 @@
 ## [2025-01-03] - Mejoras de Diseño del Sidebar y Barra de Título
 
 ### ✨ Nuevas Características
+
 - **Barra de título con color consistente**: La barra de título ahora usa el mismo color azul (#0165a1) que el sidebar para mantener consistencia visual
-- **Iconos del menú mejorados**: 
+- **Iconos del menú mejorados**:
   - Colores más vibrantes y brillantes para mejor visibilidad
   - Efectos de sombra y profundidad para mayor contraste
   - Animaciones suaves al hacer hover (escala 1.1x)
   - Transiciones fluidas para mejor experiencia de usuario
 
 ### 🎨 Mejoras de Diseño
+
 - **Paleta de colores actualizada**: Iconos con colores más saturados y vibrantes
 - **Efectos visuales**: Sombras drop-shadow y text-shadow para mejor definición
 - **Interactividad mejorada**: Efectos hover con escalado y sombras intensificadas
 - **Consistencia visual**: Barra de título y sidebar con el mismo esquema de colores
 
 ### 🔧 Cambios Técnicos
+
 - Actualizado `AdminLayout.js` con `backgroundColor: '#0165a1'` en AppBar
 - Mejorada función `getIconColor()` en `AdminSidebar.js` con colores más vibrantes
 - Agregados estilos CSS avanzados para efectos visuales en iconos
@@ -437,6 +500,7 @@
 #### **🎯 Características Implementadas:**
 
 ##### **1. Nuevos Campos de Usuario:**
+
 - **Apellidos** - Campo opcional para apellidos del usuario
 - **Dirección** - Campo opcional para dirección completa
 - **Género** - Selector con opciones: Masculino, Femenino, Otro
@@ -444,6 +508,7 @@
 - **Profesión** - Campo opcional para profesión u ocupación
 
 ##### **2. Gestión de Perfil Completa:**
+
 - **Edición de datos personales** con validaciones
 - **Subida de foto** con preview inmediato
 - **Cambio de contraseña** con validación de contraseña actual
@@ -451,6 +516,7 @@
 - **Formulario responsivo** con diseño profesional
 
 ##### **3. Contexto Global de Usuario:**
+
 - **UserContext** para manejo global de datos de usuario
 - **Actualización automática** de la interfaz al cambiar datos
 - **Sincronización** entre Mi Perfil y sidebar
@@ -459,17 +525,20 @@
 #### **🔧 Archivos Creados/Modificados:**
 
 ##### **Frontend:**
+
 - `frontend/src/pages/MiPerfil.js` - Página principal del módulo
 - `frontend/src/contexts/UserContext.js` - Contexto global de usuario
 - `frontend/src/components/Layout/AdminLayout.js` - Agregado UserProvider
 - `frontend/src/components/Sidebar/AdminSidebar.js` - Actualización de datos en tiempo real
 
 ##### **Backend:**
+
 - `backend/routes/usuarios.js` - Agregados nuevos campos en CRUD
 - `backend/migrations/add_user_profile_fields.sql` - Script de migración
 - `backend/config/database.js` - Configuración de contraseña de BD
 
 ##### **Base de Datos:**
+
 - **Nuevos campos en tabla `usuarios`:**
   - `apellidos` VARCHAR(100) - Apellidos del usuario
   - `direccion` TEXT - Dirección completa
@@ -480,67 +549,70 @@
 #### **📊 Funcionalidades del Módulo:**
 
 ##### **Gestión de Datos Personales:**
+
 ```javascript
 const formData = {
-  nombres: '',
-  apellidos: '',
-  dni: '',
-  email: '',
-  telefono: '',
-  fecha_nacimiento: '',
-  direccion: '',
-  genero: '',
-  estado_civil: '',
-  profesion: '',
-  foto: ''
+  nombres: "",
+  apellidos: "",
+  dni: "",
+  email: "",
+  telefono: "",
+  fecha_nacimiento: "",
+  direccion: "",
+  genero: "",
+  estado_civil: "",
+  profesion: "",
+  foto: "",
 };
 ```
 
 ##### **Subida de Foto:**
+
 ```javascript
 const handlePhotoUpload = async (event) => {
   const file = event.target.files[0];
   if (file) {
     // Validación de tipo y tamaño
-    if (!file.type.startsWith('image/')) {
-      toast.error('Solo se permiten archivos de imagen');
+    if (!file.type.startsWith("image/")) {
+      toast.error("Solo se permiten archivos de imagen");
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('La imagen no puede ser mayor a 5MB');
+      toast.error("La imagen no puede ser mayor a 5MB");
       return;
     }
-    
+
     // Preview inmediato
     const reader = new FileReader();
     reader.onload = (e) => setPreviewImage(e.target.result);
     reader.readAsDataURL(file);
-    
+
     // Subida real del archivo
-    const response = await fileService.uploadFile(file, 'profile');
+    const response = await fileService.uploadFile(file, "profile");
     if (response.success) {
-      setFormData(prev => ({ ...prev, foto: response.filename }));
-      toast.success('Foto actualizada correctamente');
+      setFormData((prev) => ({ ...prev, foto: response.filename }));
+      toast.success("Foto actualizada correctamente");
     }
   }
 };
 ```
 
 ##### **Cambio de Contraseña:**
+
 ```javascript
 const handlePasswordChange = async () => {
   if (!validatePasswordForm()) {
-    toast.error('Por favor corrige los errores en el formulario');
+    toast.error("Por favor corrige los errores en el formulario");
     return;
   }
-  
+
   const response = await userService.changePassword(userId, {
     currentPassword: currentPassword,
-    newPassword: newPassword
+    newPassword: newPassword,
   });
-  
+
   if (response.success) {
-    toast.success('Contraseña actualizada correctamente');
+    toast.success("Contraseña actualizada correctamente");
     setShowPasswords(false);
   }
 };
@@ -549,26 +621,27 @@ const handlePasswordChange = async () => {
 #### **🔄 Actualización en Tiempo Real:**
 
 ##### **UserContext:**
+
 ```javascript
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  
+
   const updateUser = (updatedUser) => {
     setUser(updatedUser);
-    localStorage.setItem('usuario', JSON.stringify(updatedUser));
+    localStorage.setItem("usuario", JSON.stringify(updatedUser));
   };
-  
+
   const loadUserData = async () => {
     const userId = getUserId();
     if (userId) {
       const response = await userService.getUserById(userId);
       if (response.success) {
         setUser(response.user);
-        localStorage.setItem('usuario', JSON.stringify(response.user));
+        localStorage.setItem("usuario", JSON.stringify(response.user));
       }
     }
   };
-  
+
   // Siempre cargar datos frescos del servidor
   useEffect(() => {
     loadUserData();
@@ -577,21 +650,22 @@ export const UserProvider = ({ children }) => {
 ```
 
 ##### **Sidebar Actualizado:**
+
 ```javascript
 const { user } = useUser();
 
 // Mostrar nombre completo
 <Typography variant="h6">
-  {user?.nombres && user?.apellidos 
-    ? `${user.nombres} ${user.apellidos}` 
-    : user?.nombres || 'Administrador'
-  }
-</Typography>
+  {user?.nombres && user?.apellidos
+    ? `${user.nombres} ${user.apellidos}`
+    : user?.nombres || "Administrador"}
+</Typography>;
 ```
 
 #### **🗄️ Estructura de Base de Datos Actualizada:**
 
 ##### **Tabla `usuarios` (Nueva Estructura):**
+
 ```sql
 CREATE TABLE usuarios (
     id SERIAL PRIMARY KEY,
@@ -615,6 +689,7 @@ CREATE TABLE usuarios (
 ```
 
 ##### **Índices Creados:**
+
 ```sql
 CREATE INDEX idx_usuarios_apellidos ON usuarios(apellidos);
 CREATE INDEX idx_usuarios_genero ON usuarios(genero);
@@ -624,17 +699,19 @@ CREATE INDEX idx_usuarios_profesion ON usuarios(profesion);
 #### **🔧 Backend - CRUD Actualizado:**
 
 ##### **GET /api/usuarios/:id:**
+
 ```javascript
 const result = await query(
-  `SELECT id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, 
-          direccion, genero, estado_civil, profesion, foto, rol, activo, 
-          created_at, updated_at 
+  `SELECT id, nombres, apellidos, dni, email, telefono, fecha_nacimiento,
+          direccion, genero, estado_civil, profesion, foto, rol, activo,
+          created_at, updated_at
    FROM usuarios WHERE id = $1`,
   [id]
 );
 ```
 
 ##### **PUT /api/usuarios/:id:**
+
 ```javascript
 const result = await query(
   `UPDATE usuarios
@@ -650,15 +727,27 @@ const result = await query(
        foto = COALESCE($10, foto),
        updated_at = NOW()
    WHERE id = $11
-   RETURNING id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, 
-             direccion, genero, estado_civil, profesion, foto, rol, activo, 
+   RETURNING id, nombres, apellidos, dni, email, telefono, fecha_nacimiento,
+             direccion, genero, estado_civil, profesion, foto, rol, activo,
              created_at, updated_at`,
-  [nombres, apellidos, email, telefono, fecha_nacimiento, direccion, 
-   genero, estado_civil, profesion, foto, id]
+  [
+    nombres,
+    apellidos,
+    email,
+    telefono,
+    fecha_nacimiento,
+    direccion,
+    genero,
+    estado_civil,
+    profesion,
+    foto,
+    id,
+  ]
 );
 ```
 
 #### **✅ Estado Final:**
+
 - ✅ **Módulo Mi Perfil** completamente funcional
 - ✅ **Nuevos campos** agregados a la base de datos
 - ✅ **Actualización en tiempo real** implementada
@@ -670,6 +759,7 @@ const result = await query(
 - ✅ **Sincronización** entre componentes
 
 #### **📚 Documentación Actualizada:**
+
 - **PATRON_CRUD.md** - Agregada sección de Mi Perfil
 - **PATRON_DISENO_VISUAL.md** - Agregada sección de Mi Perfil
 - **CHANGELOG.md** - Documentación completa de cambios
@@ -1482,12 +1572,14 @@ updateColegio({
 #### **🎯 Características Implementadas:**
 
 ##### **1. Estadísticas Reales:**
+
 - **Conteo automático** de usuarios por rol desde la base de datos
 - **Carga en tiempo real** al inicializar el dashboard
 - **Manejo de errores** con notificaciones toast
 - **Logging detallado** para debugging
 
 ##### **2. 5 Tarjetas Responsivas:**
+
 - **Administradores** - Azul (#1976d2)
 - **Docentes** - Rojo (#dc004e)
 - **Alumnos** - Verde (#2e7d32)
@@ -1495,12 +1587,14 @@ updateColegio({
 - **Tutores** - Morado (#9c27b0) - **NUEVA**
 
 ##### **3. Layout Responsivo:**
+
 - **Mobile (xs):** 1 columna
 - **Tablet (sm):** 2 columnas
 - **Desktop (md):** 3 columnas
 - **Pantalla grande (lg+):** 5 columnas
 
 ##### **4. Estados Visuales:**
+
 - **Loading spinner** durante carga de datos
 - **Hover effects** en tarjetas
 - **Gradientes** de colores por rol
@@ -1509,10 +1603,12 @@ updateColegio({
 #### **🔧 Archivos Modificados:**
 
 ##### **Frontend:**
+
 - `frontend/src/pages/Admin/AdminDashboard.js` - Dashboard principal con estadísticas reales
 - `frontend/src/services/apiService.js` - Servicio de usuarios corregido
 
 ##### **Patrones de Documentación:**
+
 - `PATRON_CRUD.md` - Agregada sección de Dashboard con estadísticas
 - `PATRON_DISENO_VISUAL.md` - Agregada sección de Dashboard con estadísticas
 - `CHANGELOG.md` - Documentación completa de cambios
@@ -1520,6 +1616,7 @@ updateColegio({
 #### **🐛 Correcciones Realizadas:**
 
 ##### **Error de Función:**
+
 - **Problema:** `userService.getUsuarios is not a function`
 - **Causa:** Llamada incorrecta a función inexistente
 - **Solución:** Corregido a `userService.getUsers()`
@@ -1528,25 +1625,27 @@ updateColegio({
 #### **📊 Funcionalidades del Dashboard:**
 
 ##### **Carga de Datos:**
+
 ```javascript
 const loadUserStats = async () => {
   try {
     setLoading(true);
     const response = await userService.getUsers();
-    
+
     if (response.success) {
       const usuarios = response.usuarios || [];
       const statsData = {
-        administradores: usuarios.filter(u => u.rol === 'Administrador').length,
-        docentes: usuarios.filter(u => u.rol === 'Docente').length,
-        alumnos: usuarios.filter(u => u.rol === 'Alumno').length,
-        apoderados: usuarios.filter(u => u.rol === 'Apoderado').length,
-        tutores: usuarios.filter(u => u.rol === 'Tutor').length,
+        administradores: usuarios.filter((u) => u.rol === "Administrador")
+          .length,
+        docentes: usuarios.filter((u) => u.rol === "Docente").length,
+        alumnos: usuarios.filter((u) => u.rol === "Alumno").length,
+        apoderados: usuarios.filter((u) => u.rol === "Apoderado").length,
+        tutores: usuarios.filter((u) => u.rol === "Tutor").length,
       };
       setStats(statsData);
     }
   } catch (error) {
-    toast.error('Error al cargar estadísticas');
+    toast.error("Error al cargar estadísticas");
   } finally {
     setLoading(false);
   }
@@ -1554,23 +1653,27 @@ const loadUserStats = async () => {
 ```
 
 ##### **Layout Responsivo:**
+
 ```javascript
-<Box sx={{
-  display: 'grid',
-  gridTemplateColumns: {
-    xs: '1fr',           // 1 columna en móvil
-    sm: 'repeat(2, 1fr)', // 2 columnas en tablet
-    md: 'repeat(3, 1fr)', // 3 columnas en desktop
-    lg: 'repeat(5, 1fr)'  // 5 columnas en pantalla grande
-  },
-  gap: { xs: 1, sm: 2, md: 2 },
-  mb: 4,
-}}>
+<Box
+  sx={{
+    display: "grid",
+    gridTemplateColumns: {
+      xs: "1fr", // 1 columna en móvil
+      sm: "repeat(2, 1fr)", // 2 columnas en tablet
+      md: "repeat(3, 1fr)", // 3 columnas en desktop
+      lg: "repeat(5, 1fr)", // 5 columnas en pantalla grande
+    },
+    gap: { xs: 1, sm: 2, md: 2 },
+    mb: 4,
+  }}
+>
   {/* 5 tarjetas de estadísticas */}
 </Box>
 ```
 
 #### **✅ Estado Final:**
+
 - ✅ **Dashboard funcional** con datos reales
 - ✅ **5 tarjetas responsivas** implementadas
 - ✅ **Estadísticas en tiempo real** funcionando

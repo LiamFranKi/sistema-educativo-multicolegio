@@ -9,6 +9,7 @@ Unificar el diseño visual de todos los componentes reutilizables del sistema pa
 **NOTA IMPORTANTE:** El sistema incluye temas dinámicos basados en la configuración del colegio, sidebar personalizado con información del usuario, barra de título mejorada con iconos de notificaciones y cerrar sesión, y módulo de configuración optimizado con layout compacto y diseño de 2 columnas.
 
 **MÓDULO DE NIVELES EDUCATIVOS:** Implementación completa con interfaz de tabla profesional, búsqueda en tiempo real, paginación y CRUD completo para gestión de niveles educativos.
+**MÓDULO DE GRADOS EDUCATIVOS:** Diseño alineado al patrón de mantenimiento: header con icono `School`, búsqueda, filtro por nivel (`Select`), botón "Nuevo Grado", tabla con Chips de código/estado y paginación. Formulario con generación automática de `codigo` y helper texts.
 
 **FORMATO DE GRILLA/TABLA:** Conversión de módulos de Configuración a formato de tabla profesional para optimización de espacio y mejor escalabilidad, siguiendo patrones de diseño establecidos.
 
@@ -1789,5 +1790,5 @@ El sistema implementa un formato de grilla/tabla profesional para módulos de co
 ### **Módulos Implementados:**
 
 - ✅ **Niveles Educativos**: CRUD completo con búsqueda y paginación
+- ✅ **Grados Educativos**: CRUD completo con filtro por nivel, Chips de estado/código y generación automática de códigos
 - ✅ **Gestión de Años Escolares**: Con ordenamiento por año descendente
-- 🔄 **Grados** (próximo): Relacionado con niveles educativos
