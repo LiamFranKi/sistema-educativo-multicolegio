@@ -20,7 +20,7 @@ import {
   Avatar,
   IconButton
 } from '@mui/material';
-import { Save as SaveIcon, Cancel as CancelIcon, PhotoCamera as PhotoCameraIcon } from '@mui/icons-material';
+import { Save as SaveIcon, Cancel as CancelIcon, PhotoCamera as PhotoCameraIcon, AutoFixHigh as AutoFixHighIcon } from '@mui/icons-material';
 import { gradosService, fileService } from '../../../services/apiService';
 import Swal from 'sweetalert2';
 
@@ -187,7 +187,8 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
     setFormData(prev => ({
       ...prev,
       nivel_id: nivelId,
-      codigo: generateCodigo(nivelId, prev.orden)
+      // Solo generar código automáticamente si el campo está vacío o es el valor por defecto
+      codigo: (!prev.codigo || prev.codigo === 'default-grado.png') ? generateCodigo(nivelId, prev.orden) : prev.codigo
     }));
   };
 
@@ -196,7 +197,15 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
     setFormData(prev => ({
       ...prev,
       orden: orden,
-      codigo: generateCodigo(prev.nivel_id, orden)
+      // Solo generar código automáticamente si el campo está vacío o es el valor por defecto
+      codigo: (!prev.codigo || prev.codigo === 'default-grado.png') ? generateCodigo(prev.nivel_id, orden) : prev.codigo
+    }));
+  };
+
+  const handleGenerateCode = () => {
+    setFormData(prev => ({
+      ...prev,
+      codigo: generateCodigo(prev.nivel_id, prev.orden)
     }));
   };
 
@@ -263,9 +272,20 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
                 value={formData.codigo}
                 onChange={handleInputChange('codigo')}
                 error={Boolean(errors.codigo)}
-                helperText={errors.codigo || 'Se genera automáticamente'}
+                helperText={errors.codigo || 'Ingresa un código único para el grado'}
                 required
-                disabled
+                InputProps={{
+                  endAdornment: (
+                    <IconButton
+                      onClick={handleGenerateCode}
+                      edge="end"
+                      title="Generar código automáticamente"
+                      disabled={!formData.nivel_id}
+                    >
+                      <AutoFixHighIcon />
+                    </IconButton>
+                  )
+                }}
               />
             </Grid>
 
