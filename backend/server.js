@@ -16,15 +16,15 @@ app.use(helmet({
 }));
 app.use(compression());
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutos
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 10000, // límite de 10000 requests por ventana (muy relajado para desarrollo)
-  message: {
-    error: 'Demasiadas solicitudes desde esta IP, intenta de nuevo más tarde.'
-  }
-});
-app.use('/api/', limiter);
+// Rate limiting - DESACTIVADO para desarrollo
+// const limiter = rateLimit({
+//   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutos
+//   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 10000, // límite de 10000 requests por ventana (muy relajado para desarrollo)
+//   message: {
+//     error: 'Demasiadas solicitudes desde esta IP, intenta de nuevo más tarde.'
+//   }
+// });
+// app.use('/api/', limiter);
 
 // CORS
 app.use(cors({
