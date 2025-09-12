@@ -234,32 +234,23 @@ router.get('/anios-escolares', async (req, res) => {
     const query = `
       SELECT anio, activo
       FROM anios_escolares
+      WHERE activo = true
       ORDER BY anio DESC
     `;
 
     const result = await pool.query(query);
 
-    // Si no hay datos, devolver años por defecto
+    // Si no hay años activos, devolver array vacío
     if (result.rows.length === 0) {
-      const aniosPorDefecto = [
-        { anio: 2025, activo: true },
-        { anio: 2024, activo: true },
-        { anio: 2023, activo: true }
-      ];
-      return res.json(aniosPorDefecto);
+      return res.json([]);
     }
 
     res.json(result.rows);
 
   } catch (error) {
     console.error('❌ Error obteniendo años escolares:', error);
-    // En caso de error, devolver años por defecto
-    const aniosPorDefecto = [
-      { anio: 2025, activo: true },
-      { anio: 2024, activo: true },
-      { anio: 2023, activo: true }
-    ];
-    res.json(aniosPorDefecto);
+    // En caso de error, devolver array vacío
+    res.json([]);
   }
 });
 
