@@ -787,6 +787,248 @@ const ConfiguracionList = () => {
         </Typography>
       </Box>
 
+      {/* Gestión de Años Escolares */}
+      <Paper sx={{ mb: 2, overflow: 'hidden', borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+        {/* Header con título y botón "Nuevo" */}
+        <Box sx={{
+          p: 2,
+          borderBottom: '1px solid #e0e0e0',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <CalendarIcon color="primary" sx={{ fontSize: 20 }} />
+            <Typography variant="h6" color="primary">
+              Gestión de Años Escolares
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setAnioEscolarMode(!anioEscolarMode)}
+            size="small"
+            disabled={saving}
+            sx={{ borderRadius: 2 }}
+          >
+            {anioEscolarMode ? 'Cancelar' : 'Nuevo Año'}
+          </Button>
+        </Box>
+
+        {/* Formulario de creación */}
+        {anioEscolarMode && (
+          <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', backgroundColor: 'grey.50' }}>
+            <Typography variant="h6" gutterBottom>
+              Crear Nuevo Año Escolar
+            </Typography>
+
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Año"
+                  type="number"
+                  value={nuevoAnio}
+                  onChange={(e) => setNuevoAnio(e.target.value)}
+                  placeholder="2025"
+                  size="small"
+                  inputProps={{ min: 2020, max: 2030 }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    variant="contained"
+                    onClick={handleCrearAnioEscolar}
+                    disabled={!nuevoAnio || saving}
+                    startIcon={saving ? <CircularProgress size={16} /> : <CheckCircleIcon />}
+                  >
+                    {saving ? 'Creando...' : 'Crear'}
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    onClick={() => {
+                      setAnioEscolarMode(false);
+                      setNuevoAnio('');
+                    }}
+                    disabled={saving}
+                  >
+                    Cancelar
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+        )}
+
+        {/* Barra de búsqueda */}
+        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+          <TextField
+            placeholder="Buscar por año o estado..."
+            variant="outlined"
+            size="small"
+            value={anioSearchTerm}
+            onChange={handleAnioSearch}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: 'text.secondary' }} />
+                </InputAdornment>
+              ),
+              endAdornment: anioSearchTerm && (
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    onClick={handleAnioClear}
+                    sx={{ color: 'text.secondary' }}
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            sx={{ width: 400 }}
+          />
+        </Box>
+
+        {/* Tabla */}
+        <TableContainer>
+          {aniosEscolares.length === 0 ? (
+            <Box sx={{
+              p: 4,
+              textAlign: 'center',
+              color: 'text.secondary'
+            }}>
+              <Typography variant="h6" gutterBottom>
+                No hay años escolares registrados
+              </Typography>
+              <Typography variant="body2">
+                {anioSearchTerm ? 'No se encontraron años con ese criterio de búsqueda' : 'Comienza creando un nuevo año escolar'}
+              </Typography>
+            </Box>
+          ) : (
+            <Table>
+              <TableHead>
+                <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+                  <TableCell align="center">Año</TableCell>
+                  <TableCell align="center">Estado</TableCell>
+                  <TableCell align="center">Año Actual</TableCell>
+                  <TableCell align="center">Fecha de Creación</TableCell>
+                  <TableCell align="center">Acciones</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedAnios.map((anio) => (
+                  <TableRow
+                    key={anio.id}
+                    hover
+                    sx={{
+                      '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
+                      '&:hover': { backgroundColor: '#e3f2fd' },
+                      ...(anio.anio === colegio.anio_escolar_actual && {
+                        backgroundColor: '#e3f2fd',
+                        borderLeft: '4px solid #1976d2'
+                      })
+                    }}
+                  >
+                    <TableCell align="center">
+                      <Typography variant="body2" fontWeight="medium">
+                        {anio.anio}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Chip
+                        label={anio.activo ? 'Activo' : 'Inactivo'}
+                        color={anio.activo ? 'success' : 'error'}
+                        size="small"
+                        variant="outlined"
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      {anio.anio === colegio.anio_escolar_actual ? (
+                        <Chip
+                          label="Año Actual"
+                          color="primary"
+                          size="small"
+                          icon={<CheckCircleIcon />}
+                        />
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">
+                          -
+                        </Typography>
+                      )}
+                    </TableCell>
+                    <TableCell align="center">
+                      <Typography variant="body2" color="text.secondary">
+                        {new Date(anio.created_at).toLocaleDateString('es-ES')}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center', flexWrap: 'wrap' }}>
+                        {anio.anio !== colegio.anio_escolar_actual && (
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            onClick={() => handleSetAnioActual(anio.anio)}
+                            disabled={!anio.activo || saving}
+                            sx={{ minWidth: 'auto', px: 1 }}
+                          >
+                            Establecer Actual
+                          </Button>
+                        )}
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          color={anio.activo ? 'warning' : 'success'}
+                          onClick={() => handleActualizarAnioEscolar(anio.id, !anio.activo)}
+                          disabled={saving}
+                          sx={{ minWidth: 'auto', px: 1 }}
+                        >
+                          {anio.activo ? 'Desactivar' : 'Activar'}
+                        </Button>
+                        <IconButton
+                          size="small"
+                          onClick={() => handleEliminarAnioEscolar(anio.id)}
+                          disabled={saving}
+                          sx={{ color: 'error.main' }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </TableContainer>
+
+        {/* Paginación */}
+        {filteredAnios.length > 0 && (
+          <TablePagination
+            component="div"
+            count={filteredAnios.length}
+            page={anioPagination.page}
+            onPageChange={handleAnioChangePage}
+            rowsPerPage={anioPagination.rowsPerPage}
+            onRowsPerPageChange={handleAnioChangeRowsPerPage}
+            rowsPerPageOptions={[5, 10, 25]}
+            labelRowsPerPage="Filas por página:"
+            labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+          />
+        )}
+
+        {/* Alerta informativa */}
+        <Box sx={{ p: 2, borderTop: '1px solid #e0e0e0' }}>
+          <Alert severity="info">
+            <Typography variant="body2">
+              <strong>Nota:</strong> Solo puede haber un año escolar actual activo.
+              Al establecer un nuevo año como actual, el anterior se desactivará automáticamente.
+            </Typography>
+          </Alert>
+        </Box>
+      </Paper>
+
       {/* Información del Colegio */}
       <Card sx={{ mb: 2 }}>
         <CardContent sx={{ p: 2 }}>
@@ -1131,33 +1373,20 @@ const ConfiguracionList = () => {
                   <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', height: '100%', minHeight: 140, pt: 1 }}>
                     {(editMode ? formData.background_imagen : colegio.background_imagen) ? (
                       <Box sx={{ textAlign: 'center', width: '100%' }}>
-                        {(() => {
-                          const imageSrc = editMode ? formData.background_imagen : colegio.background_imagen;
-                          console.log('Vista previa - editMode:', editMode);
-                          console.log('Vista previa - formData.background_imagen:', formData.background_imagen);
-                          console.log('Vista previa - colegio.background_imagen:', colegio.background_imagen);
-                          console.log('Vista previa - imageSrc final:', imageSrc);
-                          return (
-                            <img
-                              src={imageSrc}
-                              alt="Vista previa del fondo"
-                              style={{
-                                maxWidth: '100%',
-                                maxHeight: 100,
-                                borderRadius: 8,
-                                border: '2px solid #e0e0e0',
-                                objectFit: 'cover'
-                              }}
-                              onError={(e) => {
-                                console.error('Error cargando imagen de vista previa:', e.target.src);
-                                e.target.style.display = 'none';
-                              }}
-                              onLoad={() => {
-                                console.log('Imagen de vista previa cargada correctamente');
-                              }}
-                            />
-                          );
-                        })()}
+                        <img
+                          src={editMode ? formData.background_imagen : colegio.background_imagen}
+                          alt="Vista previa del fondo"
+                          style={{
+                            maxWidth: '100%',
+                            maxHeight: 100,
+                            borderRadius: 8,
+                            border: '2px solid #e0e0e0',
+                            objectFit: 'cover'
+                          }}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                        />
                       </Box>
                     ) : (
                       <Box sx={{ textAlign: 'center', color: 'text.secondary' }}>
@@ -1613,251 +1842,10 @@ const ConfiguracionList = () => {
         </Box>
       </Paper>
 
-      {/* Gestión de Años Escolares */}
-      <Paper sx={{ mb: 2, overflow: 'hidden', borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-        {/* Header con título y botón "Nuevo" */}
-        <Box sx={{
-          p: 2,
-          borderBottom: '1px solid #e0e0e0',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <CalendarIcon color="primary" sx={{ fontSize: 20 }} />
-            <Typography variant="h6" color="primary">
-              Gestión de Años Escolares
-            </Typography>
-          </Box>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => setAnioEscolarMode(!anioEscolarMode)}
-            size="small"
-            disabled={saving}
-            sx={{ borderRadius: 2 }}
-          >
-            {anioEscolarMode ? 'Cancelar' : 'Nuevo Año'}
-          </Button>
-        </Box>
-
-        {/* Formulario de creación */}
-        {anioEscolarMode && (
-          <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', backgroundColor: 'grey.50' }}>
-            <Typography variant="h6" gutterBottom>
-              Crear Nuevo Año Escolar
-            </Typography>
-
-            <Grid container spacing={2} alignItems="center">
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Año"
-                  type="number"
-                  value={nuevoAnio}
-                  onChange={(e) => setNuevoAnio(e.target.value)}
-                  placeholder="2025"
-                  size="small"
-                  inputProps={{ min: 2020, max: 2030 }}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <Button
-                    variant="contained"
-                    onClick={handleCrearAnioEscolar}
-                    disabled={!nuevoAnio || saving}
-                    startIcon={saving ? <CircularProgress size={16} /> : <CheckCircleIcon />}
-                  >
-                    {saving ? 'Creando...' : 'Crear'}
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    onClick={() => {
-                      setAnioEscolarMode(false);
-                      setNuevoAnio('');
-                    }}
-                    disabled={saving}
-                  >
-                    Cancelar
-                  </Button>
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
-        )}
-
-        {/* Barra de búsqueda */}
-        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
-          <TextField
-            placeholder="Buscar por año o estado..."
-            variant="outlined"
-            size="small"
-            value={anioSearchTerm}
-            onChange={handleAnioSearch}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: 'text.secondary' }} />
-                </InputAdornment>
-              ),
-              endAdornment: anioSearchTerm && (
-                <InputAdornment position="end">
-                  <IconButton
-                    size="small"
-                    onClick={handleAnioClear}
-                    sx={{ color: 'text.secondary' }}
-                  >
-                    <ClearIcon />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-            sx={{ width: 400 }}
-          />
-        </Box>
-
-        {/* Tabla */}
-        <TableContainer>
-          {aniosEscolares.length === 0 ? (
-            <Box sx={{
-              p: 4,
-              textAlign: 'center',
-              color: 'text.secondary'
-            }}>
-              <Typography variant="h6" gutterBottom>
-                No hay años escolares registrados
-              </Typography>
-              <Typography variant="body2">
-                {anioSearchTerm ? 'No se encontraron años con ese criterio de búsqueda' : 'Comienza creando un nuevo año escolar'}
-              </Typography>
-            </Box>
-          ) : (
-            <Table>
-              <TableHead>
-                <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                  <TableCell align="center">Año</TableCell>
-                  <TableCell align="center">Estado</TableCell>
-                  <TableCell align="center">Año Actual</TableCell>
-                  <TableCell align="center">Fecha de Creación</TableCell>
-                  <TableCell align="center">Acciones</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {paginatedAnios.map((anio) => (
-                  <TableRow
-                    key={anio.id}
-                    hover
-                    sx={{
-                      '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
-                      '&:hover': { backgroundColor: '#e3f2fd' },
-                      ...(anio.anio === colegio.anio_escolar_actual && {
-                        backgroundColor: '#e3f2fd',
-                        borderLeft: '4px solid #1976d2'
-                      })
-                    }}
-                  >
-                    <TableCell align="center">
-                      <Typography variant="body2" fontWeight="medium">
-                        {anio.anio}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Chip
-                        label={anio.activo ? 'Activo' : 'Inactivo'}
-                        color={anio.activo ? 'success' : 'error'}
-                        size="small"
-                        variant="outlined"
-                      />
-                    </TableCell>
-                    <TableCell align="center">
-                      {anio.anio === colegio.anio_escolar_actual ? (
-                        <Chip
-                          label="Año Actual"
-                          color="primary"
-                          size="small"
-                          icon={<CheckCircleIcon />}
-                        />
-                      ) : (
-                        <Typography variant="body2" color="text.secondary">
-                          -
-                        </Typography>
-                      )}
-                    </TableCell>
-                    <TableCell align="center">
-                      <Typography variant="body2" color="text.secondary">
-                        {new Date(anio.created_at).toLocaleDateString('es-ES')}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center', flexWrap: 'wrap' }}>
-                        {anio.anio !== colegio.anio_escolar_actual && (
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            onClick={() => handleSetAnioActual(anio.anio)}
-                            disabled={!anio.activo || saving}
-                            sx={{ minWidth: 'auto', px: 1 }}
-                          >
-                            Establecer Actual
-                          </Button>
-                        )}
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          color={anio.activo ? 'warning' : 'success'}
-                          onClick={() => handleActualizarAnioEscolar(anio.id, !anio.activo)}
-                          disabled={saving}
-                          sx={{ minWidth: 'auto', px: 1 }}
-                        >
-                          {anio.activo ? 'Desactivar' : 'Activar'}
-                        </Button>
-                        <IconButton
-                          size="small"
-                          onClick={() => handleEliminarAnioEscolar(anio.id)}
-                          disabled={saving}
-                          sx={{ color: 'error.main' }}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </TableContainer>
-
-        {/* Paginación */}
-        {filteredAnios.length > 0 && (
-          <TablePagination
-            component="div"
-            count={filteredAnios.length}
-            page={anioPagination.page}
-            onPageChange={handleAnioChangePage}
-            rowsPerPage={anioPagination.rowsPerPage}
-            onRowsPerPageChange={handleAnioChangeRowsPerPage}
-            rowsPerPageOptions={[5, 10, 25]}
-            labelRowsPerPage="Filas por página:"
-            labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
-          />
-        )}
-
-        {/* Alerta informativa */}
-        <Box sx={{ p: 2, borderTop: '1px solid #e0e0e0' }}>
-          <Alert severity="info">
-            <Typography variant="body2">
-              <strong>Nota:</strong> Solo puede haber un año escolar actual activo.
-              Al establecer un nuevo año como actual, el anterior se desactivará automáticamente.
-            </Typography>
-          </Alert>
-        </Box>
-      </Paper>
 
       {/* Sección de Turnos */}
       <Paper sx={{ mb: 2 }}>
-        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', backgroundColor: '#f5f5f5' }}>
+        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
               <CalendarIcon color="primary" sx={{ fontSize: 24 }} />

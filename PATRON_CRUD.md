@@ -229,10 +229,10 @@ const columns = [
 ```javascript
 // Turnos predefinidos
 [
-  { nombre: 'Mañana', abreviatura: 'M', activo: true },
-  { nombre: 'Tarde', abreviatura: 'T', activo: true },
-  { nombre: 'Noche', abreviatura: 'N', activo: true }
-]
+  { nombre: "Mañana", abreviatura: "M", activo: true },
+  { nombre: "Tarde", abreviatura: "T", activo: true },
+  { nombre: "Noche", abreviatura: "N", activo: true },
+];
 ```
 
 ### **Formulario Simple:**
@@ -245,7 +245,7 @@ const columns = [
       fullWidth
       label="Nombre del Turno"
       value={turnoForm.nombre}
-      onChange={(e) => handleTurnoInputChange('nombre', e.target.value)}
+      onChange={(e) => handleTurnoInputChange("nombre", e.target.value)}
       required
     />
   </Grid>
@@ -254,7 +254,9 @@ const columns = [
       fullWidth
       label="Abreviatura"
       value={turnoForm.abreviatura}
-      onChange={(e) => handleTurnoInputChange('abreviatura', e.target.value.toUpperCase())}
+      onChange={(e) =>
+        handleTurnoInputChange("abreviatura", e.target.value.toUpperCase())
+      }
       inputProps={{ maxLength: 10 }}
       required
     />
@@ -274,15 +276,15 @@ const columns = [
 ];
 
 // Chips de colores
-<Chip 
-  label={turno.abreviatura} 
-  color="primary" 
-  variant="outlined" 
+<Chip
+  label={turno.abreviatura}
+  color="primary"
+  variant="outlined"
 />
-<Chip 
-  label={turno.activo ? 'Activo' : 'Inactivo'} 
-  color={turno.activo ? 'success' : 'error'} 
-  variant="outlined" 
+<Chip
+  label={turno.activo ? 'Activo' : 'Inactivo'}
+  color={turno.activo ? 'success' : 'error'}
+  variant="outlined"
 />
 ```
 
