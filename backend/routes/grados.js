@@ -1,6 +1,73 @@
 const express = require('express');
 const { Pool } = require('pg');
 const router = express.Router();
+// Importar utilidades (comentado temporalmente hasta que se resuelva el problema de módulos)
+// const { generateGradosOptions, getGradoFormattedName, generateGradoCodigo } = require('../utils/gradosGenerator');
+// const { getSeccionesOptions } = require('../utils/secciones');
+
+// Funciones temporales inline hasta resolver el problema de módulos
+const generateGradosOptions = (nivel) => {
+  if (!nivel || !nivel.grado_minimo || !nivel.grado_maximo) {
+    return [];
+  }
+
+  const { tipo_grados, grado_minimo, grado_maximo } = nivel;
+  const grados = [];
+
+  for (let i = grado_minimo; i <= grado_maximo; i++) {
+    let nombre = '';
+    let valor = i;
+
+    if (tipo_grados === 'Años') {
+      const numeroFormateado = i.toString().padStart(2, '0');
+      nombre = `${numeroFormateado} años`;
+    } else if (tipo_grados === 'Grados') {
+      nombre = `${i}° grado`;
+    }
+
+    grados.push({
+      value: valor,
+      label: nombre,
+      numero: i
+    });
+  }
+
+  return grados;
+};
+
+const getGradoFormattedName = (numero, tipoGrados) => {
+  if (tipoGrados === 'Años') {
+    const numeroFormateado = numero.toString().padStart(2, '0');
+    return `${numeroFormateado} años`;
+  } else if (tipoGrados === 'Grados') {
+    return `${numero}° grado`;
+  }
+  return numero.toString();
+};
+
+const generateGradoCodigo = (nivel, numero, seccion) => {
+  if (!nivel || !numero) {
+    return '';
+  }
+
+  const nivelCodigo = nivel.codigo || 'NIV';
+  const numeroFormateado = numero.toString().padStart(2, '0');
+  const seccionCodigo = seccion === 'Unica' ? '' : seccion;
+
+  return `${nivelCodigo}${numeroFormateado}${seccionCodigo}`.toUpperCase();
+};
+
+const getSeccionesOptions = () => {
+  return [
+    { value: 'Unica', label: 'Única' },
+    { value: 'A', label: 'A' },
+    { value: 'B', label: 'B' },
+    { value: 'C', label: 'C' },
+    { value: 'D', label: 'D' },
+    { value: 'E', label: 'E' },
+    { value: 'F', label: 'F' }
+  ];
+};
 
 // Configuración de la base de datos
 const pool = new Pool({
@@ -61,9 +128,14 @@ router.get('/', async (req, res) => {
         g.nivel_id,
         n.nombre as nivel_nombre,
         n.codigo as nivel_codigo,
+        n.tipo_grados,
         g.orden,
         g.activo,
         g.foto,
+        g.seccion,
+        g.direccion_archivos,
+        g.link_aula_virtual,
+        g.anio_escolar,
         g.created_at,
         g.updated_at
       FROM grados g
@@ -92,6 +164,105 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/grados/niveles/disponibles - Obtener niveles disponibles
+router.get('/niveles/disponibles', async (req, res) => {
+  try {
+    const query = `
+      SELECT id, nombre, codigo, tipo_grados, grado_minimo, grado_maximo
+      FROM niveles
+      WHERE activo = true
+      ORDER BY orden ASC, nombre ASC
+    `;
+
+    const result = await pool.query(query);
+    res.json(result.rows);
+
+  } catch (error) {
+    console.error('Error obteniendo niveles:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+});
+
+// GET /api/grados/grados-por-nivel/:nivel_id - Obtener grados por nivel
+router.get('/grados-por-nivel/:nivel_id', async (req, res) => {
+  try {
+    const { nivel_id } = req.params;
+
+    // Obtener información del nivel
+    const nivelResult = await pool.query(`
+      SELECT id, nombre, codigo, tipo_grados, grado_minimo, grado_maximo
+      FROM niveles WHERE id = $1
+    `, [nivel_id]);
+
+    if (nivelResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Nivel no encontrado' });
+    }
+
+    const nivel = nivelResult.rows[0];
+    const gradosOptions = generateGradosOptions(nivel);
+
+    res.json(gradosOptions);
+
+  } catch (error) {
+    console.error('Error obteniendo grados por nivel:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+});
+
+// GET /api/grados/secciones - Obtener secciones disponibles (array fijo)
+router.get('/secciones/disponibles', async (req, res) => {
+  try {
+    const secciones = [
+      { value: 'Unica', label: 'Única', orden: 1 },
+      { value: 'A', label: 'A', orden: 2 },
+      { value: 'B', label: 'B', orden: 3 },
+      { value: 'C', label: 'C', orden: 4 },
+      { value: 'D', label: 'D', orden: 5 },
+      { value: 'E', label: 'E', orden: 6 },
+      { value: 'F', label: 'F', orden: 7 }
+    ];
+    res.json(secciones);
+  } catch (error) {
+    console.error('Error obteniendo secciones:', error);
+    res.status(500).json({ message: 'Error interno del servidor' });
+  }
+});
+
+// GET /api/grados/anios-escolares - Obtener años escolares disponibles
+router.get('/anios-escolares', async (req, res) => {
+  try {
+    const query = `
+      SELECT anio, activo
+      FROM anios_escolares
+      ORDER BY anio DESC
+    `;
+
+    const result = await pool.query(query);
+
+    // Si no hay datos, devolver años por defecto
+    if (result.rows.length === 0) {
+      const aniosPorDefecto = [
+        { anio: 2025, activo: true },
+        { anio: 2024, activo: true },
+        { anio: 2023, activo: true }
+      ];
+      return res.json(aniosPorDefecto);
+    }
+
+    res.json(result.rows);
+
+  } catch (error) {
+    console.error('❌ Error obteniendo años escolares:', error);
+    // En caso de error, devolver años por defecto
+    const aniosPorDefecto = [
+      { anio: 2025, activo: true },
+      { anio: 2024, activo: true },
+      { anio: 2023, activo: true }
+    ];
+    res.json(aniosPorDefecto);
+  }
+});
+
 // GET /api/grados/:id - Obtener un grado específico
 router.get('/:id', async (req, res) => {
   try {
@@ -106,9 +277,14 @@ router.get('/:id', async (req, res) => {
         g.nivel_id,
         n.nombre as nivel_nombre,
         n.codigo as nivel_codigo,
+        n.tipo_grados,
         g.orden,
         g.activo,
         g.foto,
+        g.seccion,
+        g.direccion_archivos,
+        g.link_aula_virtual,
+        g.anio_escolar,
         g.created_at,
         g.updated_at
       FROM grados g
@@ -133,34 +309,76 @@ router.get('/:id', async (req, res) => {
 // POST /api/grados - Crear un nuevo grado
 router.post('/', async (req, res) => {
   try {
-    const { nombre, descripcion, codigo, nivel_id, orden, foto = 'default-grado.png' } = req.body;
+    const {
+      nivel_id,
+      numero_grado,
+      seccion,
+      anio_escolar,
+      descripcion = '',
+      direccion_archivos = '',
+      link_aula_virtual = '',
+      foto = 'default-grado.png'
+    } = req.body;
 
     // Validaciones
-    if (!nombre || !codigo || !nivel_id) {
+    if (!nivel_id || !numero_grado || !seccion || !anio_escolar) {
       return res.status(400).json({
-        message: 'Nombre, código y nivel son requeridos'
+        message: 'Nivel, número de grado, sección y año escolar son requeridos'
       });
     }
 
-    // Verificar que el nivel existe
-    const nivelCheck = await pool.query('SELECT id FROM niveles WHERE id = $1', [nivel_id]);
-    if (nivelCheck.rows.length === 0) {
+    // Obtener información del nivel
+    const nivelResult = await pool.query(`
+      SELECT id, nombre, codigo, tipo_grados, grado_minimo, grado_maximo
+      FROM niveles WHERE id = $1
+    `, [nivel_id]);
+
+    if (nivelResult.rows.length === 0) {
       return res.status(400).json({ message: 'El nivel especificado no existe' });
     }
 
-    // Verificar que el código no existe
-    const codigoCheck = await pool.query('SELECT id FROM grados WHERE codigo = $1', [codigo]);
-    if (codigoCheck.rows.length > 0) {
-      return res.status(400).json({ message: 'El código ya existe' });
+    const nivel = nivelResult.rows[0];
+
+    // Validar que el número de grado esté en el rango permitido
+    if (numero_grado < nivel.grado_minimo || numero_grado > nivel.grado_maximo) {
+      return res.status(400).json({
+        message: `El número de grado debe estar entre ${nivel.grado_minimo} y ${nivel.grado_maximo}`
+      });
+    }
+
+    // Generar nombre formateado
+    const nombre = getGradoFormattedName(numero_grado, nivel.tipo_grados);
+
+    // Generar código automático
+    const codigo = generateGradoCodigo(nivel, numero_grado, seccion);
+
+    // Verificar que no existe un grado con el mismo nivel, número y sección
+    const existeGrado = await pool.query(`
+      SELECT id FROM grados
+      WHERE nivel_id = $1 AND nombre = $2 AND seccion = $3 AND anio_escolar = $4
+    `, [nivel_id, nombre, seccion, anio_escolar]);
+
+    if (existeGrado.rows.length > 0) {
+      return res.status(400).json({
+        message: 'Ya existe un grado con el mismo nivel, número y sección para este año'
+      });
     }
 
     const query = `
-      INSERT INTO grados (nombre, descripcion, codigo, nivel_id, orden, activo, foto)
-      VALUES ($1, $2, $3, $4, $5, true, $6)
+      INSERT INTO grados (
+        nombre, descripcion, codigo, nivel_id, seccion,
+        direccion_archivos, link_aula_virtual, anio_escolar,
+        orden, activo, foto
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, true, $10)
       RETURNING *
     `;
 
-    const result = await pool.query(query, [nombre, descripcion, codigo, nivel_id, orden || 1, foto]);
+    const result = await pool.query(query, [
+      nombre, descripcion, codigo, nivel_id, seccion,
+      direccion_archivos, link_aula_virtual, anio_escolar,
+      numero_grado, foto
+    ]);
 
     res.status(201).json(result.rows[0]);
 
@@ -258,7 +476,9 @@ router.get('/nivel/:nivel_id', async (req, res) => {
         g.codigo,
         g.orden,
         g.activo,
-        g.foto
+        g.foto,
+        g.seccion,
+        g.anio_escolar
       FROM grados g
       WHERE g.nivel_id = $1 AND g.activo = true
       ORDER BY g.orden
