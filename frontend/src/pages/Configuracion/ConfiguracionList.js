@@ -240,7 +240,7 @@ const ConfiguracionList = () => {
           ...turnoForm,
           activo: editingTurno.activo
         });
-        
+
         Swal.fire({
           title: 'Éxito',
           text: 'Turno actualizado correctamente',
@@ -249,7 +249,7 @@ const ConfiguracionList = () => {
       } else {
         // Crear nuevo turno
         await turnosService.createTurno(turnoForm);
-        
+
         Swal.fire({
           title: 'Éxito',
           text: 'Turno creado correctamente',
@@ -295,13 +295,13 @@ const ConfiguracionList = () => {
     if (result.isConfirmed) {
       try {
         await turnosService.deleteTurno(turno.id);
-        
+
         Swal.fire({
           title: 'Eliminado',
           text: 'Turno eliminado correctamente',
           icon: 'success'
         });
-        
+
         await loadTurnos();
       } catch (error) {
         console.error('Error eliminando turno:', error);

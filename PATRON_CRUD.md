@@ -28,6 +28,8 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 
 **MÓDULO DE ÁREAS EDUCATIVAS:** Implementación completa del CRUD para áreas curriculares con 12 áreas predefinidas (Comunicación, Matemática, Ciencias, etc.), códigos únicos cortos (MAT, COM, ART), búsqueda por nombre/descripción/código, filtro por estado, paginación y validaciones de unicidad en backend. Notificaciones con SweetAlert2 y modo vista corregido para mostrar datos.
 
+**MÓDULO DE TURNOS ESCOLARES:** Implementación completa del CRUD para turnos escolares con 3 turnos predefinidos (Mañana-M, Tarde-T, Noche-N), abreviaturas únicas, búsqueda por nombre/abreviatura, filtro por estado, paginación y validaciones de unicidad en backend. Integrado en módulo de Configuración siguiendo patrón de Años Escolares, con formulario simple (nombre y abreviatura), tabla profesional con chips de colores, y notificaciones con SweetAlert2.
+
 ---
 
 ## 📚 **MÓDULO DE NIVELES EDUCATIVOS - CONFIGURACIÓN AVANZADA**
@@ -202,6 +204,97 @@ const columns = [
   color={row.tipo_calificacion === 'Cualitativa' ? 'secondary' : 'success'}
   variant="outlined"
 />
+```
+
+---
+
+## 🕒 **MÓDULO DE TURNOS ESCOLARES**
+
+### **Estructura de Datos:**
+
+```javascript
+// Campos del turno
+{
+  id: INTEGER,
+  nombre: VARCHAR(100),      // "Mañana", "Tarde", "Noche"
+  abreviatura: VARCHAR(10),  // "M", "T", "N"
+  activo: BOOLEAN,           // true/false
+  created_at: TIMESTAMP,
+  updated_at: TIMESTAMP
+}
+```
+
+### **Configuración por Defecto:**
+
+```javascript
+// Turnos predefinidos
+[
+  { nombre: 'Mañana', abreviatura: 'M', activo: true },
+  { nombre: 'Tarde', abreviatura: 'T', activo: true },
+  { nombre: 'Noche', abreviatura: 'N', activo: true }
+]
+```
+
+### **Formulario Simple:**
+
+```javascript
+// Estructura del formulario
+<Grid container spacing={2}>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      fullWidth
+      label="Nombre del Turno"
+      value={turnoForm.nombre}
+      onChange={(e) => handleTurnoInputChange('nombre', e.target.value)}
+      required
+    />
+  </Grid>
+  <Grid item xs={12} sm={6}>
+    <TextField
+      fullWidth
+      label="Abreviatura"
+      value={turnoForm.abreviatura}
+      onChange={(e) => handleTurnoInputChange('abreviatura', e.target.value.toUpperCase())}
+      inputProps={{ maxLength: 10 }}
+      required
+    />
+  </Grid>
+</Grid>
+```
+
+### **Tabla Profesional:**
+
+```javascript
+// Estructura de columnas
+const columns = [
+  { field: 'nombre', headerName: 'Nombre', width: 200 },
+  { field: 'abreviatura', headerName: 'Abreviatura', width: 120 },
+  { field: 'activo', headerName: 'Estado', width: 100 },
+  { field: 'actions', headerName: 'Acciones', width: 150 }
+];
+
+// Chips de colores
+<Chip 
+  label={turno.abreviatura} 
+  color="primary" 
+  variant="outlined" 
+/>
+<Chip 
+  label={turno.activo ? 'Activo' : 'Inactivo'} 
+  color={turno.activo ? 'success' : 'error'} 
+  variant="outlined" 
+/>
+```
+
+### **Validaciones Backend:**
+
+```javascript
+// Validaciones en backend
+- Nombre único en la tabla
+- Abreviatura única en la tabla
+- Campos requeridos (nombre, abreviatura)
+- Abreviatura máximo 10 caracteres
+- Estado activo por defecto
 ```
 
 **FORMATO DE GRILLA/TABLA:** Conversión de módulos de Configuración a formato de tabla profesional para ahorro de espacio y mejor escalabilidad, siguiendo el patrón establecido de otros módulos de mantenimiento.

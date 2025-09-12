@@ -17,10 +17,10 @@ router.get('/', authenticateToken, async (req, res) => {
   try {
     const { search, activo, page = 1, limit = 10 } = req.query;
     const offset = (page - 1) * limit;
-    
+
     let query = `
       SELECT id, nombre, abreviatura, activo, created_at, updated_at
-      FROM turnos 
+      FROM turnos
       WHERE 1=1
     `;
     const params = [];
@@ -45,11 +45,11 @@ router.get('/', authenticateToken, async (req, res) => {
     params.push(parseInt(limit), parseInt(offset));
 
     const result = await pool.query(query, params);
-    
+
     // Contar total de registros para paginación
     let countQuery = `
       SELECT COUNT(*) as total
-      FROM turnos 
+      FROM turnos
       WHERE 1=1
     `;
     const countParams = [];
@@ -69,7 +69,7 @@ router.get('/', authenticateToken, async (req, res) => {
 
     const countResult = await pool.query(countQuery, countParams);
     const total = parseInt(countResult.rows[0].total);
-    
+
     res.json({
       success: true,
       turnos: result.rows,
@@ -93,22 +93,22 @@ router.get('/', authenticateToken, async (req, res) => {
 router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const query = `
       SELECT id, nombre, abreviatura, activo, created_at, updated_at
-      FROM turnos 
+      FROM turnos
       WHERE id = $1
     `;
-    
+
     const result = await pool.query(query, [id]);
-    
+
     if (result.rows.length === 0) {
       return res.status(404).json({
         success: false,
         message: 'Turno no encontrado'
       });
     }
-    
+
     res.json({
       success: true,
       turno: result.rows[0]
@@ -126,7 +126,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 router.post('/', authenticateToken, async (req, res) => {
   try {
     const { nombre, abreviatura } = req.body;
-    
+
     // Validaciones
     if (!nombre || !abreviatura) {
       return res.status(400).json({
@@ -140,7 +140,7 @@ router.post('/', authenticateToken, async (req, res) => {
       'SELECT id FROM turnos WHERE nombre = $1',
       [nombre]
     );
-    
+
     if (existingNombre.rows.length > 0) {
       return res.status(400).json({
         success: false,
@@ -153,22 +153,22 @@ router.post('/', authenticateToken, async (req, res) => {
       'SELECT id FROM turnos WHERE abreviatura = $1',
       [abreviatura]
     );
-    
+
     if (existingAbreviatura.rows.length > 0) {
       return res.status(400).json({
         success: false,
         message: 'La abreviatura ya existe'
       });
     }
-    
+
     const query = `
       INSERT INTO turnos (nombre, abreviatura, activo)
       VALUES ($1, $2, true)
       RETURNING id, nombre, abreviatura, activo, created_at, updated_at
     `;
-    
+
     const result = await pool.query(query, [nombre, abreviatura]);
-    
+
     res.status(201).json({
       success: true,
       message: 'Turno creado exitosamente',
@@ -188,7 +188,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
     const { nombre, abreviatura, activo } = req.body;
-    
+
     // Validaciones
     if (!nombre || !abreviatura) {
       return res.status(400).json({
@@ -196,13 +196,13 @@ router.put('/:id', authenticateToken, async (req, res) => {
         message: 'Nombre y abreviatura son requeridos'
       });
     }
-    
+
     // Verificar que el turno existe
     const existingTurno = await pool.query(
       'SELECT id FROM turnos WHERE id = $1',
       [id]
     );
-    
+
     if (existingTurno.rows.length === 0) {
       return res.status(404).json({
         success: false,
@@ -215,7 +215,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
       'SELECT id FROM turnos WHERE nombre = $1 AND id != $2',
       [nombre, id]
     );
-    
+
     if (existingNombre.rows.length > 0) {
       return res.status(400).json({
         success: false,
@@ -228,23 +228,23 @@ router.put('/:id', authenticateToken, async (req, res) => {
       'SELECT id FROM turnos WHERE abreviatura = $1 AND id != $2',
       [abreviatura, id]
     );
-    
+
     if (existingAbreviatura.rows.length > 0) {
       return res.status(400).json({
         success: false,
         message: 'La abreviatura ya existe en otro turno'
       });
     }
-    
+
     const query = `
-      UPDATE turnos 
+      UPDATE turnos
       SET nombre = $1, abreviatura = $2, activo = $3, updated_at = CURRENT_TIMESTAMP
       WHERE id = $4
       RETURNING id, nombre, abreviatura, activo, created_at, updated_at
     `;
-    
+
     const result = await pool.query(query, [nombre, abreviatura, activo !== false, id]);
-    
+
     res.json({
       success: true,
       message: 'Turno actualizado exitosamente',
@@ -263,13 +263,13 @@ router.put('/:id', authenticateToken, async (req, res) => {
 router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     // Verificar que el turno existe
     const existingTurno = await pool.query(
       'SELECT id, nombre FROM turnos WHERE id = $1',
       [id]
     );
-    
+
     if (existingTurno.rows.length === 0) {
       return res.status(404).json({
         success: false,
@@ -278,10 +278,10 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     }
 
     const turno = existingTurno.rows[0];
-    
+
     // Eliminar el turno
     await pool.query('DELETE FROM turnos WHERE id = $1', [id]);
-    
+
     res.json({
       success: true,
       message: `Turno "${turno.nombre}" eliminado exitosamente`

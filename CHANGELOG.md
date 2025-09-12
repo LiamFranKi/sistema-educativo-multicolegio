@@ -1,5 +1,46 @@
 # CHANGELOG
 
+## [2025-09-11] - Implementación del Módulo de Turnos Escolares
+
+### ✨ Nuevas Características
+
+- **Módulo de Turnos Escolares**: CRUD completo para gestionar turnos del colegio
+- **3 Turnos Predefinidos**: Mañana (M), Tarde (T), Noche (N)
+- **Búsqueda y filtros**: Soporte de parámetros `search`, `activo`, `page`, `limit`
+- **Abreviaturas únicas**: Sistema de códigos cortos para identificación rápida
+- **Estados configurables**: Activo/Inactivo con chips de colores
+
+### 🔌 API y Backend
+
+- **Rutas**: `backend/routes/turnos.js` con endpoints protegidos por token:
+  - `GET /api/turnos` (listado con filtros y paginación)
+  - `GET /api/turnos/:id` (detalle)
+  - `POST /api/turnos` (crear)
+  - `PUT /api/turnos/:id` (actualizar)
+  - `DELETE /api/turnos/:id` (eliminar)
+- **Validaciones**: Nombres y abreviaturas únicos, campos requeridos
+- **Migración**: `create_turnos_table_postgresql.sql` para crear tabla
+- **Script**: `run-migration-turnos.js` para ejecutar migración
+
+### 🎨 Frontend y UI
+
+- **Integración**: Sección completa en módulo de Configuración
+- **Formulario**: Nombre del turno y abreviatura (máximo 10 caracteres)
+- **Tabla profesional**: Búsqueda, paginación y acciones (editar/eliminar)
+- **Chips de colores**: Estado activo (verde) e inactivo (rojo), abreviatura (azul)
+- **Notificaciones**: SweetAlert2 para confirmaciones y mensajes
+- **Diseño consistente**: Sigue el patrón de Años Escolares
+
+### 📊 Base de Datos
+
+- **Tabla**: `turnos` con campos `id`, `nombre`, `abreviatura`, `activo`, `created_at`, `updated_at`
+- **Índices**: Optimización para búsquedas por nombre, abreviatura y estado
+- **Restricciones**: Unicidad en nombre y abreviatura
+- **Trigger**: Actualización automática de `updated_at`
+- **Datos iniciales**: Mañana (M), Tarde (T), Noche (N)
+
+---
+
 ## [2025-09-11] - Mejora del Módulo de Niveles con Configuración Avanzada
 
 ### ✨ Nuevas Características
