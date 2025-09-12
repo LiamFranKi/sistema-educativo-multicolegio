@@ -101,7 +101,10 @@ router.post('/', authenticateToken, requireAdmin, [
       });
     }
 
-    // Crear año escolar
+    // Desactivar todos los años escolares existentes (solo puede haber uno activo)
+    await query('UPDATE anios_escolares SET activo = false, updated_at = NOW()');
+
+    // Crear año escolar como activo
     const result = await query(
       `INSERT INTO anios_escolares (anio, activo, created_at, updated_at)
        VALUES ($1, true, NOW(), NOW())

@@ -214,6 +214,12 @@ router.put('/anio-actual', authenticateToken, requireAdmin, [
       });
     }
 
+    // Desactivar todos los años escolares
+    await query('UPDATE anios_escolares SET activo = false, updated_at = NOW()');
+    
+    // Activar solo el año seleccionado
+    await query('UPDATE anios_escolares SET activo = true, updated_at = NOW() WHERE anio = $1', [anio]);
+
     // Actualizar año actual en configuración
     await query(
       'UPDATE configuracion SET valor = $1, updated_at = NOW() WHERE clave = $2',

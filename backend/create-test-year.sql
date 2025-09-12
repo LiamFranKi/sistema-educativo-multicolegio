@@ -1,5 +1,5 @@
 -- Crear año escolar de prueba
-INSERT INTO anios_escolares (anio, activo, created_at, updated_at) 
+INSERT INTO anios_escolares (anio, activo, created_at, updated_at)
 VALUES (2025, true, NOW(), NOW())
 ON CONFLICT (anio) DO UPDATE SET
   activo = true,
