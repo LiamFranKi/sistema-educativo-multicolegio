@@ -44,7 +44,7 @@ import {
 } from '@mui/icons-material';
 import { gradosService, nivelesService } from '../../../services/apiService';
 import Swal from 'sweetalert2';
-import GradosForm from './GradosForm';
+import GradosFormNew from './GradosFormNew';
 import GradosView from './GradosView';
 
 const GradosList = () => {
@@ -309,7 +309,8 @@ const GradosList = () => {
               <TableRow>
                 <TableCell align="center"><strong>Foto</strong></TableCell>
                 <TableCell align="center"><strong>Grado</strong></TableCell>
-                <TableCell align="center"><strong>Código</strong></TableCell>
+                <TableCell align="center"><strong>Sección</strong></TableCell>
+                <TableCell align="center"><strong>Año</strong></TableCell>
                 <TableCell align="center"><strong>Nivel</strong></TableCell>
                 <TableCell align="center"><strong>Estado</strong></TableCell>
                 <TableCell align="center"><strong>Acciones</strong></TableCell>
@@ -341,11 +342,16 @@ const GradosList = () => {
                   </TableCell>
                   <TableCell align="center">
                     <Chip
-                      label={grado.codigo}
+                      label={grado.seccion || 'Única'}
                       size="small"
-                      color="primary"
+                      color="secondary"
                       variant="outlined"
                     />
+                  </TableCell>
+                  <TableCell align="center">
+                    <Typography variant="body2" fontWeight="medium">
+                      {grado.anio_escolar}
+                    </Typography>
                   </TableCell>
                   <TableCell align="center">
                     <Chip
@@ -415,9 +421,8 @@ const GradosList = () => {
         maxWidth="md"
         fullWidth
       >
-        <GradosForm
+        <GradosFormNew
           grado={editingGrado}
-          niveles={niveles}
           onClose={handleFormClose}
           onSuccess={handleFormSuccess}
         />

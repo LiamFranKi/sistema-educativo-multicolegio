@@ -28,6 +28,18 @@ import {
 } from '@mui/icons-material';
 import { gradosService, fileService } from '../../../services/apiService';
 import Swal from 'sweetalert2';
+import { getImageUrl } from '../../../utils/imageUtils';
+
+// Función para formatear el nombre del grado
+const getGradoFormattedName = (numero, tipoGrados) => {
+  if (tipoGrados === 'Años') {
+    const numeroFormateado = numero.toString().padStart(2, '0');
+    return `${numeroFormateado} años`;
+  } else if (tipoGrados === 'Grados') {
+    return `${numero}° grado`;
+  }
+  return numero.toString();
+};
 
 const GradosFormNew = ({ grado, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -54,11 +66,25 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
 
   const isEdit = Boolean(grado);
 
+  // Cargar datos iniciales siempre
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
+  // Cargar datos del grado específico cuando se abre para editar
   useEffect(() => {
     const loadGradoData = async () => {
       if (!grado) return;
 
       try {
+        console.log('Cargando datos del grado para editar:', grado);
+
+        // Cargar grados para el nivel del grado existente PRIMERO
+        if (grado.nivel_id) {
+          await loadGradosPorNivel(grado.nivel_id);
+        }
+
+        // Luego cargar los datos del grado
         setFormData({
           nivel_id: grado.nivel_id || '',
           numero_grado: grado.numero_grado || '',
@@ -70,14 +96,11 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
           foto: grado.foto || 'default-grado.png'
         });
 
-        // Cargar grados para el nivel del grado existente
-        if (grado.nivel_id) {
-          await loadGradosPorNivel(grado.nivel_id);
-        }
-
         // Establecer imagen de vista previa si existe
         if (grado.foto && grado.foto !== 'default-grado.png') {
-          setPreviewImage(`${process.env.REACT_APP_API_URL}/uploads/${grado.foto}`);
+          const imageUrl = getImageUrl(grado.foto);
+          console.log('URL de imagen construida:', imageUrl);
+          setPreviewImage(imageUrl);
         }
 
       } catch (error) {
@@ -85,7 +108,6 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
       }
     };
 
-    loadInitialData();
     if (grado) {
       loadGradoData();
     }
@@ -94,11 +116,15 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
 
   const loadInitialData = async () => {
     try {
+      console.log('Cargando datos iniciales del formulario de grados...');
+
       const [nivelesRes, seccionesRes, aniosRes] = await Promise.all([
         gradosService.getNivelesDisponibles(),
         gradosService.getSeccionesDisponibles(),
         gradosService.getAniosEscolares()
       ]);
+
+      console.log('Respuestas de la API:', { nivelesRes, seccionesRes, aniosRes });
 
       setNiveles(nivelesRes || []);
       setSecciones(seccionesRes || []);
@@ -108,7 +134,7 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
       if (!grado) {
         const seccionesDisponibles = seccionesRes || [];
         const aniosDisponibles = aniosRes || [];
-        
+
         setFormData(prev => ({
           ...prev,
           seccion: seccionesDisponibles.length > 0 ? seccionesDisponibles[0].value : '',
@@ -122,6 +148,14 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
       setNiveles([]);
       setSecciones([]);
       setAniosEscolares([]);
+
+      // Limpiar valores del formulario para evitar warnings MUI
+      setFormData(prev => ({
+        ...prev,
+        seccion: '',
+        anio_escolar: ''
+      }));
+
       Swal.fire('Error', 'Error cargando datos iniciales', 'error');
     }
   };
@@ -323,7 +357,19 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
               >
                 {(gradosOptions || []).map((grado) => (
                   <MenuItem key={grado.value} value={grado.value}>
-                    {grado.label}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <SchoolIcon fontSize="small" />
+                      <Box>
+                        <Typography variant="body2" fontWeight="medium">
+                          {grado.label}
+                        </Typography>
+                        {isEdit && grado.value === formData.numero_grado && (
+                          <Typography variant="caption" color="text.secondary">
+                            Grado actual
+                          </Typography>
+                        )}
+                      </Box>
+                    </Box>
                   </MenuItem>
                 ))}
               </Select>
@@ -334,6 +380,7 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
               </Typography>
             )}
           </Grid>
+
 
           {/* Selección de Sección */}
           <Grid item xs={12} sm={6}>

@@ -311,6 +311,27 @@ export const gradosService = {
     const response = await api.get(`/grados/nivel/${nivelId}`);
     return response.data;
   },
+
+  // Nuevas funciones para la estructura actualizada
+  getNivelesDisponibles: async () => {
+    const response = await api.get('/grados/niveles/disponibles');
+    return response.data;
+  },
+
+  getGradosPorNivel: async (nivelId) => {
+    const response = await api.get(`/grados/grados-por-nivel/${nivelId}`);
+    return response.data;
+  },
+
+  getSeccionesDisponibles: async () => {
+    const response = await api.get('/grados/secciones/disponibles');
+    return response.data;
+  },
+
+  getAniosEscolares: async () => {
+    const response = await api.get('/grados/anios-escolares');
+    return response.data;
+  },
 };
 
 // Servicios de áreas educativas

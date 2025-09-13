@@ -24,7 +24,7 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 
 **MÓDULO DE NIVELES EDUCATIVOS:** Implementación completa del CRUD para niveles educativos (Inicial, Primaria, Secundaria) con configuración avanzada: tipos de grados (Grados/Años), rango de grados (0-10), sistema dual de calificaciones (Cualitativa A-D/Cuantitativa 0-20), calificación final (Promedio/Porcentaje), notas configurables (mínima/máxima/aprobatoria), formulario optimizado con campos en líneas compactas, grilla actualizada con chips de colores, y accesibilidad mejorada con atributos HTML apropiados.
 
-**MÓDULO DE GRADOS EDUCATIVOS:** Implementación completa del CRUD para grados, relacionado a niveles educativos, con generación automática de códigos por nivel y orden (INI-03, PRI-01, SEC-05), filtros por nivel, búsqueda, paginación y validaciones de unicidad de código en backend. Incluye campo foto con Avatar circular, imagen por defecto y gestión de imágenes en formulario.
+**MÓDULO DE GRADOS EDUCATIVOS - REDISEÑO RADICAL:** Sistema completamente rediseñado basado en niveles educativos con selección inteligente (Nivel → Grados disponibles), formato dinámico de nombres (Años: "03 años", Grados: "1° grado"), sistema de secciones (Unica, A, B, C, D, E, F), año escolar integrado, campos adicionales (dirección archivos, aula virtual), código automático generado, formulario paso a paso con validaciones en tiempo real, tabla actualizada con nuevas columnas, y lógica de negocio avanzada para prevención de duplicados.
 
 **MÓDULO DE ÁREAS EDUCATIVAS:** Implementación completa del CRUD para áreas curriculares con 12 áreas predefinidas (Comunicación, Matemática, Ciencias, etc.), códigos únicos cortos (MAT, COM, ART), búsqueda por nombre/descripción/código, filtro por estado, paginación y validaciones de unicidad en backend. Notificaciones con SweetAlert2 y modo vista corregido para mostrar datos.
 
@@ -204,6 +204,171 @@ const columns = [
   color={row.tipo_calificacion === 'Cualitativa' ? 'secondary' : 'success'}
   variant="outlined"
 />
+```
+
+---
+
+## 🎓 **MÓDULO DE GRADOS EDUCATIVOS - REDISEÑO RADICAL**
+
+### **Estructura de Datos:**
+
+```javascript
+// Campos del grado (estructura actualizada)
+{
+  id: INTEGER,
+  nombre: VARCHAR(100),           // Generado automáticamente: "03 años", "1° grado"
+  descripcion: TEXT,              // Opcional
+  codigo: VARCHAR(20),            // Generado automáticamente: "INI03A", "PRI01"
+  nivel_id: INTEGER,              // FK a niveles
+  seccion: VARCHAR(10),           // "Unica", "A", "B", "C", "D", "E", "F"
+  anio_escolar: INTEGER,          // Año escolar del grado
+  direccion_archivos: TEXT,       // Ruta de archivos (opcional)
+  link_aula_virtual: TEXT,        // URL aula virtual (opcional)
+  foto: VARCHAR(255),             // Imagen del grado
+  orden: INTEGER,                 // Número del grado (1, 2, 3...)
+  activo: BOOLEAN,
+  created_at: TIMESTAMP,
+  updated_at: TIMESTAMP
+}
+```
+
+### **Lógica de Generación de Nombres:**
+
+```javascript
+// Basado en tipo_grados del nivel
+if (nivel.tipo_grados === "Años") {
+  // Formato: "03 años", "04 años", "05 años"
+  nombre = `${numero.toString().padStart(2, "0")} años`;
+} else if (nivel.tipo_grados === "Grados") {
+  // Formato: "1° grado", "2° grado", "3° grado"
+  nombre = `${numero}° grado`;
+}
+```
+
+### **Sistema de Secciones:**
+
+```javascript
+// Array fijo reutilizable
+const SECCIONES_DISPONIBLES = [
+  { value: "Unica", label: "Única", orden: 1 },
+  { value: "A", label: "A", orden: 2 },
+  { value: "B", label: "B", orden: 3 },
+  { value: "C", label: "C", orden: 4 },
+  { value: "D", label: "D", orden: 5 },
+  { value: "E", label: "E", orden: 6 },
+  { value: "F", label: "F", orden: 7 },
+];
+```
+
+### **Formulario Paso a Paso:**
+
+```javascript
+// 1. Selección de Nivel
+<FormControl fullWidth>
+  <InputLabel>Nivel Educativo *</InputLabel>
+  <Select value={nivel_id} onChange={handleNivelChange}>
+    {niveles.map(nivel => (
+      <MenuItem key={nivel.id} value={nivel.id}>
+        <Box>
+          <Typography>{nivel.nombre}</Typography>
+          <Typography variant="caption">
+            {nivel.tipo_grados} ({nivel.grado_minimo}-{nivel.grado_maximo})
+          </Typography>
+        </Box>
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
+// 2. Selección de Grado (dinámico según nivel)
+<FormControl fullWidth disabled={!nivel_id}>
+  <InputLabel>Grado *</InputLabel>
+  <Select value={numero_grado} onChange={handleGradoChange}>
+    {gradosOptions.map(grado => (
+      <MenuItem key={grado.value} value={grado.value}>
+        {grado.label}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
+// 3. Selección de Sección
+<FormControl fullWidth>
+  <InputLabel>Sección *</InputLabel>
+  <Select value={seccion} onChange={handleSeccionChange}>
+    {secciones.map(seccion => (
+      <MenuItem key={seccion.value} value={seccion.value}>
+        {seccion.label}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
+// 4. Año Escolar (con prioridad al actual)
+<FormControl fullWidth>
+  <InputLabel>Año Escolar *</InputLabel>
+  <Select value={anio_escolar} onChange={handleAnioChange}>
+    {aniosEscolares.map(anio => (
+      <MenuItem key={anio.anio} value={anio.anio}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Typography fontWeight={anio.anio === anioActual ? 'bold' : 'normal'}>
+            {anio.anio}
+          </Typography>
+          {anio.anio === anioActual && (
+            <Chip label="Actual" size="small" color="primary" />
+          )}
+        </Box>
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+```
+
+### **Tabla Actualizada:**
+
+```javascript
+// Estructura de columnas
+const columns = [
+  { field: 'foto', headerName: 'Foto', width: 80 },
+  { field: 'nombre', headerName: 'Grado', width: 150 },
+  { field: 'seccion', headerName: 'Sección', width: 100 },
+  { field: 'anio_escolar', headerName: 'Año', width: 80 },
+  { field: 'nivel_nombre', headerName: 'Nivel', width: 120 },
+  { field: 'activo', headerName: 'Estado', width: 100 },
+  { field: 'actions', headerName: 'Acciones', width: 150 }
+];
+
+// Chips de colores
+<Chip
+  label={grado.seccion || 'Única'}
+  color="secondary"
+  variant="outlined"
+/>
+<Chip
+  label={grado.nivel_nombre}
+  color={getNivelColor(grado.nivel_id)}
+/>
+```
+
+### **Validaciones Backend:**
+
+```javascript
+// Validaciones en backend
+- Nivel, número de grado, sección y año escolar son requeridos
+- Número de grado debe estar en rango del nivel (grado_minimo - grado_maximo)
+- No puede existir grado duplicado (mismo nivel, número, sección y año)
+- Código generado automáticamente basado en nivel, grado y sección
+- Validación de existencia de nivel y año escolar
+```
+
+### **Nuevas Rutas API:**
+
+```javascript
+// Rutas específicas para el nuevo sistema
+GET /api/grados/niveles/disponibles          // Niveles activos
+GET /api/grados/grados-por-nivel/:nivel_id  // Opciones de grados por nivel
+GET /api/grados/secciones/disponibles       // Secciones disponibles
+GET /api/grados/anios-escolares             // Años escolares activos
 ```
 
 ---

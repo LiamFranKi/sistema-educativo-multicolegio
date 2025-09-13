@@ -740,17 +740,40 @@ const ConfiguracionList = () => {
   };
 
   const handleEliminarAnioEscolar = async (id) => {
-    if (window.confirm('¿Está seguro de que desea eliminar PERMANENTEMENTE este año escolar? Esta acción no se puede deshacer.')) {
+    const result = await Swal.fire({
+      title: '¿Eliminar año escolar?',
+      text: '¿Estás seguro de que deseas eliminar PERMANENTEMENTE este año escolar? Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    });
+
+    if (result.isConfirmed) {
       try {
         const response = await deleteAnioEscolar(id);
         if (response.success) {
-          toast.success('Año escolar eliminado permanentemente');
+          Swal.fire({
+            title: 'Eliminado',
+            text: 'Año escolar eliminado permanentemente',
+            icon: 'success'
+          });
         } else {
-          toast.error(response.message || 'Error al eliminar año escolar');
+          Swal.fire({
+            title: 'Error',
+            text: response.message || 'Error al eliminar año escolar',
+            icon: 'error'
+          });
         }
       } catch (error) {
         console.error('Error eliminando año escolar:', error);
-        toast.error('Error al eliminar año escolar');
+        Swal.fire({
+          title: 'Error',
+          text: 'Error al eliminar año escolar',
+          icon: 'error'
+        });
       }
     }
   };

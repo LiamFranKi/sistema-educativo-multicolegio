@@ -1,5 +1,82 @@
 # CHANGELOG
 
+## [2025-01-12] - Corrección del Formulario de Edición de Grados
+
+### 🐛 Correcciones
+
+- **Formulario de Edición**: Corregido problema donde no se mostraban los datos del grado al editar
+- **Carga de Opciones**: Arreglado orden de carga para que las opciones de selects se carguen antes que los datos del grado
+- **URLs de Imágenes**: Corregido problema de carga de imágenes usando `getImageUrl()` de `imageUtils.js`
+- **Combobox Mejorado**: Mejorada visualización del combobox de grados con iconos y mejor formato
+- **Logs de Debug**: Agregados logs para facilitar el debugging del formulario
+
+### 🔧 Mejoras Técnicas
+
+- **Separación de Lógica**: Separada la carga de datos iniciales de la carga de datos específicos del grado
+- **Patrón de Imágenes**: Mantenido el patrón correcto usando `imageUtils.js` en lugar de construir URLs manualmente
+- **Gestión de Estados**: Mejorada la gestión de estados para evitar conflictos entre formularios nuevos y de edición
+
+### 📊 Base de Datos
+
+- **Sin cambios en la estructura**: Los cambios son solo en el frontend para mejorar la experiencia de usuario
+
+---
+
+## [2025-09-11] - Rediseño Radical del Módulo de Grados
+
+### ✨ Nuevas Características
+
+- **Estructura Completamente Rediseñada**: Sistema de grados basado en niveles educativos
+- **Selección Inteligente**: Nivel → Grados disponibles según configuración de niveles
+- **Formato Dinámico de Nombres**:
+  - Si `tipo_grados = "Años"`: "03 años", "04 años", "05 años"
+  - Si `tipo_grados = "Grados"`: "1° grado", "2° grado", "3° grado"
+- **Sistema de Secciones**: Unica, A, B, C, D, E, F (array fijo reutilizable)
+- **Año Escolar Integrado**: Selección con prioridad al año actual
+- **Campos Adicionales**: Dirección de archivos y link de aula virtual
+- **Código Automático**: Generación basada en nivel, grado y sección
+
+### 🔌 API y Backend
+
+- **Nuevas Rutas**: `backend/routes/grados.js` completamente actualizado:
+  - `GET /api/grados/niveles/disponibles` (niveles activos)
+  - `GET /api/grados/grados-por-nivel/:nivel_id` (opciones de grados)
+  - `GET /api/grados/secciones/disponibles` (secciones disponibles)
+  - `GET /api/grados/anios-escolares` (años escolares)
+- **Utilidades**: `backend/utils/gradosGenerator.js` y `backend/utils/secciones.js`
+- **Validaciones Mejoradas**: Verificación de rangos de grados según nivel
+- **Migración**: `modify_grados_table_structure.sql` para nuevos campos
+
+### 🎨 Frontend y UI
+
+- **Formulario Rediseñado**: `GradosFormNew.js` con flujo paso a paso
+- **Selección Cascada**: Nivel → Grados disponibles dinámicamente
+- **Interfaz Intuitiva**: Iconos, chips de colores y validaciones en tiempo real
+- **Tabla Actualizada**: Nuevas columnas (Sección, Año, Nivel)
+- **Vista Previa de Imagen**: Avatar con iniciales del grado
+- **Campos Opcionales**: Dirección de archivos y aula virtual
+
+### 📊 Base de Datos
+
+- **Nuevos Campos en `grados`**:
+  - `seccion` (VARCHAR): Unica, A, B, C, D, E, F
+  - `direccion_archivos` (TEXT): Ruta de archivos del grado
+  - `link_aula_virtual` (TEXT): URL del aula virtual
+  - `nivel_id` (INTEGER): Relación con tabla niveles
+  - `anio_escolar` (INTEGER): Año escolar del grado
+- **Tabla de Referencia**: `secciones_disponibles` para reutilización
+- **Índices Optimizados**: Para consultas por nivel, año y sección
+- **Relaciones**: Foreign keys con niveles y años escolares
+
+### 🔄 Lógica de Negocio
+
+- **Generación Automática**: Nombres y códigos basados en configuración de niveles
+- **Validación de Rangos**: Verificación de grados dentro del rango permitido
+- **Prevención de Duplicados**: Validación por nivel, grado, sección y año
+- **Formato Consistente**: Nombres formateados según tipo de grados del nivel
+
+---
+
 ## [2025-09-11] - Implementación del Módulo de Turnos Escolares
 
 ### ✨ Nuevas Características
