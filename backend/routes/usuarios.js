@@ -39,7 +39,7 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
 
     // Consulta principal
     const result = await query(
-      `SELECT id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, activo, created_at, updated_at
+      `SELECT id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, activo, qr_code, created_at, updated_at
        FROM usuarios ${whereClause}
        ORDER BY created_at DESC
        LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`,
@@ -80,7 +80,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
 
     const result = await query(
-      'SELECT id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, activo, created_at, updated_at FROM usuarios WHERE id = $1',
+      'SELECT id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, activo, qr_code, created_at, updated_at FROM usuarios WHERE id = $1',
       [id]
     );
 
@@ -146,12 +146,15 @@ router.post('/', authenticateToken, requireAdmin, [
     // Encriptar contraseña
     const hashedPassword = await bcrypt.hash(clave, 10);
 
+    // Generar código QR único
+    const qrCode = `USR-${Date.now()}-${dni}`;
+
     // Crear usuario
     const result = await query(
-      `INSERT INTO usuarios (nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, clave, activo, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, true, NOW(), NOW())
-       RETURNING id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, activo, created_at, updated_at`,
-      [nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, hashedPassword]
+      `INSERT INTO usuarios (nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, clave, qr_code, activo, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, true, NOW(), NOW())
+       RETURNING id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, qr_code, activo, created_at, updated_at`,
+      [nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, hashedPassword, qrCode]
     );
 
     res.status(201).json({

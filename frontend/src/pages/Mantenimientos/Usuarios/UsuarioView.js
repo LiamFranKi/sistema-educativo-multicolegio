@@ -11,12 +11,17 @@ import {
   Chip,
   Grid,
   Divider,
-  IconButton
+  IconButton,
+  Card,
+  CardContent,
+  CardHeader
 } from '@mui/material';
 import {
   Edit as EditIcon,
-  Close as CloseIcon
+  Close as CloseIcon,
+  QrCode as QrCodeIcon
 } from '@mui/icons-material';
+import QRCode from 'react-qr-code';
 
 const UsuarioView = ({ open, onClose, usuario, onEdit }) => {
   // Función para obtener el color del rol
@@ -121,12 +126,40 @@ const UsuarioView = ({ open, onClose, usuario, onEdit }) => {
 
           {/* Sección de foto y datos básicos */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 2 }}>
-            <Avatar
-              src={getImageUrl(usuario.foto)}
-              sx={{ width: 100, height: 100, fontSize: '2rem' }}
-            >
-              {usuario.nombres.charAt(0).toUpperCase()}
-            </Avatar>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Avatar
+                src={getImageUrl(usuario.foto)}
+                sx={{ width: 100, height: 100, fontSize: '2rem' }}
+              >
+                {usuario.nombres.charAt(0).toUpperCase()}
+              </Avatar>
+              {usuario.qr_code && (
+                <Box sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 0.5
+                }}>
+                  <Box sx={{
+                    p: 1,
+                    bgcolor: 'white',
+                    borderRadius: 1,
+                    border: '1px solid #e0e0e0',
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}>
+                    <QRCode
+                      value={usuario.qr_code}
+                      size={60}
+                      style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
+                    />
+                  </Box>
+                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.7rem' }}>
+                    QR
+                  </Typography>
+                </Box>
+              )}
+            </Box>
             <Box sx={{ flex: 1 }}>
               <Typography variant="h5" gutterBottom>
                 {usuario.nombres}
@@ -315,28 +348,28 @@ const UsuarioView = ({ open, onClose, usuario, onEdit }) => {
                     #{usuario.id}
                   </Typography>
                 </Box>
+
+                {usuario.qr_code && (
+                  <Box>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      Código QR
+                    </Typography>
+                    <Typography variant="body1" sx={{
+                      fontFamily: 'monospace',
+                      fontSize: '0.875rem',
+                      color: 'primary.main',
+                      fontWeight: 'medium',
+                      mb: 1
+                    }}>
+                      {usuario.qr_code}
+                    </Typography>
+                  </Box>
+                )}
               </Box>
             </Grid>
 
           </Grid>
 
-          {/* Información adicional si es necesario */}
-          {usuario.foto && (
-            <>
-              <Divider />
-              <Box>
-                <Typography variant="h6" gutterBottom color="primary">
-                  Foto del Usuario
-                </Typography>
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                  <Avatar
-                    src={getImageUrl(usuario.foto)}
-                    sx={{ width: 150, height: 150 }}
-                  />
-                </Box>
-              </Box>
-            </>
-          )}
 
         </Box>
       </DialogContent>

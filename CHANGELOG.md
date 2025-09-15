@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [2025-01-12] - Mejoras en Módulo de Grados y Áreas
+## [2025-01-12] - Mejoras en Módulo de Grados, Áreas y Usuarios
 
 ### ✨ Nuevas Funcionalidades
 
@@ -8,6 +8,8 @@
 - **Script SQL de Migración**: Creado script para agregar columna turno con validaciones
 - **Vista de Detalles Mejorada**: Mejorado formato de vista de detalles en módulo Áreas
 - **Columna Alumnos en Grilla**: Reemplazada columna Estado por Alumnos en grilla de Grados
+- **Código QR en Usuarios**: Agregado campo QR a usuarios con generación automática
+- **Visualización QR como Imagen**: Implementada librería react-qr-code para mostrar QR escaneable
 
 ### 🔧 Mejoras Técnicas
 
@@ -15,18 +17,26 @@
 - **Frontend Grados**: Mejorado formulario con campo turno y validaciones
 - **Componente AreasView**: Creado componente dedicado para vista de detalles de áreas
 - **Conteo de Alumnos**: Implementado conteo automático de alumnos matriculados por grado
+- **Backend Usuarios**: Agregado campo qr_code con generación automática en creación
+- **Librería QR**: Instalada react-qr-code para renderizado de códigos QR como imagen
+- **Vista Usuarios**: Optimizada visualización con QR pequeño al lado de foto del usuario
 
 ### 📊 Base de Datos
 
 - **Tabla Grados**: Agregada columna `turno VARCHAR(50)` con restricciones CHECK
-- **Índices**: Creado índice para optimizar consultas por turno
+- **Tabla Usuarios**: Agregada columna `qr_code VARCHAR(255)` con restricción UNIQUE
+- **Índices**: Creados índices para optimizar consultas por turno y QR
 - **Validaciones**: Agregadas restricciones para valores válidos de turno (Mañana, Tarde, Noche)
+- **Generación QR**: Códigos QR únicos con formato `USR-{timestamp}-{dni}`
 
 ### 🎨 Mejoras de UI/UX
 
 - **Formulario Grados**: Campo turno con combobox poblado desde tabla turnos
 - **Vista Áreas**: Formato profesional con cards, iconos y información organizada
 - **Grilla Grados**: Columna Alumnos con formato destacado y variable preparada para matriculación
+- **Vista Usuarios**: QR pequeño (60x60px) al lado de foto del usuario en header
+- **Formulario Usuarios**: Campo QR de solo lectura en modo edición
+- **Diseño Optimizado**: Eliminadas cards redundantes para mejor flujo visual
 
 ---
 

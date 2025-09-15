@@ -46,7 +46,8 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
     confirmar_clave: '',
     foto: '',
     activo: true,
-    rol: 'Alumno'
+    rol: 'Alumno',
+    qr_code: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -97,7 +98,8 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
         confirmar_clave: '',
         foto: usuario.foto || '',
         activo: usuario.activo !== undefined ? usuario.activo : true,
-        rol: usuario.rol || 'Alumno'
+        rol: usuario.rol || 'Alumno',
+        qr_code: usuario.qr_code || ''
       });
       // Construir URL de imagen existente
       const existingImageUrl = usuario.foto ?
@@ -121,7 +123,8 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
         confirmar_clave: '',
         foto: '',
         activo: true,
-        rol: 'Alumno'
+        rol: 'Alumno',
+        qr_code: ''
       });
       setPreviewImage('');
     }
@@ -622,6 +625,27 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
                   >
                     Cambiar Contraseña
                   </Button>
+                </Grid>
+              )}
+
+              {/* Código QR - Solo lectura */}
+              {mode === 'edit' && formData.qr_code && (
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Código QR"
+                    value={formData.qr_code}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    helperText="Código QR único para escaneo de asistencia"
+                    sx={{
+                      '& .MuiInputBase-input': {
+                        fontFamily: 'monospace',
+                        fontSize: '0.875rem'
+                      }
+                    }}
+                  />
                 </Grid>
               )}
 
