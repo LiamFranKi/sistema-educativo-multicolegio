@@ -11,13 +11,13 @@ const pool = new Pool({
 
 async function updateExistingGrados() {
   const client = await pool.connect();
-  
+
   try {
     console.log('🔄 Actualizando grados existentes...');
-    
+
     // Actualizar grados existentes con valores por defecto
     const updateQuery = `
-      UPDATE grados SET 
+      UPDATE grados SET
         seccion = 'Unica',
         direccion_archivos = '',
         link_aula_virtual = '',
@@ -25,23 +25,23 @@ async function updateExistingGrados() {
         anio_escolar = 2024
       WHERE seccion IS NULL OR seccion = '';
     `;
-    
+
     const result = await client.query(updateQuery);
     console.log(`✅ ${result.rowCount} grados actualizados con valores por defecto`);
-    
+
     // Verificar que los grados tienen los nuevos campos
     const checkQuery = `
-      SELECT id, nombre, seccion, anio_escolar, nivel_id 
-      FROM grados 
+      SELECT id, nombre, seccion, anio_escolar, nivel_id
+      FROM grados
       LIMIT 5;
     `;
-    
+
     const checkResult = await client.query(checkQuery);
     console.log('📋 Verificación de grados actualizados:');
     checkResult.rows.forEach(grado => {
       console.log(`   - ${grado.nombre}: Sección=${grado.seccion}, Año=${grado.anio_escolar}, Nivel=${grado.nivel_id}`);
     });
-    
+
   } catch (error) {
     console.error('❌ Error actualizando grados:', error.message);
     throw error;
