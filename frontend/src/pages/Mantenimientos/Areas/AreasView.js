@@ -16,14 +16,16 @@ import {
 } from '@mui/material';
 import {
   Close as CloseIcon,
-  School as SchoolIcon,
-  CalendarToday as CalendarIcon,
-  Class as ClassIcon,
-  AccessTime as TimeIcon
+  Category as CategoryIcon,
+  Code as CodeIcon,
+  Description as DescriptionIcon,
+  ToggleOn as ToggleOnIcon,
+  ToggleOff as ToggleOffIcon,
+  CalendarToday as CalendarIcon
 } from '@mui/icons-material';
 
-const GradosView = ({ grado, nivelNombre, onClose }) => {
-  if (!grado) return null;
+const AreasView = ({ area, onClose }) => {
+  if (!area) return null;
 
   const formatDate = (dateString) => {
     if (!dateString) return 'No disponible';
@@ -41,20 +43,21 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
       <DialogTitle>
         <Box display="flex" alignItems="center" gap={2}>
           <Avatar
-            src={grado.foto && grado.foto !== 'default-grado.png' ?
-              `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${grado.foto}` :
-              null
-            }
-            sx={{ width: 60, height: 60, fontSize: '1.8rem' }}
+            sx={{
+              width: 60,
+              height: 60,
+              fontSize: '1.8rem',
+              bgcolor: 'primary.main'
+            }}
           >
-            {(!grado.foto || grado.foto === 'default-grado.png') && (grado.nombre ? grado.nombre.charAt(0).toUpperCase() : 'G')}
+            <CategoryIcon />
           </Avatar>
           <Box>
             <Typography variant="h5" component="div">
-              {grado.nombre}
+              {area.nombre}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Detalles del grado educativo
+              Detalles del área educativa
             </Typography>
           </Box>
         </Box>
@@ -64,70 +67,46 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
 
       <DialogContent>
         <Grid container spacing={3}>
-
-          {/* Información Académica */}
+          {/* Información Principal */}
           <Grid item xs={12}>
             <Card>
               <CardHeader
-                title="Información Académica"
-                avatar={<SchoolIcon color="primary" />}
+                title="Información Principal"
+                avatar={<CategoryIcon color="primary" />}
               />
               <CardContent>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={12} sm={6}>
                     <Box display="flex" alignItems="center" gap={1} mb={1}>
-                      <SchoolIcon color="primary" fontSize="small" />
+                      <CodeIcon color="action" fontSize="small" />
                       <Typography variant="subtitle2" color="text.secondary">
-                        Nivel:
+                        Código:
                       </Typography>
                     </Box>
                     <Chip
-                      label={nivelNombre}
-                      color="secondary"
-                      size="medium"
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} sm={3}>
-                    <Box display="flex" alignItems="center" gap={1} mb={1}>
-                      <ClassIcon color="primary" fontSize="small" />
-                      <Typography variant="subtitle2" color="text.secondary">
-                        Sección:
-                      </Typography>
-                    </Box>
-                    <Chip
-                      label={grado.seccion || 'Única'}
-                      color="secondary"
-                      variant="outlined"
-                      size="medium"
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} sm={3}>
-                    <Box display="flex" alignItems="center" gap={1} mb={1}>
-                      <TimeIcon color="primary" fontSize="small" />
-                      <Typography variant="subtitle2" color="text.secondary">
-                        Turno:
-                      </Typography>
-                    </Box>
-                    <Chip
-                      label={grado.turno || 'Mañana'}
+                      label={area.codigo}
                       color="primary"
                       variant="outlined"
-                      size="medium"
+                      size="small"
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={3}>
+                  <Grid item xs={12} sm={6}>
                     <Box display="flex" alignItems="center" gap={1} mb={1}>
-                      <CalendarIcon color="primary" fontSize="small" />
+                      {area.estado === 'activo' ? (
+                        <ToggleOnIcon color="success" fontSize="small" />
+                      ) : (
+                        <ToggleOffIcon color="disabled" fontSize="small" />
+                      )}
                       <Typography variant="subtitle2" color="text.secondary">
-                        Año Escolar:
+                        Estado:
                       </Typography>
                     </Box>
-                    <Typography variant="h6" fontWeight="bold" color="primary">
-                      {grado.anio_escolar}
-                    </Typography>
+                    <Chip
+                      label={area.estado === 'activo' ? 'Activo' : 'Inactivo'}
+                      color={area.estado === 'activo' ? 'success' : 'default'}
+                      size="small"
+                    />
                   </Grid>
                 </Grid>
               </CardContent>
@@ -135,16 +114,16 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
           </Grid>
 
           {/* Descripción */}
-          {grado.descripcion && (
+          {area.descripcion && (
             <Grid item xs={12}>
               <Card>
                 <CardHeader
                   title="Descripción"
-                  avatar={<SchoolIcon color="primary" />}
+                  avatar={<DescriptionIcon color="primary" />}
                 />
                 <CardContent>
                   <Typography variant="body1">
-                    {grado.descripcion}
+                    {area.descripcion}
                   </Typography>
                 </CardContent>
               </Card>
@@ -165,7 +144,7 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
                       Fecha de Creación:
                     </Typography>
                     <Typography variant="body2">
-                      {formatDate(grado.created_at)}
+                      {formatDate(area.created_at)}
                     </Typography>
                   </Grid>
 
@@ -174,7 +153,16 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
                       Última Actualización:
                     </Typography>
                     <Typography variant="body2">
-                      {formatDate(grado.updated_at)}
+                      {formatDate(area.updated_at)}
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      ID del Área:
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
+                      #{area.id}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -199,4 +187,4 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
   );
 };
 
-export default GradosView;
+export default AreasView;

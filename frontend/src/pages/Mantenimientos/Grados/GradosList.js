@@ -311,8 +311,9 @@ const GradosList = () => {
                 <TableCell align="center"><strong>Grado</strong></TableCell>
                 <TableCell align="center"><strong>Sección</strong></TableCell>
                 <TableCell align="center"><strong>Año</strong></TableCell>
+                <TableCell align="center"><strong>Turno</strong></TableCell>
                 <TableCell align="center"><strong>Nivel</strong></TableCell>
-                <TableCell align="center"><strong>Estado</strong></TableCell>
+                <TableCell align="center"><strong>Alumnos</strong></TableCell>
                 <TableCell align="center"><strong>Acciones</strong></TableCell>
               </TableRow>
             </TableHead>
@@ -355,17 +356,23 @@ const GradosList = () => {
                   </TableCell>
                   <TableCell align="center">
                     <Chip
+                      label={grado.turno || 'Mañana'}
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                    />
+                  </TableCell>
+                  <TableCell align="center">
+                    <Chip
                       label={getNivelNombre(grado.nivel_id)}
                       size="small"
                       color={getNivelColor(grado.nivel_id)}
                     />
                   </TableCell>
                   <TableCell align="center">
-                    <Chip
-                      label={grado.activo ? 'Activo' : 'Inactivo'}
-                      size="small"
-                      color={grado.activo ? 'success' : 'default'}
-                    />
+                    <Typography variant="body2" fontWeight="medium" color="primary">
+                      {grado.cantidad_alumnos || 0}
+                    </Typography>
                   </TableCell>
                   <TableCell align="center">
                     <IconButton

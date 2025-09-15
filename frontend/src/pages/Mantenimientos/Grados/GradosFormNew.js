@@ -47,6 +47,7 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
     numero_grado: '',
     seccion: '',
     anio_escolar: '',
+    turno: '',
     descripcion: '',
     direccion_archivos: '',
     link_aula_virtual: '',
@@ -62,6 +63,7 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
   const [gradosOptions, setGradosOptions] = useState([]);
   const [secciones, setSecciones] = useState([]);
   const [aniosEscolares, setAniosEscolares] = useState([]);
+  const [turnos, setTurnos] = useState([]);
   const [nivelSeleccionado, setNivelSeleccionado] = useState(null);
 
   const isEdit = Boolean(grado);
@@ -90,6 +92,7 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
           numero_grado: grado.numero_grado || '',
           seccion: grado.seccion || '',
           anio_escolar: grado.anio_escolar || '',
+          turno: grado.turno || '',
           descripcion: grado.descripcion || '',
           direccion_archivos: grado.direccion_archivos || '',
           link_aula_virtual: grado.link_aula_virtual || '',
@@ -118,27 +121,31 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
     try {
       console.log('Cargando datos iniciales del formulario de grados...');
 
-      const [nivelesRes, seccionesRes, aniosRes] = await Promise.all([
+      const [nivelesRes, seccionesRes, aniosRes, turnosRes] = await Promise.all([
         gradosService.getNivelesDisponibles(),
         gradosService.getSeccionesDisponibles(),
-        gradosService.getAniosEscolares()
+        gradosService.getAniosEscolares(),
+        gradosService.getTurnosDisponibles()
       ]);
 
-      console.log('Respuestas de la API:', { nivelesRes, seccionesRes, aniosRes });
+      console.log('Respuestas de la API:', { nivelesRes, seccionesRes, aniosRes, turnosRes });
 
       setNiveles(nivelesRes || []);
       setSecciones(seccionesRes || []);
       setAniosEscolares(aniosRes || []);
+      setTurnos(turnosRes || []);
 
       // Establecer valores por defecto válidos solo si no estamos editando
       if (!grado) {
         const seccionesDisponibles = seccionesRes || [];
         const aniosDisponibles = aniosRes || [];
+        const turnosDisponibles = turnosRes || [];
 
         setFormData(prev => ({
           ...prev,
           seccion: seccionesDisponibles.length > 0 ? seccionesDisponibles[0].value : '',
-          anio_escolar: aniosDisponibles.length > 0 ? aniosDisponibles[0].anio : ''
+          anio_escolar: aniosDisponibles.length > 0 ? aniosDisponibles[0].anio : '',
+          turno: turnosDisponibles.length > 0 ? turnosDisponibles[0].nombre : ''
         }));
       }
 
@@ -148,12 +155,14 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
       setNiveles([]);
       setSecciones([]);
       setAniosEscolares([]);
+      setTurnos([]);
 
       // Limpiar valores del formulario para evitar warnings MUI
       setFormData(prev => ({
         ...prev,
         seccion: '',
-        anio_escolar: ''
+        anio_escolar: '',
+        turno: ''
       }));
 
       Swal.fire('Error', 'Error cargando datos iniciales', 'error');
@@ -256,6 +265,10 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
 
     if (!formData.anio_escolar) {
       newErrors.anio_escolar = 'El año escolar es requerido';
+    }
+
+    if (!formData.turno) {
+      newErrors.turno = 'El turno es requerido';
     }
 
     setErrors(newErrors);
@@ -433,6 +446,40 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
             {errors.anio_escolar && (
               <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
                 {errors.anio_escolar}
+              </Typography>
+            )}
+          </Grid>
+
+          {/* Turno */}
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth error={!!errors.turno}>
+              <InputLabel id="turno-label">Turno *</InputLabel>
+              <Select
+                labelId="turno-label"
+                value={formData.turno}
+                onChange={(e) => handleInputChange('turno', e.target.value)}
+                label="Turno *"
+              >
+                {(turnos || []).map((turno) => (
+                  <MenuItem key={turno.nombre} value={turno.nombre}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Chip
+                        label={turno.abreviatura}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                      />
+                      <Typography variant="body2">
+                        {turno.nombre}
+                      </Typography>
+                    </Box>
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {errors.turno && (
+              <Typography variant="caption" color="error" sx={{ mt: 0.5, display: 'block' }}>
+                {errors.turno}
               </Typography>
             )}
           </Grid>

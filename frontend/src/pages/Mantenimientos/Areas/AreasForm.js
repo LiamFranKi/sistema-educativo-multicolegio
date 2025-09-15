@@ -23,6 +23,7 @@ import {
 } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 import { areasService } from '../../../services/apiService';
+import AreasView from './AreasView';
 
 const AreasForm = ({ open, mode, area, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -157,6 +158,23 @@ const AreasForm = ({ open, mode, area, onClose, onSuccess }) => {
 
   const isReadOnly = mode === 'view';
 
+  // Si está en modo vista, usar el componente AreasView
+  if (mode === 'view') {
+    return (
+      <Dialog
+        open={open}
+        onClose={onClose}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: { borderRadius: 3, boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }
+        }}
+      >
+        <AreasView area={area} onClose={onClose} />
+      </Dialog>
+    );
+  }
+
   return (
     <Dialog
       open={open}
@@ -237,24 +255,6 @@ const AreasForm = ({ open, mode, area, onClose, onSuccess }) => {
               <MenuItem value="inactivo">Inactivo</MenuItem>
             </Select>
           </FormControl>
-
-          {/* Información adicional para modo vista */}
-          {isReadOnly && area && (
-            <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-              <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                Información adicional:
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                <strong>ID:</strong> {area.id}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                <strong>Creado:</strong> {new Date(area.created_at).toLocaleDateString('es-ES')}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                <strong>Actualizado:</strong> {new Date(area.updated_at).toLocaleDateString('es-ES')}
-              </Typography>
-            </Box>
-          )}
         </Box>
       </DialogContent>
 

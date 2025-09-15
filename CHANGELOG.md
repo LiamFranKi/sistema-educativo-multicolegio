@@ -1,5 +1,35 @@
 # CHANGELOG
 
+## [2025-01-12] - Mejoras en Módulo de Grados y Áreas
+
+### ✨ Nuevas Funcionalidades
+
+- **Campo Turno en Grados**: Agregado campo turno a la tabla grados y formularios
+- **Script SQL de Migración**: Creado script para agregar columna turno con validaciones
+- **Vista de Detalles Mejorada**: Mejorado formato de vista de detalles en módulo Áreas
+- **Columna Alumnos en Grilla**: Reemplazada columna Estado por Alumnos en grilla de Grados
+
+### 🔧 Mejoras Técnicas
+
+- **Backend Grados**: Actualizadas consultas para incluir campo turno y conteo de alumnos
+- **Frontend Grados**: Mejorado formulario con campo turno y validaciones
+- **Componente AreasView**: Creado componente dedicado para vista de detalles de áreas
+- **Conteo de Alumnos**: Implementado conteo automático de alumnos matriculados por grado
+
+### 📊 Base de Datos
+
+- **Tabla Grados**: Agregada columna `turno VARCHAR(50)` con restricciones CHECK
+- **Índices**: Creado índice para optimizar consultas por turno
+- **Validaciones**: Agregadas restricciones para valores válidos de turno (Mañana, Tarde, Noche)
+
+### 🎨 Mejoras de UI/UX
+
+- **Formulario Grados**: Campo turno con combobox poblado desde tabla turnos
+- **Vista Áreas**: Formato profesional con cards, iconos y información organizada
+- **Grilla Grados**: Columna Alumnos con formato destacado y variable preparada para matriculación
+
+---
+
 ## [2025-01-12] - Corrección del Formulario de Edición de Grados
 
 ### 🐛 Correcciones
@@ -26,10 +56,11 @@
 
 ### ✅ **MIGRACIÓN COMPLETA A SISTEMA DE UN SOLO COLEGIO**
 
-**Fecha:** 04/09/2024  
+**Fecha:** 04/09/2024
 **Cambio:** Migración completa del sistema multi-colegio a un sistema de un solo colegio
 
 #### **Archivos Eliminados:**
+
 - `frontend/src/components/Layout/SuperAdminLayout.js`
 - `frontend/src/components/Sidebar/SuperAdminSidebar.js`
 - `frontend/src/pages/SuperAdmin/SuperAdminDashboard.js`
@@ -43,6 +74,7 @@
 - `backend/migrations/remove_colegios_table.sql`
 
 #### **Archivos Modificados:**
+
 - `frontend/src/App.js` - Eliminada lógica de Superadministrador y agregado ConfiguracionProvider
 - `frontend/src/services/apiService.js` - Eliminado `colegioService`, agregado `configuracionService`
 - `backend/routes/configuracion.js` - Nuevo sistema de configuración del colegio
@@ -51,30 +83,35 @@
 ### ✨ **Nuevas Funcionalidades**
 
 #### **Sistema de Configuración del Colegio:**
+
 - **Módulo de Configuración:** Gestión completa de datos del colegio único
 - **Contexto Global:** `ConfiguracionContext` para manejo de datos del colegio
 - **URLs de Imágenes:** Sistema unificado para construcción de URLs de imágenes
 - **Actualización en Tiempo Real:** Cambios se reflejan inmediatamente
 
 #### **Temas Dinámicos:**
+
 - **Contexto de Tema:** `ThemeContext.js` para generación dinámica de tema Material-UI
 - **Colores Personalizables:** Basados en `colegio.color_primario` y `colegio.color_secundario`
 - **Aplicación Automática:** Login y dashboard con colores personalizables
 - **Actualización Inmediata:** Cambios se reflejan sin reiniciar
 
 #### **Sistema de Fondos Personalizables:**
+
 - **Tipo de Fondo:** Color o imagen configurable
 - **Preview Inmediato:** Vista previa de imagen antes de guardar
 - **Validación:** Tipos de archivo permitidos (jpg, png, gif)
 - **Aplicación:** Solo en página de login
 
 #### **Sidebar Personalizado:**
+
 - **Información del Usuario:** Nombre y foto del usuario logueado
 - **Avatar Mejorado:** 120x120px (100% más grande que original)
 - **Manejo de Errores:** Fallback a icono de usuario si no hay foto
 - **URLs Corregidas:** Construcción correcta de URLs para fotos
 
 #### **Barra de Título Mejorada:**
+
 - **Iconos Agregados:** Notificaciones y cerrar sesión
 - **Posición:** Lado derecho de la barra de título
 - **Hover Effects:** Efectos de transparencia al pasar el mouse
@@ -83,6 +120,7 @@
 ### 🔌 **API y Backend**
 
 #### **Nueva Tabla `configuracion`:**
+
 ```sql
 CREATE TABLE configuracion (
     id SERIAL PRIMARY KEY,
@@ -97,6 +135,7 @@ CREATE TABLE configuracion (
 ```
 
 #### **Rutas de Configuración:**
+
 - `GET /api/configuracion` - Obtener todas las configuraciones
 - `GET /api/configuracion/colegio` - Obtener datos del colegio (público)
 - `GET /api/configuracion/colegio/publico` - Datos públicos sin autenticación
@@ -106,6 +145,7 @@ CREATE TABLE configuracion (
 ### 🎨 **Frontend y UI**
 
 #### **Nuevos Archivos:**
+
 - `frontend/src/utils/imageUtils.js` - Utilidades para URLs de imágenes
 - `frontend/src/contexts/ConfiguracionContext.js` - Contexto global de configuración
 - `frontend/src/contexts/ThemeContext.js` - Contexto de tema dinámico
@@ -114,18 +154,21 @@ CREATE TABLE configuracion (
 #### **Patrones Establecidos:**
 
 **Para URLs de Imágenes:**
+
 ```javascript
 import { getColegioLogoUrl } from "../utils/imageUtils";
 const logoUrl = getColegioLogoUrl(colegio.logo);
 ```
 
 **Para Configuración del Colegio:**
+
 ```javascript
 const { colegio, updateColegio } = useConfiguracion();
 updateColegio({ nombre: "Nuevo Nombre", logo: "nuevo-logo.png" });
 ```
 
 **Para Temas Dinámicos:**
+
 ```javascript
 const { theme } = useTheme();
 <ThemeProvider theme={theme}>{/* Componentes */}</ThemeProvider>;
@@ -134,6 +177,7 @@ const { theme } = useTheme();
 ### 📊 **Base de Datos**
 
 #### **Datos Iniciales del Colegio:**
+
 - `colegio_nombre` - Nombre del colegio
 - `colegio_codigo` - Código único del colegio
 - `colegio_direccion` - Dirección completa

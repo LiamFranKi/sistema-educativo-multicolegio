@@ -332,6 +332,11 @@ export const gradosService = {
     const response = await api.get('/grados/anios-escolares');
     return response.data;
   },
+
+  getTurnosDisponibles: async () => {
+    const response = await api.get('/turnos');
+    return response.data.turnos || [];
+  },
 };
 
 // Servicios de áreas educativas

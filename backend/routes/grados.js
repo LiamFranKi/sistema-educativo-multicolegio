@@ -118,7 +118,7 @@ router.get('/', async (req, res) => {
       queryParams.push(nivel_id);
     }
 
-    // Consulta principal con JOIN
+    // Consulta principal con JOIN y conteo de alumnos
     const query = `
       SELECT
         g.id,
@@ -136,10 +136,18 @@ router.get('/', async (req, res) => {
         g.direccion_archivos,
         g.link_aula_virtual,
         g.anio_escolar,
+        g.turno,
         g.created_at,
-        g.updated_at
+        g.updated_at,
+        COALESCE(alumnos_count.cantidad_alumnos, 0) as cantidad_alumnos
       FROM grados g
       JOIN niveles n ON g.nivel_id = n.id
+      LEFT JOIN (
+        SELECT grado_id, COUNT(*) as cantidad_alumnos
+        FROM matriculas
+        WHERE activo = true
+        GROUP BY grado_id
+      ) alumnos_count ON g.id = alumnos_count.grado_id
       ${whereClause}
       ORDER BY n.orden, g.orden
     `;
@@ -276,10 +284,18 @@ router.get('/:id', async (req, res) => {
         g.direccion_archivos,
         g.link_aula_virtual,
         g.anio_escolar,
+        g.turno,
         g.created_at,
-        g.updated_at
+        g.updated_at,
+        COALESCE(alumnos_count.cantidad_alumnos, 0) as cantidad_alumnos
       FROM grados g
       JOIN niveles n ON g.nivel_id = n.id
+      LEFT JOIN (
+        SELECT grado_id, COUNT(*) as cantidad_alumnos
+        FROM matriculas
+        WHERE activo = true
+        GROUP BY grado_id
+      ) alumnos_count ON g.id = alumnos_count.grado_id
       WHERE g.id = $1
     `;
 
@@ -305,6 +321,7 @@ router.post('/', async (req, res) => {
       numero_grado,
       seccion,
       anio_escolar,
+      turno,
       descripcion = '',
       direccion_archivos = '',
       link_aula_virtual = '',
@@ -312,9 +329,9 @@ router.post('/', async (req, res) => {
     } = req.body;
 
     // Validaciones
-    if (!nivel_id || !numero_grado || !seccion || !anio_escolar) {
+    if (!nivel_id || !numero_grado || !seccion || !anio_escolar || !turno) {
       return res.status(400).json({
-        message: 'Nivel, número de grado, sección y año escolar son requeridos'
+        message: 'Nivel, número de grado, sección, año escolar y turno son requeridos'
       });
     }
 
@@ -358,16 +375,16 @@ router.post('/', async (req, res) => {
     const query = `
       INSERT INTO grados (
         nombre, descripcion, codigo, nivel_id, seccion,
-        direccion_archivos, link_aula_virtual, anio_escolar,
+        direccion_archivos, link_aula_virtual, anio_escolar, turno,
         orden, activo, foto
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, true, $10)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, true, $11)
       RETURNING *
     `;
 
     const result = await pool.query(query, [
       nombre, descripcion, codigo, nivel_id, seccion,
-      direccion_archivos, link_aula_virtual, anio_escolar,
+      direccion_archivos, link_aula_virtual, anio_escolar, turno,
       numero_grado, foto
     ]);
 
@@ -383,7 +400,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion, codigo, nivel_id, orden, activo, foto } = req.body;
+    const { nombre, descripcion, codigo, nivel_id, orden, activo, foto, turno } = req.body;
 
     // Verificar que el grado existe
     const gradoCheck = await pool.query('SELECT id FROM grados WHERE id = $1', [id]);
@@ -417,12 +434,13 @@ router.put('/:id', async (req, res) => {
         orden = COALESCE($5, orden),
         activo = COALESCE($6, activo),
         foto = COALESCE($7, foto),
+        turno = COALESCE($8, turno),
         updated_at = CURRENT_TIMESTAMP
-      WHERE id = $8
+      WHERE id = $9
       RETURNING *
     `;
 
-    const result = await pool.query(query, [nombre, descripcion, codigo, nivel_id, orden, activo, foto, id]);
+    const result = await pool.query(query, [nombre, descripcion, codigo, nivel_id, orden, activo, foto, turno, id]);
 
     res.json(result.rows[0]);
 
