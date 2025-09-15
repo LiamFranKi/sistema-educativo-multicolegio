@@ -17,7 +17,14 @@ import {
   Chip,
   Avatar,
   CircularProgress,
-  Alert
+  Alert,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  FormControl,
+  InputLabel,
+  Select
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -25,7 +32,12 @@ import {
   Clear as ClearIcon,
   Visibility as VisibilityIcon,
   Edit as EditIcon,
-  Delete as DeleteIcon
+  Delete as DeleteIcon,
+  MoreVert as MoreVertIcon,
+  Person as PersonIcon,
+  QrCode as QrCodeIcon,
+  Print as PrintIcon,
+  Security as SecurityIcon
 } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
 import { userService } from '../../../services/apiService';
@@ -41,11 +53,16 @@ const UsuariosList = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [roleFilter, setRoleFilter] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState('create'); // 'create', 'edit', 'view'
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
+
+  // Estados para menú de opciones
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   // Estados de paginación
   const [pagination, setPagination] = useState({
@@ -63,12 +80,13 @@ const UsuariosList = () => {
       const userRole = getUserRole();
       console.log('Usuario logueado:', currentUser);
       console.log('Rol del usuario:', userRole);
-      console.log('Cargando usuarios...', { page: pagination.page + 1, limit: pagination.rowsPerPage, search: searchTerm });
+      console.log('Cargando usuarios...', { page: pagination.page + 1, limit: pagination.rowsPerPage, search: searchTerm, rol: roleFilter });
 
       const response = await userService.getUsers({
         page: pagination.page + 1,
         limit: pagination.rowsPerPage,
-        search: searchTerm
+        search: searchTerm,
+        rol: roleFilter
       });
 
       console.log('Respuesta de la API:', response);
@@ -140,7 +158,7 @@ const UsuariosList = () => {
   // Cargar datos al montar el componente
   useEffect(() => {
     loadData();
-  }, [pagination.page, pagination.rowsPerPage, searchTerm]);
+  }, [pagination.page, pagination.rowsPerPage, searchTerm, roleFilter]);
 
   // Funciones siguiendo el patrón CRUD
   const handleCreate = () => {
@@ -164,6 +182,44 @@ const UsuariosList = () => {
   const handleDelete = (id) => {
     setItemToDelete(id);
     setConfirmDialogOpen(true);
+  };
+
+  // Funciones para menú de opciones
+  const handleMenuOpen = (event, usuario) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedUser(usuario);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedUser(null);
+  };
+
+  const handleMenuAction = (action) => {
+    if (selectedUser) {
+      switch (action) {
+        case 'view':
+          handleView(selectedUser);
+          break;
+        case 'edit':
+          handleEdit(selectedUser);
+          break;
+        case 'delete':
+          handleDelete(selectedUser.id);
+          break;
+        case 'qr':
+          // Futura funcionalidad: imprimir QR
+          toast.success('Funcionalidad de QR próximamente');
+          break;
+        case 'permissions':
+          // Futura funcionalidad: permisos
+          toast.success('Funcionalidad de permisos próximamente');
+          break;
+        default:
+          break;
+      }
+    }
+    handleMenuClose();
   };
 
   const handleConfirmDelete = async () => {
@@ -208,6 +264,10 @@ const UsuariosList = () => {
 
   const handleClear = () => {
     setSearchTerm('');
+  };
+
+  const handleRoleFilterChange = (event) => {
+    setRoleFilter(event.target.value);
   };
 
   // Funciones de paginación
@@ -281,8 +341,8 @@ const UsuariosList = () => {
           </Button>
         </Box>
 
-        {/* Barra de búsqueda */}
-        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
+        {/* Barra de búsqueda y filtros */}
+        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', gap: 2, alignItems: 'center' }}>
           <TextField
             placeholder="Buscar por nombre, DNI o email..."
             variant="outlined"
@@ -309,6 +369,22 @@ const UsuariosList = () => {
             }}
             sx={{ width: 400 }}
           />
+
+          <FormControl size="small" sx={{ minWidth: 150 }}>
+            <InputLabel>Filtrar por Rol</InputLabel>
+            <Select
+              value={roleFilter}
+              onChange={handleRoleFilterChange}
+              label="Filtrar por Rol"
+            >
+              <MenuItem value="">Todos los roles</MenuItem>
+              <MenuItem value="Administrador">Administrador</MenuItem>
+              <MenuItem value="Docente">Docente</MenuItem>
+              <MenuItem value="Alumno">Alumno</MenuItem>
+              <MenuItem value="Apoderado">Apoderado</MenuItem>
+              <MenuItem value="Tutor">Tutor</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
 
         {/* Tabla */}
@@ -334,16 +410,15 @@ const UsuariosList = () => {
           ) : (
             <Table>
               <TableHead>
-                <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                  <TableCell align="center">Foto</TableCell>
-                  <TableCell align="center">Nombres</TableCell>
-                  <TableCell align="center">DNI</TableCell>
-                  <TableCell align="center">Email</TableCell>
-                  <TableCell align="center">Teléfono</TableCell>
-                  <TableCell align="center">Rol</TableCell>
-                  <TableCell align="center">Estado</TableCell>
-                  <TableCell align="center">Fecha de Nacimiento</TableCell>
-                  <TableCell align="center">Acciones</TableCell>
+                <TableRow sx={{ backgroundColor: '#61a7d1' }}>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Foto</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Nombres</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>DNI</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Email</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Teléfono</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Rol</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Fecha de Nacimiento</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -352,8 +427,14 @@ const UsuariosList = () => {
                     key={usuario.id}
                     hover
                     sx={{
-                      '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
-                      '&:hover': { backgroundColor: '#e3f2fd' }
+                      '&:nth-of-type(even)': { backgroundColor: '#e7f1f8' },
+                      '&:nth-of-type(odd)': { backgroundColor: 'white' },
+                      '&:hover': {
+                        backgroundColor: '#ffe6d9 !important',
+                        '& .MuiTableCell-root': {
+                          backgroundColor: '#ffe6d9 !important'
+                        }
+                      }
                     }}
                   >
                     <TableCell align="center">
@@ -393,55 +474,30 @@ const UsuariosList = () => {
                       />
                     </TableCell>
                     <TableCell align="center">
-                      <Chip
-                        label={usuario.activo ? 'Activo' : 'Inactivo'}
-                        color={usuario.activo ? 'success' : 'error'}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell align="center">
                       <Typography variant="body2">
                         {formatDate(usuario.fecha_nacimiento)}
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                        <IconButton
-                          size="small"
-                          onClick={() => handleView(usuario)}
-                          sx={{
-                            color: 'info.main',
-                            '&:hover': { backgroundColor: 'info.light', color: 'white' }
-                          }}
-                          title="Ver"
-                        >
-                          <VisibilityIcon />
-                        </IconButton>
-
-                        <IconButton
-                          size="small"
-                          onClick={() => handleEdit(usuario)}
-                          sx={{
-                            color: 'primary.main',
-                            '&:hover': { backgroundColor: 'primary.light', color: 'white' }
-                          }}
-                          title="Editar"
-                        >
-                          <EditIcon />
-                        </IconButton>
-
-                        <IconButton
-                          size="small"
-                          onClick={() => handleDelete(usuario.id)}
-                          sx={{
-                            color: 'error.main',
-                            '&:hover': { backgroundColor: 'error.light', color: 'white' }
-                          }}
-                          title="Eliminar"
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Box>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={(e) => handleMenuOpen(e, usuario)}
+                        endIcon={<MoreVertIcon />}
+                        sx={{
+                          minWidth: 100,
+                          textTransform: 'none',
+                          borderColor: 'primary.main',
+                          color: 'primary.main',
+                          '&:hover': {
+                            backgroundColor: 'primary.light',
+                            color: 'white',
+                            borderColor: 'primary.main'
+                          }
+                        }}
+                      >
+                        Opciones
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -495,6 +551,63 @@ const UsuariosList = () => {
         cancelText="Cancelar"
         type="error"
       />
+
+      {/* Menú de opciones */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        PaperProps={{
+          sx: {
+            minWidth: 200,
+            borderRadius: 2,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
+          }
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      >
+        <MenuItem onClick={() => handleMenuAction('view')}>
+          <ListItemIcon>
+            <VisibilityIcon color="info" />
+          </ListItemIcon>
+          <ListItemText primary="Ver Detalles" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('edit')}>
+          <ListItemIcon>
+            <EditIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Editar Usuario" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('qr')}>
+          <ListItemIcon>
+            <QrCodeIcon color="secondary" />
+          </ListItemIcon>
+          <ListItemText primary="Imprimir Código QR" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('permissions')}>
+          <ListItemIcon>
+            <SecurityIcon color="warning" />
+          </ListItemIcon>
+          <ListItemText primary="Gestionar Permisos" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('delete')} sx={{ color: 'error.main' }}>
+          <ListItemIcon>
+            <DeleteIcon color="error" />
+          </ListItemIcon>
+          <ListItemText primary="Eliminar Usuario" />
+        </MenuItem>
+      </Menu>
     </Box>
   );
 };

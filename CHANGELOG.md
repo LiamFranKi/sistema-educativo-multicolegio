@@ -1,5 +1,40 @@
 # CHANGELOG
 
+## [2025-01-12] - Mejoras en Módulo de Usuarios: Menú de Opciones y Filtros
+
+### ✨ Nuevas Funcionalidades
+
+- **Menú de Opciones en Usuarios**: Implementado menú desplegable con opciones (Ver, Editar, QR, Permisos, Eliminar)
+- **Filtro por Rol**: Agregado filtro desplegable para filtrar usuarios por tipo de rol
+- **Eliminación de Columna Estado**: Removida columna Estado de la grilla de usuarios
+- **Diseño de Grilla Mejorado**: Implementado patrón de filas alternadas y colores personalizados
+
+### 🔧 Mejoras Técnicas
+
+- **Botón Opciones**: Reemplazados múltiples iconos por botón "Opciones" con menú desplegable
+- **Filtro Reactivo**: Filtro por rol integrado con búsqueda de texto y paginación
+- **Estados de Filtro**: Agregado estado `roleFilter` para manejo de filtros
+- **API Backend**: Integración con parámetro `rol` en consultas de usuarios
+- **Validación de Roles**: Valores de filtro corregidos para coincidir con BD (Administrador, Docente, Alumno, Apoderado, Tutor)
+
+### 🎨 Mejoras de UI/UX
+
+- **Colores Personalizados**: 
+  - Cabecera: Fondo `#61a7d1` con texto blanco
+  - Filas alternadas: Blanco y `#e7f1f8` (azul claro)
+  - Hover: `#ffe6d9` (naranja suave)
+- **Menú Profesional**: Diseño con iconos, colores temáticos y sombras
+- **Layout Optimizado**: Búsqueda y filtro en la misma fila
+- **Escalabilidad**: Preparado para futuras opciones del menú
+
+### 📊 Base de Datos
+
+- **Sin cambios en BD**: Utiliza estructura existente de tabla usuarios
+- **Filtros Backend**: Aprovecha funcionalidad existente de filtrado por rol
+- **Parámetros API**: Sincronización frontend-backend con parámetro `rol`
+
+---
+
 ## [2025-01-12] - Mejoras en Módulo de Grados, Áreas y Usuarios
 
 ### ✨ Nuevas Funcionalidades
@@ -13,13 +48,14 @@
 
 ### 🔧 Mejoras Técnicas
 
-- **Backend Grados**: Actualizadas consultas para incluir campo turno y conteo de alumnos
+- **Backend Grados**: Actualizadas consultas para incluir campo turno y variable cantidad_alumnos
 - **Frontend Grados**: Mejorado formulario con campo turno y validaciones
 - **Componente AreasView**: Creado componente dedicado para vista de detalles de áreas
-- **Conteo de Alumnos**: Implementado conteo automático de alumnos matriculados por grado
+- **Variable Alumnos**: Implementada variable cantidad_alumnos (valor 0) preparada para futuras matriculas
 - **Backend Usuarios**: Agregado campo qr_code con generación automática en creación
 - **Librería QR**: Instalada react-qr-code para renderizado de códigos QR como imagen
 - **Vista Usuarios**: Optimizada visualización con QR pequeño al lado de foto del usuario
+- **Corrección Grados**: Arreglado error 500 eliminando JOIN con tabla matriculas inexistente
 
 ### 📊 Base de Datos
 
@@ -37,6 +73,7 @@
 - **Vista Usuarios**: QR pequeño (60x60px) al lado de foto del usuario en header
 - **Formulario Usuarios**: Campo QR de solo lectura en modo edición
 - **Diseño Optimizado**: Eliminadas cards redundantes para mejor flujo visual
+- **Estabilidad**: Corregido error 500 en módulo de grados para funcionamiento estable
 
 ---
 

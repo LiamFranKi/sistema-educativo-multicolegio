@@ -1398,18 +1398,18 @@ const ConfiguracionList = () => {
                       <Box sx={{ textAlign: 'center', width: '100%' }}>
                         <img
                           src={editMode ? formData.background_imagen : colegio.background_imagen}
-                          alt="Vista previa del fondo"
-                          style={{
-                            maxWidth: '100%',
-                            maxHeight: 100,
-                            borderRadius: 8,
-                            border: '2px solid #e0e0e0',
-                            objectFit: 'cover'
-                          }}
-                          onError={(e) => {
-                            e.target.style.display = 'none';
-                          }}
-                        />
+                              alt="Vista previa del fondo"
+                              style={{
+                                maxWidth: '100%',
+                                maxHeight: 100,
+                                borderRadius: 8,
+                                border: '2px solid #e0e0e0',
+                                objectFit: 'cover'
+                              }}
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                              }}
+                            />
                       </Box>
                     ) : (
                       <Box sx={{ textAlign: 'center', color: 'text.secondary' }}>
@@ -1870,22 +1870,22 @@ const ConfiguracionList = () => {
       <Paper sx={{ mb: 2 }}>
         <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
               <CalendarIcon color="primary" sx={{ fontSize: 24 }} />
               <Typography variant="h6" component="h2" color="primary">
                 Turnos Escolares
-              </Typography>
-            </Box>
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
               onClick={handleCreateTurno}
-              size="small"
-              disabled={saving}
-              sx={{ borderRadius: 2 }}
-            >
+            size="small"
+            disabled={saving}
+            sx={{ borderRadius: 2 }}
+          >
               Nuevo Turno
-            </Button>
+          </Button>
           </Box>
         </Box>
 
@@ -1921,22 +1921,22 @@ const ConfiguracionList = () => {
             </Grid>
 
             <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
-              <Button
-                variant="contained"
+                  <Button
+                    variant="contained"
                 onClick={handleSaveTurno}
                 disabled={saving}
-                startIcon={saving ? <CircularProgress size={16} /> : <CheckCircleIcon />}
-              >
+                    startIcon={saving ? <CircularProgress size={16} /> : <CheckCircleIcon />}
+                  >
                 {saving ? 'Guardando...' : 'Guardar'}
-              </Button>
-              <Button
-                variant="outlined"
+                  </Button>
+                  <Button
+                    variant="outlined"
                 onClick={handleCancelTurno}
-                disabled={saving}
-              >
-                Cancelar
-              </Button>
-            </Box>
+                    disabled={saving}
+                  >
+                    Cancelar
+                  </Button>
+                </Box>
           </Box>
         )}
 
@@ -2024,17 +2024,17 @@ const ConfiguracionList = () => {
                       />
                     </TableCell>
                     <TableCell align="center">
-                      <Chip
+                        <Chip
                         label={turno.activo ? 'Activo' : 'Inactivo'}
                         color={turno.activo ? 'success' : 'error'}
-                        size="small"
+                          size="small"
                         variant="outlined"
-                      />
+                        />
                     </TableCell>
                     <TableCell align="center">
                       <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }}>
                         <IconButton
-                          size="small"
+                            size="small"
                           onClick={() => handleEditTurno(turno)}
                           sx={{ color: 'primary.main' }}
                         >

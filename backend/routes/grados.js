@@ -118,7 +118,7 @@ router.get('/', async (req, res) => {
       queryParams.push(nivel_id);
     }
 
-    // Consulta principal con JOIN y conteo de alumnos
+    // Consulta principal con JOIN (sin tabla matriculas por ahora)
     const query = `
       SELECT
         g.id,
@@ -139,15 +139,9 @@ router.get('/', async (req, res) => {
         g.turno,
         g.created_at,
         g.updated_at,
-        COALESCE(alumnos_count.cantidad_alumnos, 0) as cantidad_alumnos
+        0 as cantidad_alumnos
       FROM grados g
       JOIN niveles n ON g.nivel_id = n.id
-      LEFT JOIN (
-        SELECT grado_id, COUNT(*) as cantidad_alumnos
-        FROM matriculas
-        WHERE activo = true
-        GROUP BY grado_id
-      ) alumnos_count ON g.id = alumnos_count.grado_id
       ${whereClause}
       ORDER BY n.orden, g.orden
     `;
@@ -287,15 +281,9 @@ router.get('/:id', async (req, res) => {
         g.turno,
         g.created_at,
         g.updated_at,
-        COALESCE(alumnos_count.cantidad_alumnos, 0) as cantidad_alumnos
+        0 as cantidad_alumnos
       FROM grados g
       JOIN niveles n ON g.nivel_id = n.id
-      LEFT JOIN (
-        SELECT grado_id, COUNT(*) as cantidad_alumnos
-        FROM matriculas
-        WHERE activo = true
-        GROUP BY grado_id
-      ) alumnos_count ON g.id = alumnos_count.grado_id
       WHERE g.id = $1
     `;
 
