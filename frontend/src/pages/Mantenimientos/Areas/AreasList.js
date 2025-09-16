@@ -26,6 +26,14 @@ import {
   Select,
   MenuItem,
   Tooltip,
+  Menu,
+  ListItemIcon,
+  ListItemText,
+  Grid,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -35,6 +43,11 @@ import {
   Delete as DeleteIcon,
   Visibility as ViewIcon,
   Category as CategoryIcon,
+  MoreVert as MoreVertIcon,
+  FilterList as FilterIcon,
+  Book as BookIcon,
+  Assignment as AssignmentIcon,
+  Print as PrintIcon
 } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 import { areasService } from '../../../services/apiService';
@@ -53,6 +66,9 @@ const AreasList = () => {
   const [selectedArea, setSelectedArea] = useState(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [areaToDelete, setAreaToDelete] = useState(null);
+
+  // Estados para menú de opciones
+  const [anchorEl, setAnchorEl] = useState(null);
 
   // Cargar áreas
   const loadAreas = async () => {
@@ -188,6 +204,47 @@ const AreasList = () => {
     loadAreas(); // Recargar lista
   };
 
+  // Funciones para menú de opciones
+  const handleMenuOpen = (event, area) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedArea(area);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuAction = (action) => {
+    if (selectedArea) {
+      switch (action) {
+        case 'view':
+          handleView(selectedArea);
+          break;
+        case 'edit':
+          handleEdit(selectedArea);
+          break;
+        case 'delete':
+          handleDelete(selectedArea);
+          break;
+        case 'courses':
+          // Futura funcionalidad: cursos del área
+          Swal.fire('Información', 'Funcionalidad de cursos próximamente', 'info');
+          break;
+        case 'curriculum':
+          // Futura funcionalidad: currículo
+          Swal.fire('Información', 'Funcionalidad de currículo próximamente', 'info');
+          break;
+        case 'reports':
+          // Futura funcionalidad: reportes
+          Swal.fire('Información', 'Funcionalidad de reportes próximamente', 'info');
+          break;
+        default:
+          break;
+      }
+    }
+    handleMenuClose();
+  };
+
   // Obtener color del chip según estado
   const getEstadoColor = (estado) => {
     return estado === 'activo' ? 'success' : 'default';
@@ -201,85 +258,105 @@ const AreasList = () => {
   return (
     <Box sx={{ p: 3 }}>
       {/* Header */}
-      <Paper sx={{ mb: 2, overflow: 'hidden', borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-        <Box sx={{
-          p: 2,
-          borderBottom: '1px solid #e0e0e0',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <CategoryIcon color="primary" sx={{ fontSize: 20 }} />
-            <Typography variant="h6" color="primary">
+      <Card sx={{ mb: 3 }}>
+        <CardHeader
+          avatar={<CategoryIcon color="primary" sx={{ fontSize: 32 }} />}
+          title={
+            <Typography variant="h4" component="h1" color="primary">
               Gestión de Áreas Educativas
             </Typography>
-          </Box>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleCreate}
-            sx={{ borderRadius: 2 }}
-          >
-            Nueva Área
-          </Button>
-        </Box>
-
-        {/* Barra de búsqueda y filtros */}
-        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-            <TextField
-              placeholder="Buscar por nombre, descripción o código..."
-              value={searchTerm}
-              onChange={handleSearch}
-              InputProps={{
-                startAdornment: <SearchIcon />,
-                endAdornment: searchTerm && (
-                  <IconButton size="small" onClick={handleClearSearch}>
-                    <ClearIcon />
-                  </IconButton>
-                ),
-              }}
-              sx={{ width: 400, minWidth: 300 }}
-            />
-
-            <FormControl sx={{ minWidth: 150 }}>
-              <InputLabel>Estado</InputLabel>
-              <Select
-                value={estadoFilter}
-                onChange={handleEstadoFilter}
-                label="Estado"
+          }
+          subheader="Administra las áreas curriculares del sistema"
+          action={
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleCreate}
+              sx={{ mr: 1 }}
+            >
+              Nueva Área
+            </Button>
+          }
+        />
+        <Divider />
+        <CardContent>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                placeholder="Buscar áreas..."
+                value={searchTerm}
+                onChange={handleSearch}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: searchTerm && (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClearSearch} size="small">
+                        <ClearIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Filtrar por Estado</InputLabel>
+                <Select
+                  value={estadoFilter}
+                  onChange={handleEstadoFilter}
+                  label="Filtrar por Estado"
+                >
+                  <MenuItem value="">Todos los estados</MenuItem>
+                  <MenuItem value="activo">Activo</MenuItem>
+                  <MenuItem value="inactivo">Inactivo</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<FilterIcon />}
+                onClick={() => {
+                  setEstadoFilter('');
+                  setSearchTerm('');
+                }}
               >
-                <MenuItem value="">Todos</MenuItem>
-                <MenuItem value="activo">Activo</MenuItem>
-                <MenuItem value="inactivo">Inactivo</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-        </Box>
+                Limpiar
+              </Button>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+
 
         {/* Tabla */}
         <TableContainer>
           <Table>
             <TableHead>
-              <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                <TableCell align="center">Código</TableCell>
-                <TableCell align="center">Nombre</TableCell>
-                <TableCell align="center">Descripción</TableCell>
-                <TableCell align="center">Estado</TableCell>
-                <TableCell align="center">Acciones</TableCell>
+              <TableRow sx={{ backgroundColor: '#61a7d1' }}>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Código</TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Nombre</TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Descripción</TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                  <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
                     <CircularProgress />
                   </TableCell>
                 </TableRow>
               ) : areas.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 4 }}>
+                  <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
                     <Typography color="text.secondary">
                       {searchTerm || estadoFilter ? 'No se encontraron áreas con los filtros aplicados' : 'No hay áreas registradas'}
                     </Typography>
@@ -287,7 +364,20 @@ const AreasList = () => {
                 </TableRow>
               ) : (
                 areas.map((area) => (
-                  <TableRow key={area.id} hover>
+                  <TableRow
+                    key={area.id}
+                    hover
+                    sx={{
+                      '&:nth-of-type(even)': { backgroundColor: '#e7f1f8' },
+                      '&:nth-of-type(odd)': { backgroundColor: 'white' },
+                      '&:hover': {
+                        backgroundColor: '#ffe6d9 !important',
+                        '& .MuiTableCell-root': {
+                          backgroundColor: '#ffe6d9 !important'
+                        }
+                      }
+                    }}
+                  >
                     <TableCell align="center">
                       <Chip
                         label={area.codigo}
@@ -307,42 +397,25 @@ const AreasList = () => {
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Chip
-                        label={getEstadoText(area.estado)}
-                        color={getEstadoColor(area.estado)}
+                      <Button
+                        variant="outlined"
                         size="small"
-                      />
-                    </TableCell>
-                    <TableCell align="center">
-                      <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
-                        <Tooltip title="Ver detalles">
-                          <IconButton
-                            size="small"
-                            onClick={() => handleView(area)}
-                            color="info"
-                          >
-                            <ViewIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Editar">
-                          <IconButton
-                            size="small"
-                            onClick={() => handleEdit(area)}
-                            color="primary"
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Eliminar">
-                          <IconButton
-                            size="small"
-                            onClick={() => handleDelete(area)}
-                            color="error"
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
+                        onClick={(e) => handleMenuOpen(e, area)}
+                        endIcon={<MoreVertIcon />}
+                        sx={{
+                          minWidth: 100,
+                          textTransform: 'none',
+                          borderColor: 'primary.main',
+                          color: 'primary.main',
+                          '&:hover': {
+                            backgroundColor: 'primary.light',
+                            color: 'white',
+                            borderColor: 'primary.main'
+                          }
+                        }}
+                      >
+                        Opciones
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))
@@ -365,7 +438,6 @@ const AreasList = () => {
             `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`
           }
         />
-      </Paper>
 
       {/* Error */}
       {error && (
@@ -408,6 +480,70 @@ const AreasList = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Menú de opciones */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        PaperProps={{
+          sx: {
+            minWidth: 200,
+            borderRadius: 2,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
+          }
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      >
+        <MenuItem onClick={() => handleMenuAction('view')}>
+          <ListItemIcon>
+            <ViewIcon color="info" />
+          </ListItemIcon>
+          <ListItemText primary="Ver Detalles" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('edit')}>
+          <ListItemIcon>
+            <EditIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Editar Área" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('courses')}>
+          <ListItemIcon>
+            <BookIcon color="secondary" />
+          </ListItemIcon>
+          <ListItemText primary="Cursos del Área" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('curriculum')}>
+          <ListItemIcon>
+            <AssignmentIcon color="info" />
+          </ListItemIcon>
+          <ListItemText primary="Currículo" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('reports')}>
+          <ListItemIcon>
+            <PrintIcon color="warning" />
+          </ListItemIcon>
+          <ListItemText primary="Reportes" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('delete')} sx={{ color: 'error.main' }}>
+          <ListItemIcon>
+            <DeleteIcon color="error" />
+          </ListItemIcon>
+          <ListItemText primary="Eliminar Área" />
+        </MenuItem>
+      </Menu>
     </Box>
   );
 };

@@ -25,7 +25,10 @@ import {
   TableHead,
   TableRow,
   TablePagination,
-  InputAdornment
+  InputAdornment,
+  Menu,
+  ListItemIcon,
+  ListItemText
 } from '@mui/material';
 import {
   Settings as SettingsIcon,
@@ -40,9 +43,9 @@ import {
   Delete as DeleteIcon,
   CheckCircle as CheckCircleIcon,
   Search as SearchIcon,
-  Clear as ClearIcon
+  Clear as ClearIcon,
+  MoreVert as MoreVertIcon
 } from '@mui/icons-material';
-import { getUser } from '../../services/authService';
 import { configuracionService, nivelesService, turnosService } from '../../services/apiService';
 import { fileService } from '../../services/apiService';
 import { useConfiguracion } from '../../contexts/ConfiguracionContext';
@@ -792,6 +795,79 @@ const ConfiguracionList = () => {
     }
   };
 
+  // Estados para menú de opciones
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [menuType, setMenuType] = useState(null);
+
+  // Funciones para menú de opciones
+  const handleMenuOpen = (event, item, type) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedItem(item);
+    setMenuType(type);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedItem(null);
+    setMenuType(null);
+  };
+
+  const handleMenuAction = (action) => {
+    if (selectedItem && menuType) {
+      switch (menuType) {
+        case 'anio':
+          switch (action) {
+            case 'setActual':
+              if (selectedItem.anio !== colegio.anio_escolar_actual) {
+                handleSetAnioActual(selectedItem.anio);
+              }
+              break;
+            case 'toggle':
+              handleActualizarAnioEscolar(selectedItem.id, !selectedItem.activo);
+              break;
+            case 'delete':
+              handleEliminarAnioEscolar(selectedItem.id);
+              break;
+            default:
+              break;
+          }
+          break;
+        case 'nivel':
+          switch (action) {
+            case 'edit':
+              // Función de editar nivel
+              toast.success('Funcionalidad de editar nivel próximamente');
+              break;
+            case 'delete':
+              // Función de eliminar nivel
+              toast.success('Funcionalidad de eliminar nivel próximamente');
+              break;
+            default:
+              break;
+          }
+          break;
+        case 'turno':
+          switch (action) {
+            case 'edit':
+              // Función de editar turno
+              toast.success('Funcionalidad de editar turno próximamente');
+              break;
+            case 'delete':
+              // Función de eliminar turno
+              toast.success('Funcionalidad de eliminar turno próximamente');
+              break;
+            default:
+              break;
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    handleMenuClose();
+  };
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
@@ -932,12 +1008,12 @@ const ConfiguracionList = () => {
           ) : (
             <Table>
               <TableHead>
-                <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                  <TableCell align="center">Año</TableCell>
-                  <TableCell align="center">Estado</TableCell>
-                  <TableCell align="center">Año Actual</TableCell>
-                  <TableCell align="center">Fecha de Creación</TableCell>
-                  <TableCell align="center">Acciones</TableCell>
+                <TableRow sx={{ backgroundColor: '#61a7d1' }}>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Año</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Estado</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Año Actual</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Fecha de Creación</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -946,8 +1022,14 @@ const ConfiguracionList = () => {
                     key={anio.id}
                     hover
                     sx={{
-                      '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
-                      '&:hover': { backgroundColor: '#e3f2fd' },
+                      '&:nth-of-type(even)': { backgroundColor: '#e7f1f8' },
+                      '&:nth-of-type(odd)': { backgroundColor: 'white' },
+                      '&:hover': {
+                        backgroundColor: '#ffe6d9 !important',
+                        '& .MuiTableCell-root': {
+                          backgroundColor: '#ffe6d9 !important'
+                        }
+                      },
                       ...(anio.anio === colegio.anio_escolar_actual && {
                         backgroundColor: '#e3f2fd',
                         borderLeft: '4px solid #1976d2'
@@ -987,37 +1069,25 @@ const ConfiguracionList = () => {
                       </Typography>
                     </TableCell>
                     <TableCell align="center">
-                      <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center', flexWrap: 'wrap' }}>
-                        {anio.anio !== colegio.anio_escolar_actual && (
-                          <Button
-                            size="small"
-                            variant="outlined"
-                            onClick={() => handleSetAnioActual(anio.anio)}
-                            disabled={!anio.activo || saving}
-                            sx={{ minWidth: 'auto', px: 1 }}
-                          >
-                            Establecer Actual
-                          </Button>
-                        )}
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          color={anio.activo ? 'warning' : 'success'}
-                          onClick={() => handleActualizarAnioEscolar(anio.id, !anio.activo)}
-                          disabled={saving}
-                          sx={{ minWidth: 'auto', px: 1 }}
-                        >
-                          {anio.activo ? 'Desactivar' : 'Activar'}
-                        </Button>
-                        <IconButton
-                          size="small"
-                          onClick={() => handleEliminarAnioEscolar(anio.id)}
-                          disabled={saving}
-                          sx={{ color: 'error.main' }}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Box>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={(e) => handleMenuOpen(e, anio, 'anio')}
+                        endIcon={<MoreVertIcon />}
+                        sx={{
+                          minWidth: 100,
+                          textTransform: 'none',
+                          borderColor: 'primary.main',
+                          color: 'primary.main',
+                          '&:hover': {
+                            backgroundColor: 'primary.light',
+                            color: 'white',
+                            borderColor: 'primary.main'
+                          }
+                        }}
+                      >
+                        Opciones
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -1749,15 +1819,15 @@ const ConfiguracionList = () => {
           ) : (
             <Table>
               <TableHead>
-                <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                  <TableCell align="center">Orden</TableCell>
-                  <TableCell align="center">Nombre</TableCell>
-                  <TableCell align="center">Tipo Grados</TableCell>
-                  <TableCell align="center">Grados</TableCell>
-                  <TableCell align="center">Tipo Calificación</TableCell>
-                  <TableCell align="center">Calificación Final</TableCell>
-                  <TableCell align="center">Estado</TableCell>
-                  <TableCell align="center">Acciones</TableCell>
+                <TableRow sx={{ backgroundColor: '#61a7d1' }}>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Orden</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Nombre</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Tipo Grados</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Grados</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Tipo Calificación</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Calificación Final</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Estado</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -1766,8 +1836,14 @@ const ConfiguracionList = () => {
                     key={nivel.id}
                     hover
                     sx={{
-                      '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
-                      '&:hover': { backgroundColor: '#e3f2fd' }
+                      '&:nth-of-type(even)': { backgroundColor: '#e7f1f8' },
+                      '&:nth-of-type(odd)': { backgroundColor: 'white' },
+                      '&:hover': {
+                        backgroundColor: '#ffe6d9 !important',
+                        '& .MuiTableCell-root': {
+                          backgroundColor: '#ffe6d9 !important'
+                        }
+                      }
                     }}
                   >
                     <TableCell align="center">
@@ -1815,22 +1891,25 @@ const ConfiguracionList = () => {
                       />
                     </TableCell>
                     <TableCell align="center">
-                      <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }}>
-                        <IconButton
-                          size="small"
-                          onClick={() => handleEditNivel(nivel)}
-                          sx={{ color: 'primary.main' }}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          onClick={() => handleDeleteNivel(nivel)}
-                          sx={{ color: 'error.main' }}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Box>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={(e) => handleMenuOpen(e, nivel, 'nivel')}
+                        endIcon={<MoreVertIcon />}
+                        sx={{
+                          minWidth: 100,
+                          textTransform: 'none',
+                          borderColor: 'primary.main',
+                          color: 'primary.main',
+                          '&:hover': {
+                            backgroundColor: 'primary.light',
+                            color: 'white',
+                            borderColor: 'primary.main'
+                          }
+                        }}
+                      >
+                        Opciones
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -1993,11 +2072,11 @@ const ConfiguracionList = () => {
           ) : (
             <Table>
               <TableHead>
-                <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                  <TableCell align="center">Nombre</TableCell>
-                  <TableCell align="center">Abreviatura</TableCell>
-                  <TableCell align="center">Estado</TableCell>
-                  <TableCell align="center">Acciones</TableCell>
+                <TableRow sx={{ backgroundColor: '#61a7d1' }}>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Nombre</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Abreviatura</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Estado</TableCell>
+                  <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Acciones</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -2006,8 +2085,14 @@ const ConfiguracionList = () => {
                     key={turno.id}
                     hover
                     sx={{
-                      '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
-                      '&:hover': { backgroundColor: '#e3f2fd' }
+                      '&:nth-of-type(even)': { backgroundColor: '#e7f1f8' },
+                      '&:nth-of-type(odd)': { backgroundColor: 'white' },
+                      '&:hover': {
+                        backgroundColor: '#ffe6d9 !important',
+                        '& .MuiTableCell-root': {
+                          backgroundColor: '#ffe6d9 !important'
+                        }
+                      }
                     }}
                   >
                     <TableCell align="center">
@@ -2032,22 +2117,25 @@ const ConfiguracionList = () => {
                         />
                     </TableCell>
                     <TableCell align="center">
-                      <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center' }}>
-                        <IconButton
-                            size="small"
-                          onClick={() => handleEditTurno(turno)}
-                          sx={{ color: 'primary.main' }}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          onClick={() => handleDeleteTurno(turno)}
-                          sx={{ color: 'error.main' }}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Box>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={(e) => handleMenuOpen(e, turno, 'turno')}
+                        endIcon={<MoreVertIcon />}
+                        sx={{
+                          minWidth: 100,
+                          textTransform: 'none',
+                          borderColor: 'primary.main',
+                          color: 'primary.main',
+                          '&:hover': {
+                            backgroundColor: 'primary.light',
+                            color: 'white',
+                            borderColor: 'primary.main'
+                          }
+                        }}
+                      >
+                        Opciones
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -2082,6 +2170,90 @@ const ConfiguracionList = () => {
         </Box>
       </Paper>
 
+      {/* Menú de opciones */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        PaperProps={{
+          sx: {
+            minWidth: 200,
+            borderRadius: 2,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
+          }
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      >
+        {menuType === 'anio' && (
+          <>
+            {selectedItem && selectedItem.anio !== colegio.anio_escolar_actual && (
+              <MenuItem onClick={() => handleMenuAction('setActual')}>
+                <ListItemIcon>
+                  <CheckCircleIcon color="success" />
+                </ListItemIcon>
+                <ListItemText primary="Establecer Actual" />
+              </MenuItem>
+            )}
+
+            <MenuItem onClick={() => handleMenuAction('toggle')}>
+              <ListItemIcon>
+                <EditIcon color={selectedItem?.activo ? 'warning' : 'success'} />
+              </ListItemIcon>
+              <ListItemText primary={selectedItem?.activo ? 'Desactivar' : 'Activar'} />
+            </MenuItem>
+
+            <MenuItem onClick={() => handleMenuAction('delete')} sx={{ color: 'error.main' }}>
+              <ListItemIcon>
+                <DeleteIcon color="error" />
+              </ListItemIcon>
+              <ListItemText primary="Eliminar" />
+            </MenuItem>
+          </>
+        )}
+
+        {menuType === 'nivel' && (
+          <>
+            <MenuItem onClick={() => handleMenuAction('edit')}>
+              <ListItemIcon>
+                <EditIcon color="primary" />
+              </ListItemIcon>
+              <ListItemText primary="Editar Nivel" />
+            </MenuItem>
+
+            <MenuItem onClick={() => handleMenuAction('delete')} sx={{ color: 'error.main' }}>
+              <ListItemIcon>
+                <DeleteIcon color="error" />
+              </ListItemIcon>
+              <ListItemText primary="Eliminar Nivel" />
+            </MenuItem>
+          </>
+        )}
+
+        {menuType === 'turno' && (
+          <>
+            <MenuItem onClick={() => handleMenuAction('edit')}>
+              <ListItemIcon>
+                <EditIcon color="primary" />
+              </ListItemIcon>
+              <ListItemText primary="Editar Turno" />
+            </MenuItem>
+
+            <MenuItem onClick={() => handleMenuAction('delete')} sx={{ color: 'error.main' }}>
+              <ListItemIcon>
+                <DeleteIcon color="error" />
+              </ListItemIcon>
+              <ListItemText primary="Eliminar Turno" />
+            </MenuItem>
+          </>
+        )}
+      </Menu>
     </Box>
   );
 };

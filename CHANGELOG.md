@@ -1,5 +1,48 @@
 # CHANGELOG
 
+## [2025-01-12] - Mejoras en Módulo de Configuración: Menú de Opciones y Formato Estándar
+
+### ✨ Nuevas Funcionalidades
+
+- **Menú de Opciones en Configuración**: Implementado menú desplegable en las 3 grillas (Años Escolares, Niveles, Turnos)
+- **Formato Estándar de Grillas**: Establecido patrón de diseño uniforme para todas las grillas del sistema
+- **Menús Contextuales**: Opciones específicas para cada tipo de elemento (anio, nivel, turno)
+- **Integración con Funciones Existentes**: Reutilización de funciones ya implementadas a través del menú
+
+### 🔧 Mejoras Técnicas
+
+- **Botón Opciones Unificado**: Reemplazados múltiples iconos por botón "Opciones" con menú desplegable
+- **Gestión de Estados**: Estados `anchorEl`, `selectedItem`, `menuType` para control del menú
+- **Funciones de Manejo**: `handleMenuOpen`, `handleMenuClose`, `handleMenuAction` para gestión del menú
+- **Código Optimizado**: Eliminación de funciones no utilizadas y imports innecesarios
+
+### 🎨 Mejoras de UI/UX
+
+- **Colores Estándar Aplicados**:
+  - Cabecera: Fondo `#61a7d1` con texto blanco y negrita
+  - Filas alternadas: Blanco y `#e7f1f8` (azul claro)
+  - Hover: `#ffe6d9 !important` (naranja suave con prioridad)
+- **Menús Específicos por Grilla**:
+  - **Años Escolares**: Establecer Actual, Activar/Desactivar, Eliminar
+  - **Niveles**: Editar Nivel, Eliminar Nivel
+  - **Turnos**: Editar Turno, Eliminar Turno
+- **Diseño Profesional**: Menús con iconos temáticos, sombras y colores contextuales
+
+### 📋 Formato Estándar para Futuras Grillas
+
+- **Patrón de Diseño Establecido**: Todas las grillas futuras seguirán este formato
+- **Estructura de Menú**: Botón "Opciones" con menú desplegable contextual
+- **Colores Unificados**: Esquema de colores estándar para cabecera, filas y hover
+- **Funcionalidad Modular**: Preparado para agregar nuevas opciones según necesidades
+
+### 📊 Base de Datos
+
+- **Sin cambios en BD**: Utiliza estructura existente de tablas
+- **Funciones Existentes**: Aprovecha funcionalidades ya implementadas
+- **Integración Completa**: Menús conectados con lógica de negocio existente
+
+---
+
 ## [2025-01-12] - Mejoras en Módulo de Usuarios: Menú de Opciones y Filtros
 
 ### ✨ Nuevas Funcionalidades
@@ -19,7 +62,7 @@
 
 ### 🎨 Mejoras de UI/UX
 
-- **Colores Personalizados**: 
+- **Colores Personalizados**:
   - Cabecera: Fondo `#61a7d1` con texto blanco
   - Filas alternadas: Blanco y `#e7f1f8` (azul claro)
   - Hover: `#ffe6d9` (naranja suave)

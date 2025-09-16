@@ -24,7 +24,12 @@ import {
   ListItemText,
   FormControl,
   InputLabel,
-  Select
+  Select,
+  Grid,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -37,7 +42,8 @@ import {
   Person as PersonIcon,
   QrCode as QrCodeIcon,
   Print as PrintIcon,
-  Security as SecurityIcon
+  Security as SecurityIcon,
+  FilterList as FilterIcon
 } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
 import { userService } from '../../../services/apiService';
@@ -320,72 +326,87 @@ const UsuariosList = () => {
           boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
         }}
       >
-        {/* Header con título y botón "Nuevo" */}
-        <Box sx={{
-          p: 3,
-          borderBottom: '1px solid #e0e0e0',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <Typography variant="h5" color="primary">
-            Gestión de Usuarios
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleCreate}
-            sx={{ borderRadius: 2 }}
-          >
-            Nuevo Usuario
-          </Button>
-        </Box>
-
-        {/* Barra de búsqueda y filtros */}
-        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', gap: 2, alignItems: 'center' }}>
-          <TextField
-            placeholder="Buscar por nombre, DNI o email..."
-            variant="outlined"
-            size="small"
-            value={searchTerm}
-            onChange={handleSearch}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: 'text.secondary' }} />
-                </InputAdornment>
-              ),
-              endAdornment: searchTerm && (
-                <InputAdornment position="end">
-                  <IconButton
-                    size="small"
-                    onClick={handleClear}
-                    sx={{ color: 'text.secondary' }}
-                  >
-                    <ClearIcon />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-            sx={{ width: 400 }}
-          />
-
-          <FormControl size="small" sx={{ minWidth: 150 }}>
-            <InputLabel>Filtrar por Rol</InputLabel>
-            <Select
-              value={roleFilter}
-              onChange={handleRoleFilterChange}
-              label="Filtrar por Rol"
+      {/* Header */}
+      <Card sx={{ mb: 3 }}>
+        <CardHeader
+          avatar={<PersonIcon color="primary" sx={{ fontSize: 32 }} />}
+          title={
+            <Typography variant="h4" component="h1" color="primary">
+              Gestión de Usuarios
+            </Typography>
+          }
+          subheader="Administra los usuarios del sistema"
+          action={
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleCreate}
+              sx={{ mr: 1 }}
             >
-              <MenuItem value="">Todos los roles</MenuItem>
-              <MenuItem value="Administrador">Administrador</MenuItem>
-              <MenuItem value="Docente">Docente</MenuItem>
-              <MenuItem value="Alumno">Alumno</MenuItem>
-              <MenuItem value="Apoderado">Apoderado</MenuItem>
-              <MenuItem value="Tutor">Tutor</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
+              Nuevo Usuario
+            </Button>
+          }
+        />
+        <Divider />
+        <CardContent>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                placeholder="Buscar usuarios..."
+                value={searchTerm}
+                onChange={handleSearch}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: searchTerm && (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClear} size="small">
+                        <ClearIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+                size="small"
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Filtrar por Rol</InputLabel>
+                <Select
+                  value={roleFilter}
+                  onChange={handleRoleFilterChange}
+                  label="Filtrar por Rol"
+                >
+                  <MenuItem value="">Todos los roles</MenuItem>
+                  <MenuItem value="Administrador">Administrador</MenuItem>
+                  <MenuItem value="Docente">Docente</MenuItem>
+                  <MenuItem value="Alumno">Alumno</MenuItem>
+                  <MenuItem value="Apoderado">Apoderado</MenuItem>
+                  <MenuItem value="Tutor">Tutor</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Button
+                fullWidth
+                variant="outlined"
+                startIcon={<FilterIcon />}
+                onClick={() => {
+                  setRoleFilter('');
+                  setSearchTerm('');
+                }}
+              >
+                Limpiar
+              </Button>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+
 
         {/* Tabla */}
         <TableContainer>

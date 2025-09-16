@@ -30,7 +30,10 @@ import {
   CardContent,
   CardHeader,
   Divider,
-  Avatar
+  Avatar,
+  Menu,
+  ListItemIcon,
+  ListItemText
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -40,7 +43,12 @@ import {
   Delete as DeleteIcon,
   Visibility as ViewIcon,
   School as SchoolIcon,
-  FilterList as FilterIcon
+  FilterList as FilterIcon,
+  MoreVert as MoreVertIcon,
+  Class as ClassIcon,
+  CalendarToday as CalendarIcon,
+  People as PeopleIcon,
+  Print as PrintIcon
 } from '@mui/icons-material';
 import { gradosService, nivelesService } from '../../../services/apiService';
 import Swal from 'sweetalert2';
@@ -63,6 +71,10 @@ const GradosList = () => {
   const [viewOpen, setViewOpen] = useState(false);
   const [editingGrado, setEditingGrado] = useState(null);
   const [viewingGrado, setViewingGrado] = useState(null);
+
+  // Estados para menú de opciones
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedGrado, setSelectedGrado] = useState(null);
 
   // Cargar datos iniciales
   useEffect(() => {
@@ -186,6 +198,48 @@ const GradosList = () => {
     setViewingGrado(null);
   };
 
+  // Funciones para menú de opciones
+  const handleMenuOpen = (event, grado) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedGrado(grado);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedGrado(null);
+  };
+
+  const handleMenuAction = (action) => {
+    if (selectedGrado) {
+      switch (action) {
+        case 'view':
+          handleView(selectedGrado);
+          break;
+        case 'edit':
+          handleEdit(selectedGrado);
+          break;
+        case 'delete':
+          handleDelete(selectedGrado);
+          break;
+        case 'students':
+          // Futura funcionalidad: lista de estudiantes
+          Swal.fire('Información', 'Funcionalidad de estudiantes próximamente', 'info');
+          break;
+        case 'schedule':
+          // Futura funcionalidad: horario
+          Swal.fire('Información', 'Funcionalidad de horario próximamente', 'info');
+          break;
+        case 'attendance':
+          // Futura funcionalidad: asistencia
+          Swal.fire('Información', 'Funcionalidad de asistencia próximamente', 'info');
+          break;
+        default:
+          break;
+      }
+    }
+    handleMenuClose();
+  };
+
   const getNivelNombre = (nivelId) => {
     const nivel = niveles.find(n => n.id === nivelId);
     return nivel ? nivel.nombre : 'Nivel no encontrado';
@@ -306,20 +360,33 @@ const GradosList = () => {
         <TableContainer>
           <Table>
             <TableHead>
-              <TableRow>
-                <TableCell align="center"><strong>Foto</strong></TableCell>
-                <TableCell align="center"><strong>Grado</strong></TableCell>
-                <TableCell align="center"><strong>Sección</strong></TableCell>
-                <TableCell align="center"><strong>Año</strong></TableCell>
-                <TableCell align="center"><strong>Turno</strong></TableCell>
-                <TableCell align="center"><strong>Nivel</strong></TableCell>
-                <TableCell align="center"><strong>Alumnos</strong></TableCell>
-                <TableCell align="center"><strong>Acciones</strong></TableCell>
+              <TableRow sx={{ backgroundColor: '#61a7d1' }}>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Foto</TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Grado</TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Sección</TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Año</TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Turno</TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Nivel</TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Alumnos</TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>Acciones</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {grados.map((grado) => (
-                <TableRow key={grado.id} hover>
+                <TableRow
+                  key={grado.id}
+                  hover
+                  sx={{
+                    '&:nth-of-type(even)': { backgroundColor: '#e7f1f8' },
+                    '&:nth-of-type(odd)': { backgroundColor: 'white' },
+                    '&:hover': {
+                      backgroundColor: '#ffe6d9 !important',
+                      '& .MuiTableCell-root': {
+                        backgroundColor: '#ffe6d9 !important'
+                      }
+                    }
+                  }}
+                >
                   <TableCell align="center">
                     <Avatar
                       src={grado.foto && grado.foto !== 'default-grado.png' ?
@@ -375,30 +442,25 @@ const GradosList = () => {
                     </Typography>
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton
+                    <Button
+                      variant="outlined"
                       size="small"
-                      onClick={() => handleView(grado)}
-                      color="info"
-                      title="Ver detalles"
+                      onClick={(e) => handleMenuOpen(e, grado)}
+                      endIcon={<MoreVertIcon />}
+                      sx={{
+                        minWidth: 100,
+                        textTransform: 'none',
+                        borderColor: 'primary.main',
+                        color: 'primary.main',
+                        '&:hover': {
+                          backgroundColor: 'primary.light',
+                          color: 'white',
+                          borderColor: 'primary.main'
+                        }
+                      }}
                     >
-                      <ViewIcon />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleEdit(grado)}
-                      color="primary"
-                      title="Editar"
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      onClick={() => handleDelete(grado)}
-                      color="error"
-                      title="Eliminar"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+                      Opciones
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -448,6 +510,70 @@ const GradosList = () => {
           onClose={handleViewClose}
         />
       </Dialog>
+
+      {/* Menú de opciones */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        PaperProps={{
+          sx: {
+            minWidth: 200,
+            borderRadius: 2,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
+          }
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      >
+        <MenuItem onClick={() => handleMenuAction('view')}>
+          <ListItemIcon>
+            <ViewIcon color="info" />
+          </ListItemIcon>
+          <ListItemText primary="Ver Detalles" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('edit')}>
+          <ListItemIcon>
+            <EditIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Editar Grado" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('students')}>
+          <ListItemIcon>
+            <PeopleIcon color="secondary" />
+          </ListItemIcon>
+          <ListItemText primary="Lista de Estudiantes" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('schedule')}>
+          <ListItemIcon>
+            <CalendarIcon color="info" />
+          </ListItemIcon>
+          <ListItemText primary="Ver Horario" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('attendance')}>
+          <ListItemIcon>
+            <ClassIcon color="warning" />
+          </ListItemIcon>
+          <ListItemText primary="Registro de Asistencia" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('delete')} sx={{ color: 'error.main' }}>
+          <ListItemIcon>
+            <DeleteIcon color="error" />
+          </ListItemIcon>
+          <ListItemText primary="Eliminar Grado" />
+        </MenuItem>
+      </Menu>
     </Box>
   );
 };
