@@ -1,6 +1,14 @@
 # PATRÓN UNIFICADO PARA MANTENIMIENTOS CRUD
 
 ## 📋 Estructura Establecida
+### Actualización 2025-09-16: Impresión de Carné QR (Usuarios)
+
+- Modal `UsuarioQRPrint` con formato carné real de 5.5cm x 8.5cm.
+- Control del tamaño del QR por contenedor en centímetros (p.ej., 3.3cm) y centrado vertical/horizontal.
+- Exportación fiel a impresión/PDF mediante `html2canvas` (scale 2, CORS habilitado).
+- Botones en el modal: Imprimir y Guardar PDF.
+- Accesibilidad: textos claros, sin fondos en chips de rol para impresión.
+
 
 ### **Objetivo:**
 

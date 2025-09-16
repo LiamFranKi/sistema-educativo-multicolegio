@@ -51,6 +51,7 @@ import { getUser, getUserRole } from '../../../services/authService';
 import UsuarioForm from './UsuarioForm';
 import UsuarioView from './UsuarioView';
 import UsuarioPermisosForm from './UsuarioPermisosForm';
+import UsuarioQRPrint from './UsuarioQRPrint';
 import ConfirmDialog from '../../../components/Common/ConfirmDialog';
 
 const UsuariosList = () => {
@@ -71,6 +72,7 @@ const UsuariosList = () => {
 
   // Estados para formularios
   const [showPermisosForm, setShowPermisosForm] = useState(false);
+  const [showQRPrint, setShowQRPrint] = useState(false);
 
   // Estados de paginación
   const [pagination, setPagination] = useState({
@@ -244,9 +246,9 @@ const UsuariosList = () => {
           handleMenuClose();
           break;
         case 'qr':
-          // Futura funcionalidad: imprimir QR
-          toast.success('Funcionalidad de QR próximamente');
-          handleMenuClose();
+          console.log('Abriendo modal de impresión QR para usuario:', selectedUser);
+          setShowQRPrint(true);
+          // No cerrar el menú aquí para mantener selectedUser
           break;
         default:
           handleMenuClose();
@@ -677,6 +679,17 @@ const UsuariosList = () => {
           handleMenuClose(); // Cerrar el menú también
         }}
         onSave={handleUpdatePermisos}
+        usuario={selectedUser}
+      />
+
+      {/* Modal de Impresión QR */}
+      <UsuarioQRPrint
+        open={showQRPrint}
+        onClose={() => {
+          setShowQRPrint(false);
+          setSelectedUser(null);
+          handleMenuClose(); // Cerrar el menú también
+        }}
         usuario={selectedUser}
       />
     </Box>

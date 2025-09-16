@@ -1,17 +1,24 @@
 # CHANGELOG
 
-## [2025-09-16] - Gestión de Permisos, Nuevos Roles y Accesibilidad
+## [2025-09-16] - Gestión de Permisos, Nuevos Roles, Accesibilidad e Impresión QR
 
 ### ✨ Nuevas Funcionalidades
 
 - **Gestionar Permisos (Usuarios)**: Modal dedicado para actualizar únicamente Rol y Contraseña.
 - **Contraseña Opcional**: Si se deja en blanco, se mantiene la actual; validación solo cuando se ingresa.
+- **Modal de Impresión QR (Usuarios)**: Carné 5.5cm x 8.5cm con foto, datos y QR centrado.
+- **Captura de Pantalla**: `html2canvas` para exportar la vista del modal como imagen (impresión/PDF fiel).
+  - QR con tamaño controlado en cm (p.ej., 3.3cm) y centrado vertical/horizontal.
+  - Ajustes finos de espaciado para equilibrar blancos (altura de área 3.6cm).
 
 ### 🔧 Mejoras Técnicas
 
 - **Ruta Backend**: Agregada `PUT /api/usuarios/:id/permisos` (solo Administrador) para actualizar rol y/o contraseña con hashing.
 - **Validación de Roles**: Alineada con frontend; respuesta 400 para rol inválido.
 - **Servicio Frontend**: `updateUserPermissions(id, data)` en `apiService.js`.
+- **Componente UsuarioQRPrint**: Layout en cm; botones Imprimir y Guardar PDF; mejora de accesibilidad.
+- **Integración Menú Opciones**: Opción "Imprimir Código QR" en menú de acciones de usuarios.
+- **Librería html2canvas**: Instalada para capturar la ventana del modal como imagen de alta resolución.
 
 ### 🗄️ Base de Datos
 
