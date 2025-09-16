@@ -997,6 +997,43 @@ try {
 
 ---
 
+## 🔐 **2.8. PATRÓN DE GESTIÓN DE PERMISOS (USUARIOS)**
+
+### **Objetivo:**
+Modal independiente para actualizar únicamente Rol y Contraseña de un usuario, sin afectar otros campos.
+
+### **Frontend (UsuariosList / UsuarioPermisosForm):**
+- Abrir desde menú de opciones: acción "Gestionar Permisos".
+- Campos del modal:
+  - Select Rol (valores permitidos, ver lista más abajo).
+  - Nueva Contraseña (opcional).
+  - Confirmar Contraseña (requerido solo si se cambia contraseña).
+- Validaciones:
+  - Rol obligatorio.
+  - Contraseña mínima 6 caracteres solo si se ingresa.
+  - Confirmación debe coincidir solo si se ingresa contraseña.
+- Accesibilidad: asociar `InputLabel`↔`Select` con `labelId`, y añadir `id`/`name` a inputs.
+- Rendimiento/UX: no cerrar el menú antes de abrir el modal; memoizar handlers.
+
+### **Backend (Ruta específica):**
+- `PUT /api/usuarios/:id/permisos` (solo Administrador).
+- Permite actualizar selectivamente:
+  - `rol` (valores validados).
+  - `clave` (hash con bcrypt; solo si se envía).
+- Respuestas claras:
+  - 400 si `rol` inválido o sin datos a actualizar.
+  - 404 si usuario no existe.
+  - 200 con usuario actualizado si OK.
+
+### **Lista de Roles permitidos (alineación FE/BE/BD):**
+`Administrador`, `Docente`, `Alumno`, `Apoderado`, `Tutor`, `Psicologia`, `Secretaria`, `Director`, `Promotor`.
+
+### **Base de Datos:**
+- Constraint CHECK de `usuarios.rol` debe incluir todos los roles anteriores.
+- Migración recomendada: `ALTER TABLE usuarios DROP CONSTRAINT ...; ADD CONSTRAINT ... CHECK (rol IN (...))`.
+
+---
+
 ## 🛣️ **3. PATRÓN DE RUTAS**
 
 ### **⚠️ IMPORTANTE: CONSISTENCIA DE RUTAS**

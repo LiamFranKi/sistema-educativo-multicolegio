@@ -34,6 +34,7 @@
 - **Lag al abrir "Gestionar Permisos"**: Ajuste del flujo de cierre del menú y memoización de handlers.
 
 ---
+
 ## [2025-01-12] - Formulario de Gestión de Permisos en Módulo de Usuarios
 
 ### ✨ Nuevas Funcionalidades
