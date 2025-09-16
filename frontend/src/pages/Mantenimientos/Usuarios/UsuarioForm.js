@@ -42,27 +42,14 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
     genero: '',
     estado_civil: '',
     profesion: '',
-    clave: '',
-    confirmar_clave: '',
     foto: '',
-    activo: true,
-    rol: 'Alumno',
-    qr_code: ''
+    activo: true
   });
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [previewImage, setPreviewImage] = useState('');
-  const [changePassword, setChangePassword] = useState(false);
 
-  // Roles permitidos
-  const roles = [
-    { value: 'Administrador', label: 'Administrador' },
-    { value: 'Docente', label: 'Docente' },
-    { value: 'Alumno', label: 'Alumno' },
-    { value: 'Apoderado', label: 'Apoderado' },
-    { value: 'Tutor', label: 'Tutor' }
-  ];
 
   // Opciones para género
   const generos = [
@@ -94,12 +81,8 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
         genero: usuario.genero || '',
         estado_civil: usuario.estado_civil || '',
         profesion: usuario.profesion || '',
-        clave: '',
-        confirmar_clave: '',
         foto: usuario.foto || '',
-        activo: usuario.activo !== undefined ? usuario.activo : true,
-        rol: usuario.rol || 'Alumno',
-        qr_code: usuario.qr_code || ''
+        activo: usuario.activo !== undefined ? usuario.activo : true
       });
       // Construir URL de imagen existente
       const existingImageUrl = usuario.foto ?
@@ -119,17 +102,12 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
         genero: '',
         estado_civil: '',
         profesion: '',
-        clave: '',
-        confirmar_clave: '',
         foto: '',
-        activo: true,
-        rol: 'Alumno',
-        qr_code: ''
+        activo: true
       });
       setPreviewImage('');
     }
     setErrors({});
-    setChangePassword(false);
   }, [open, mode, usuario]);
 
   // Función para manejar cambios en los campos
@@ -253,23 +231,6 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
       }
     }
 
-    // Validar contraseña (solo en modo crear o si se quiere cambiar)
-    if (mode === 'create' || changePassword) {
-      if (!formData.clave) {
-        newErrors.clave = 'La contraseña es obligatoria';
-      } else if (formData.clave.length < 6) {
-        newErrors.clave = 'La contraseña debe tener al menos 6 caracteres';
-      }
-
-      if (formData.clave !== formData.confirmar_clave) {
-        newErrors.confirmar_clave = 'Las contraseñas no coinciden';
-      }
-    }
-
-    // Validar rol
-    if (!formData.rol) {
-      newErrors.rol = 'El rol es obligatorio';
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -297,13 +258,13 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
         estado_civil: formData.estado_civil || null,
         profesion: formData.profesion.trim() || null,
         foto: formData.foto,
-        activo: formData.activo,
-        rol: formData.rol
+        activo: formData.activo
       };
 
-      // Solo incluir contraseña si se está creando o si se quiere cambiar
-      if (mode === 'create' || changePassword) {
-        dataToSend.clave = formData.clave;
+      // Solo para usuarios nuevos: asignar contraseña (DNI) y rol (Docente)
+      if (mode === 'create') {
+        dataToSend.clave = formData.dni.trim(); // Contraseña inicial = DNI
+        dataToSend.rol = 'Docente'; // Rol inicial = Docente
       }
 
       await onSave(dataToSend);
@@ -560,112 +521,9 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
                 />
               </Grid>
 
-              {/* Rol */}
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth error={!!errors.rol} required>
-                  <InputLabel>Rol</InputLabel>
-                  <Select
-                    value={formData.rol}
-                    onChange={handleChange('rol')}
-                    label="Rol"
-                  >
-                    {roles.map((role) => (
-                      <MenuItem key={role.value} value={role.value}>
-                        {role.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                {errors.rol && (
-                  <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 2 }}>
-                    {errors.rol}
-                  </Typography>
-                )}
-              </Grid>
 
-              {/* Contraseña - Solo en modo crear o si se quiere cambiar */}
-              {(mode === 'create' || changePassword) && (
-                <>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label={mode === 'create' ? 'Contraseña' : 'Nueva contraseña'}
-                      type="password"
-                      value={formData.clave}
-                      onChange={handleChange('clave')}
-                      error={!!errors.clave}
-                      helperText={errors.clave}
-                      required={mode === 'create' || changePassword}
-                    />
-                  </Grid>
 
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Confirmar contraseña"
-                      type="password"
-                      value={formData.confirmar_clave}
-                      onChange={handleChange('confirmar_clave')}
-                      error={!!errors.confirmar_clave}
-                      helperText={errors.confirmar_clave}
-                      required={mode === 'create' || changePassword}
-                    />
-                  </Grid>
-                </>
-              )}
 
-              {/* Botón para cambiar contraseña en modo edición */}
-              {mode === 'edit' && !changePassword && (
-                <Grid item xs={12}>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => setChangePassword(true)}
-                    sx={{ mb: 2 }}
-                  >
-                    Cambiar Contraseña
-                  </Button>
-                </Grid>
-              )}
-
-              {/* Código QR - Solo lectura */}
-              {mode === 'edit' && formData.qr_code && (
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Código QR"
-                    value={formData.qr_code}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    helperText="Código QR único para escaneo de asistencia"
-                    sx={{
-                      '& .MuiInputBase-input': {
-                        fontFamily: 'monospace',
-                        fontSize: '0.875rem'
-                      }
-                    }}
-                  />
-                </Grid>
-              )}
-
-              {/* Botón para cancelar cambio de contraseña */}
-              {mode === 'edit' && changePassword && (
-                <Grid item xs={12}>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={() => {
-                      setChangePassword(false);
-                      setFormData(prev => ({ ...prev, clave: '', confirmar_clave: '' }));
-                      setErrors(prev => ({ ...prev, clave: '', confirmar_clave: '' }));
-                    }}
-                    sx={{ mb: 2 }}
-                  >
-                    Cancelar Cambio de Contraseña
-                  </Button>
-                </Grid>
-              )}
 
               {/* Estado activo */}
               <Grid item xs={12}>
@@ -683,12 +541,6 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
 
             </Grid>
 
-            {/* Mensaje informativo para modo edición */}
-            {mode === 'edit' && !changePassword && (
-              <Alert severity="info" sx={{ mt: 2 }}>
-                Usa el botón "Cambiar Contraseña" si deseas modificar la contraseña del usuario
-              </Alert>
-            )}
 
           </Box>
         </DialogContent>

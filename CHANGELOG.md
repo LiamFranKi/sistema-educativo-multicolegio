@@ -1,5 +1,69 @@
 # CHANGELOG
 
+## [2025-09-16] - Gestión de Permisos, Nuevos Roles y Accesibilidad
+
+### ✨ Nuevas Funcionalidades
+
+- **Gestionar Permisos (Usuarios)**: Modal dedicado para actualizar únicamente Rol y Contraseña.
+- **Contraseña Opcional**: Si se deja en blanco, se mantiene la actual; validación solo cuando se ingresa.
+
+### 🔧 Mejoras Técnicas
+
+- **Ruta Backend**: Agregada `PUT /api/usuarios/:id/permisos` (solo Administrador) para actualizar rol y/o contraseña con hashing.
+- **Validación de Roles**: Alineada con frontend; respuesta 400 para rol inválido.
+- **Servicio Frontend**: `updateUserPermissions(id, data)` en `apiService.js`.
+
+### 🗄️ Base de Datos
+
+- **Constraint CHECK de Roles**: Actualizada restricción `usuarios_rol_check` para permitir nuevos roles.
+- **Migración**: `backend/migrations/update_usuarios_rol_check_2025_09_16.sql`.
+
+### 👥 Roles
+
+- Agregados: `Psicologia`, `Secretaria`, `Director`, `Promotor`.
+- Integrados en: filtro de grilla de Usuarios, formulario de permisos, chips de color en lista y vista de detalle.
+
+### ♿ Accesibilidad y UX
+
+- **Labels e IDs**: Asociados `InputLabel`↔`Select` y añadidos `id/name` en campos del formulario de permisos y filtro por rol.
+- **Corrección de Heading Nesting**: `Typography` dentro de `DialogTitle` usa `component="span"` para evitar warnings.
+
+### 🐞 Correcciones
+
+- **500 al actualizar permisos**: Simplificada construcción SQL y corrección de parámetros; logs detallados de depuración.
+- **Lag al abrir "Gestionar Permisos"**: Ajuste del flujo de cierre del menú y memoización de handlers.
+
+---
+## [2025-01-12] - Formulario de Gestión de Permisos en Módulo de Usuarios
+
+### ✨ Nuevas Funcionalidades
+
+- **Formulario de Permisos**: Implementado formulario dedicado para gestionar contraseña y rol de usuarios
+- **Menú de Opciones**: Agregada opción "Gestionar Permisos" en menú desplegable de usuarios
+- **Actualización Segura**: Formulario específico que solo actualiza contraseña y rol sin afectar otros datos
+
+### 🔧 Mejoras Técnicas
+
+- **Componente UsuarioPermisosForm**: Formulario independiente para gestión de permisos
+- **Validaciones Específicas**: Validación de contraseña (mínimo 6 caracteres) y confirmación
+- **Seguridad**: Campos de contraseña con visibilidad toggleable
+- **Integración**: Formulario integrado con menú de opciones existente
+
+### 🎨 Mejoras de UI/UX
+
+- **Diseño Profesional**: Modal con header informativo mostrando datos del usuario
+- **Campos Específicos**: Solo rol y contraseña, interfaz limpia y enfocada
+- **Validación Visual**: Errores claros y mensajes de ayuda informativos
+- **Experiencia Optimizada**: Formulario independiente que no interfiere con edición general
+
+### 📊 Base de Datos
+
+- **Sin cambios en BD**: Utiliza estructura existente de tabla usuarios
+- **Actualización Selectiva**: Solo actualiza campos `clave` y `rol`
+- **Integridad**: Mantiene todos los demás datos del usuario intactos
+
+---
+
 ## [2025-01-12] - Mejoras en Módulo de Configuración: Menú de Opciones y Formato Estándar
 
 ### ✨ Nuevas Funcionalidades
@@ -106,7 +170,7 @@
 - **Tabla Usuarios**: Agregada columna `qr_code VARCHAR(255)` con restricción UNIQUE
 - **Índices**: Creados índices para optimizar consultas por turno y QR
 - **Validaciones**: Agregadas restricciones para valores válidos de turno (Mañana, Tarde, Noche)
-- **Generación QR**: Códigos QR únicos con formato `USR-{timestamp}-{dni}`
+- **Generación QR**: Códigos QR únicos con formato `USR-{id}-{dni}` (formato optimizado)
 
 ### 🎨 Mejoras de UI/UX
 

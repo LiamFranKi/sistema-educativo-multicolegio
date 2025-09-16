@@ -47,11 +47,15 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
             }
             sx={{ width: 60, height: 60, fontSize: '1.8rem' }}
           >
-            {(!grado.foto || grado.foto === 'default-grado.png') && (grado.nombre ? grado.nombre.charAt(0).toUpperCase() : 'G')}
+            {(!grado.foto || grado.foto === 'default-grado.png') && (
+              grado.nombre ?
+                (grado.nombre.charAt(0).toUpperCase() + (grado.seccion ? grado.seccion.charAt(0).toUpperCase() : '')) :
+                'G'
+            )}
           </Avatar>
           <Box>
             <Typography variant="h5" component="div">
-              {grado.nombre}
+              {grado.nombre} {grado.seccion && `- ${grado.seccion}`}
             </Typography>
             <Typography variant="body2" color="text.secondary">
               Detalles del grado educativo

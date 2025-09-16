@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Paper,
@@ -17,7 +17,6 @@ import {
   Chip,
   Avatar,
   CircularProgress,
-  Alert,
   Menu,
   MenuItem,
   ListItemIcon,
@@ -41,7 +40,6 @@ import {
   MoreVert as MoreVertIcon,
   Person as PersonIcon,
   QrCode as QrCodeIcon,
-  Print as PrintIcon,
   Security as SecurityIcon,
   FilterList as FilterIcon
 } from '@mui/icons-material';
@@ -52,6 +50,7 @@ import { getUser, getUserRole } from '../../../services/authService';
 // Componentes
 import UsuarioForm from './UsuarioForm';
 import UsuarioView from './UsuarioView';
+import UsuarioPermisosForm from './UsuarioPermisosForm';
 import ConfirmDialog from '../../../components/Common/ConfirmDialog';
 
 const UsuariosList = () => {
@@ -70,6 +69,9 @@ const UsuariosList = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
 
+  // Estados para formularios
+  const [showPermisosForm, setShowPermisosForm] = useState(false);
+
   // Estados de paginación
   const [pagination, setPagination] = useState({
     page: 0,
@@ -78,7 +80,7 @@ const UsuariosList = () => {
   });
 
   // Función para cargar datos
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
     try {
       // Verificar usuario logueado
@@ -159,12 +161,12 @@ const UsuariosList = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pagination.page, pagination.rowsPerPage, searchTerm, roleFilter]);
 
   // Cargar datos al montar el componente
   useEffect(() => {
     loadData();
-  }, [pagination.page, pagination.rowsPerPage, searchTerm, roleFilter]);
+  }, [loadData]);
 
   // Funciones siguiendo el patrón CRUD
   const handleCreate = () => {
@@ -201,31 +203,56 @@ const UsuariosList = () => {
     setSelectedUser(null);
   };
 
+  // Función para manejar la actualización de permisos
+  const handleUpdatePermisos = useCallback(async (userId, permisosData) => {
+    try {
+      await userService.updateUserPermissions(userId, permisosData);
+      toast.success('Permisos actualizados exitosamente');
+      setShowPermisosForm(false);
+      setSelectedUser(null);
+      handleMenuClose(); // Cerrar el menú
+      loadData(); // Recargar la lista
+    } catch (error) {
+      console.error('Error actualizando permisos:', error);
+      if (error?.response?.data) {
+        console.error('Respuesta del servidor:', error.response.data);
+        toast.error(error.response.data.message || 'Error al actualizar los permisos');
+      } else {
+        toast.error('Error al actualizar los permisos');
+      }
+    }
+  }, [loadData]);
+
   const handleMenuAction = (action) => {
     if (selectedUser) {
       switch (action) {
         case 'view':
           handleView(selectedUser);
+          handleMenuClose();
           break;
         case 'edit':
           handleEdit(selectedUser);
+          handleMenuClose();
+          break;
+        case 'permissions':
+          console.log('Abriendo formulario de permisos para usuario:', selectedUser);
+          setShowPermisosForm(true);
+          // No cerrar el menú aquí para mantener selectedUser
           break;
         case 'delete':
           handleDelete(selectedUser.id);
+          handleMenuClose();
           break;
         case 'qr':
           // Futura funcionalidad: imprimir QR
           toast.success('Funcionalidad de QR próximamente');
-          break;
-        case 'permissions':
-          // Futura funcionalidad: permisos
-          toast.success('Funcionalidad de permisos próximamente');
+          handleMenuClose();
           break;
         default:
+          handleMenuClose();
           break;
       }
     }
-    handleMenuClose();
   };
 
   const handleConfirmDelete = async () => {
@@ -296,7 +323,11 @@ const UsuariosList = () => {
       'Docente': 'secondary',
       'Alumno': 'success',
       'Apoderado': 'warning',
-      'Tutor': 'info'
+      'Tutor': 'info',
+      'Psicologia': 'info',
+      'Secretaria': 'warning',
+      'Director': 'secondary',
+      'Promotor': 'primary'
     };
     return colors[rol] || 'default';
   };
@@ -375,8 +406,11 @@ const UsuariosList = () => {
             </Grid>
             <Grid item xs={12} md={4}>
               <FormControl fullWidth size="small">
-                <InputLabel>Filtrar por Rol</InputLabel>
+                <InputLabel id="usuarios-filtro-rol-label">Filtrar por Rol</InputLabel>
                 <Select
+                  id="usuarios-filtro-rol"
+                  name="filtro_rol"
+                  labelId="usuarios-filtro-rol-label"
                   value={roleFilter}
                   onChange={handleRoleFilterChange}
                   label="Filtrar por Rol"
@@ -387,6 +421,10 @@ const UsuariosList = () => {
                   <MenuItem value="Alumno">Alumno</MenuItem>
                   <MenuItem value="Apoderado">Apoderado</MenuItem>
                   <MenuItem value="Tutor">Tutor</MenuItem>
+                  <MenuItem value="Psicologia">Psicología</MenuItem>
+                  <MenuItem value="Secretaria">Secretaría</MenuItem>
+                  <MenuItem value="Director">Director</MenuItem>
+                  <MenuItem value="Promotor">Promotor</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -629,6 +667,18 @@ const UsuariosList = () => {
           <ListItemText primary="Eliminar Usuario" />
         </MenuItem>
       </Menu>
+
+      {/* Formulario de Permisos */}
+      <UsuarioPermisosForm
+        open={showPermisosForm}
+        onClose={() => {
+          setShowPermisosForm(false);
+          setSelectedUser(null);
+          handleMenuClose(); // Cerrar el menú también
+        }}
+        onSave={handleUpdatePermisos}
+        usuario={selectedUser}
+      />
     </Box>
   );
 };

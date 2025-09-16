@@ -90,6 +90,11 @@ export const userService = {
     return response.data;
   },
 
+  updateUserPermissions: async (id, permissionsData) => {
+    const response = await api.put(`/usuarios/${id}/permisos`, permissionsData);
+    return response.data;
+  },
+
   deleteUser: async (id) => {
     const response = await api.delete(`/usuarios/${id}`);
     return response.data;

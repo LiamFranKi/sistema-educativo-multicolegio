@@ -389,7 +389,7 @@ const MiPerfil = () => {
 
       <Grid container spacing={3}>
         {/* Información del perfil */}
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={6}>
           <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
             <CardContent sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
@@ -544,7 +544,7 @@ const MiPerfil = () => {
                     onChange={handleInputChange}
                     disabled={!editing}
                     multiline
-                    rows={2}
+                    rows={3}
                     sx={{
                       '& .MuiOutlinedInput-root': { borderRadius: 2 },
                       '& .MuiInputLabel-root': { color: editing ? 'primary.main' : 'text.secondary' }
@@ -613,7 +613,7 @@ const MiPerfil = () => {
         </Grid>
 
         {/* Foto de perfil */}
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6}>
           <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
             <CardContent sx={{ textAlign: 'center', p: 3 }}>
               <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 3 }}>
@@ -660,126 +660,125 @@ const MiPerfil = () => {
                   </label>
                 </>
               )}
-            </CardContent>
-          </Card>
-        </Grid>
 
-        {/* Cambio de contraseña */}
-        <Grid item xs={12}>
-          <Card sx={{ borderRadius: 2, boxShadow: 3 }}>
-            <CardContent sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                <Security sx={{ mr: 1, color: 'primary.main' }} />
-                Cambiar Contraseña
-              </Typography>
+              {/* Cambio de contraseña */}
+              <Box sx={{ mt: 4, pt: 3, borderTop: '1px solid #e0e0e0' }}>
+                <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                  <Security sx={{ mr: 1, color: 'primary.main' }} />
+                  Cambiar Contraseña
+                </Typography>
 
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    fullWidth
-                    label="Contraseña Actual"
-                    name="clave_actual"
-                    type={showPasswords.actual ? 'text' : 'password'}
-                    value={passwordData.clave_actual}
-                    onChange={handlePasswordChange}
-                    error={!!errors.clave_actual}
-                    helperText={errors.clave_actual}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Lock color="primary" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => togglePasswordVisibility('actual')}
-                            edge="end"
-                          >
-                            {showPasswords.actual ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-                  />
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Contraseña Actual"
+                      name="clave_actual"
+                      type={showPasswords.actual ? 'text' : 'password'}
+                      value={passwordData.clave_actual}
+                      onChange={handlePasswordChange}
+                      error={!!errors.clave_actual}
+                      helperText={errors.clave_actual}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Lock color="primary" />
+                          </InputAdornment>
+                        ),
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() => togglePasswordVisibility('actual')}
+                              edge="end"
+                            >
+                              {showPasswords.actual ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Nueva Contraseña"
+                      name="nueva_clave"
+                      type={showPasswords.nueva ? 'text' : 'password'}
+                      value={passwordData.nueva_clave}
+                      onChange={handlePasswordChange}
+                      error={!!errors.nueva_clave}
+                      helperText={errors.nueva_clave}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Lock color="primary" />
+                          </InputAdornment>
+                        ),
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() => togglePasswordVisibility('nueva')}
+                              edge="end"
+                            >
+                              {showPasswords.nueva ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Confirmar Contraseña"
+                      name="confirmar_clave"
+                      type={showPasswords.confirmar ? 'text' : 'password'}
+                      value={passwordData.confirmar_clave}
+                      onChange={handlePasswordChange}
+                      error={!!errors.confirmar_clave}
+                      helperText={errors.confirmar_clave}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <Lock color="primary" />
+                          </InputAdornment>
+                        ),
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() => togglePasswordVisibility('confirmar')}
+                              edge="end"
+                            >
+                              {showPasswords.confirmar ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    fullWidth
-                    label="Nueva Contraseña"
-                    name="nueva_clave"
-                    type={showPasswords.nueva ? 'text' : 'password'}
-                    value={passwordData.nueva_clave}
-                    onChange={handlePasswordChange}
-                    error={!!errors.nueva_clave}
-                    helperText={errors.nueva_clave}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Lock color="primary" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => togglePasswordVisibility('nueva')}
-                            edge="end"
-                          >
-                            {showPasswords.nueva ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <TextField
-                    fullWidth
-                    label="Confirmar Contraseña"
-                    name="confirmar_clave"
-                    type={showPasswords.confirmar ? 'text' : 'password'}
-                    value={passwordData.confirmar_clave}
-                    onChange={handlePasswordChange}
-                    error={!!errors.confirmar_clave}
-                    helperText={errors.confirmar_clave}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Lock color="primary" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => togglePasswordVisibility('confirmar')}
-                            edge="end"
-                          >
-                            {showPasswords.confirmar ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-                  />
-                </Grid>
-              </Grid>
 
-              <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                <Button
-                  variant="contained"
-                  startIcon={saving ? <CircularProgress size={20} /> : <Lock />}
-                  onClick={handleChangePassword}
-                  disabled={saving || !passwordData.clave_actual || !passwordData.nueva_clave || !passwordData.confirmar_clave}
-                  sx={{ borderRadius: 2 }}
-                >
-                  {saving ? 'Cambiando...' : 'Cambiar Contraseña'}
-                </Button>
+                <Box sx={{ mt: 3, textAlign: 'center' }}>
+                  <Button
+                    variant="contained"
+                    size="large"
+                    fullWidth
+                    startIcon={saving ? <CircularProgress size={20} /> : <Lock />}
+                    onClick={handleChangePassword}
+                    disabled={saving || !passwordData.clave_actual || !passwordData.nueva_clave || !passwordData.confirmar_clave}
+                    sx={{ borderRadius: 2 }}
+                  >
+                    {saving ? 'Cambiando...' : 'Cambiar Contraseña'}
+                  </Button>
+                </Box>
               </Box>
             </CardContent>
           </Card>
         </Grid>
+
       </Grid>
     </Box>
   );

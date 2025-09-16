@@ -110,7 +110,7 @@ router.post('/', authenticateToken, requireAdmin, [
   body('nombres').notEmpty().withMessage('Nombres son requeridos'),
   body('dni').isLength({ min: 8, max: 8 }).withMessage('DNI debe tener 8 dígitos'),
   body('email').isEmail().withMessage('Email inválido'),
-  body('rol').isIn(['Administrador', 'Docente', 'Alumno', 'Apoderado', 'Tutor']).withMessage('Rol inválido'),
+  body('rol').isIn(['Administrador', 'Docente', 'Alumno', 'Apoderado', 'Tutor', 'Psicologia', 'Secretaria', 'Director', 'Promotor']).withMessage('Rol inválido'),
   body('clave').isLength({ min: 6 }).withMessage('Contraseña debe tener al menos 6 caracteres')
 ], async (req, res) => {
   try {
@@ -146,21 +146,31 @@ router.post('/', authenticateToken, requireAdmin, [
     // Encriptar contraseña
     const hashedPassword = await bcrypt.hash(clave, 10);
 
-    // Generar código QR único
-    const qrCode = `USR-${Date.now()}-${dni}`;
-
-    // Crear usuario
+    // Crear usuario primero (sin código QR)
     const result = await query(
-      `INSERT INTO usuarios (nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, clave, qr_code, activo, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, true, NOW(), NOW())
+      `INSERT INTO usuarios (nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, clave, activo, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, true, NOW(), NOW())
+       RETURNING id`,
+      [nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, hashedPassword]
+    );
+
+    const userId = result.rows[0].id;
+
+    // Generar código QR único con el ID del usuario
+    const qrCode = `USR-${userId}-${dni}`;
+
+    // Actualizar usuario con el código QR
+    const updateResult = await query(
+      `UPDATE usuarios SET qr_code = $1, updated_at = NOW()
+       WHERE id = $2
        RETURNING id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, qr_code, activo, created_at, updated_at`,
-      [nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, hashedPassword, qrCode]
+      [qrCode, userId]
     );
 
     res.status(201).json({
       success: true,
       message: 'Usuario creado exitosamente',
-      user: result.rows[0]
+      user: updateResult.rows[0]
     });
 
   } catch (error) {
@@ -249,6 +259,109 @@ router.put('/:id', authenticateToken, [
     res.status(500).json({
       success: false,
       message: 'Error interno del servidor'
+    });
+  }
+});
+
+// PUT /api/usuarios/:id/permisos - Actualizar permisos (rol y contraseña)
+router.put('/:id/permisos', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rol, clave } = req.body;
+
+    console.log('=== INICIO ACTUALIZACIÓN PERMISOS ===');
+    console.log('Usuario ID:', id);
+    console.log('Datos recibidos:', { rol, clave: clave ? '[PROVIDED]' : '[NOT PROVIDED]' });
+
+    // Verificar si el usuario existe
+    console.log('Verificando existencia del usuario...');
+    const userCheck = await query('SELECT id FROM usuarios WHERE id = $1', [id]);
+    console.log('Resultado verificación:', userCheck.rows);
+
+    if (userCheck.rows.length === 0) {
+      console.log('Usuario no encontrado');
+      return res.status(404).json({
+        success: false,
+        message: 'Usuario no encontrado'
+      });
+    }
+
+    console.log('Usuario encontrado, preparando actualización...');
+
+    // Construir la consulta SQL de forma más simple
+    let sql = 'UPDATE usuarios SET ';
+    let params = [];
+    let paramCount = 0;
+    let hasUpdates = false;
+
+    // Actualizar rol si se proporciona
+    if (rol) {
+      // Validar rol contra la lista permitida (igual que en creación)
+      const allowedRoles = ['Administrador', 'Docente', 'Alumno', 'Apoderado', 'Tutor', 'Psicologia', 'Secretaria', 'Director', 'Promotor'];
+      if (!allowedRoles.includes(rol)) {
+        return res.status(400).json({ success: false, message: 'Rol inválido' });
+      }
+      paramCount++;
+      sql += `rol = $${paramCount}`;
+      params.push(rol);
+      hasUpdates = true;
+      console.log('Rol a actualizar:', rol);
+    }
+
+    // Actualizar contraseña si se proporciona
+    if (clave && clave.trim() !== '') {
+      if (hasUpdates) sql += ', ';
+      paramCount++;
+      const hashedPassword = await bcrypt.hash(clave, 10);
+      sql += `clave = $${paramCount}`;
+      params.push(hashedPassword);
+      hasUpdates = true;
+      console.log('Contraseña a actualizar: [HASHED]');
+    }
+
+    if (!hasUpdates) {
+      console.log('No hay datos para actualizar');
+      return res.status(400).json({
+        success: false,
+        message: 'No se proporcionaron datos para actualizar'
+      });
+    }
+
+    // Agregar updated_at y WHERE
+    sql += ', updated_at = NOW() WHERE id = $' + (paramCount + 1);
+    params.push(id);
+
+    console.log('SQL final:', sql);
+    console.log('Parámetros finales:', params);
+
+    // Ejecutar la consulta
+    const result = await query(sql, params);
+    console.log('Resultado de la consulta:', result.rows);
+
+    // Obtener el usuario actualizado
+    const updatedUser = await query(
+      'SELECT id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, activo, qr_code, created_at, updated_at FROM usuarios WHERE id = $1',
+      [id]
+    );
+
+    console.log('Usuario actualizado:', updatedUser.rows[0]);
+    console.log('=== FIN ACTUALIZACIÓN PERMISOS ===');
+
+    res.json({
+      success: true,
+      message: 'Permisos actualizados exitosamente',
+      user: updatedUser.rows[0]
+    });
+
+  } catch (error) {
+    console.error('=== ERROR EN ACTUALIZACIÓN PERMISOS ===');
+    console.error('Error:', error.message);
+    console.error('Stack trace:', error.stack);
+    console.error('=== FIN ERROR ===');
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
 });

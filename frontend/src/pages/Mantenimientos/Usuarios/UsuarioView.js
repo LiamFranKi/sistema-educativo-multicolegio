@@ -31,7 +31,11 @@ const UsuarioView = ({ open, onClose, usuario, onEdit }) => {
       'Docente': 'secondary',
       'Alumno': 'success',
       'Apoderado': 'warning',
-      'Tutor': 'info'
+      'Tutor': 'info',
+      'Psicologia': 'info',
+      'Secretaria': 'warning',
+      'Director': 'secondary',
+      'Promotor': 'primary'
     };
     return colors[rol] || 'default';
   };
@@ -108,7 +112,7 @@ const UsuarioView = ({ open, onClose, usuario, onEdit }) => {
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        <Typography variant="h6" color="primary">
+        <Typography variant="h6" component="span" color="primary">
           Información del Usuario
         </Typography>
         <IconButton
@@ -131,7 +135,7 @@ const UsuarioView = ({ open, onClose, usuario, onEdit }) => {
                 src={getImageUrl(usuario.foto)}
                 sx={{ width: 100, height: 100, fontSize: '2rem' }}
               >
-                {usuario.nombres.charAt(0).toUpperCase()}
+                {(usuario.nombres?.charAt(0) || '') + (usuario.apellidos?.charAt(0) || '')}
               </Avatar>
               {usuario.qr_code && (
                 <Box sx={{
@@ -162,7 +166,7 @@ const UsuarioView = ({ open, onClose, usuario, onEdit }) => {
             </Box>
             <Box sx={{ flex: 1 }}>
               <Typography variant="h5" gutterBottom>
-                {usuario.nombres}
+                {usuario.nombres} {usuario.apellidos}
               </Typography>
               <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', mb: 1 }}>
                 <Chip
