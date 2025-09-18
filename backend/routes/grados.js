@@ -388,7 +388,20 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion, codigo, nivel_id, orden, activo, foto, turno } = req.body;
+    const {
+      nombre,
+      descripcion,
+      codigo,
+      nivel_id,
+      orden,
+      activo,
+      foto,
+      turno,
+      seccion,
+      anio_escolar,
+      direccion_archivos,
+      link_aula_virtual
+    } = req.body;
 
     // Verificar que el grado existe
     const gradoCheck = await pool.query('SELECT id FROM grados WHERE id = $1', [id]);
@@ -423,12 +436,30 @@ router.put('/:id', async (req, res) => {
         activo = COALESCE($6, activo),
         foto = COALESCE($7, foto),
         turno = COALESCE($8, turno),
+        seccion = COALESCE($9, seccion),
+        anio_escolar = COALESCE($10, anio_escolar),
+        direccion_archivos = COALESCE($11, direccion_archivos),
+        link_aula_virtual = COALESCE($12, link_aula_virtual),
         updated_at = CURRENT_TIMESTAMP
-      WHERE id = $9
+      WHERE id = $13
       RETURNING *
     `;
 
-    const result = await pool.query(query, [nombre, descripcion, codigo, nivel_id, orden, activo, foto, turno, id]);
+    const result = await pool.query(query, [
+      nombre,
+      descripcion,
+      codigo,
+      nivel_id,
+      orden,
+      activo,
+      foto,
+      turno,
+      seccion,
+      anio_escolar,
+      direccion_archivos,
+      link_aula_virtual,
+      id
+    ]);
 
     res.json(result.rows[0]);
 

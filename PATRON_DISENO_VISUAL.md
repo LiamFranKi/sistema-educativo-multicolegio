@@ -1900,3 +1900,34 @@ El sistema implementa un formato de grilla/tabla profesional para módulos de co
 - **Implementadas**: Con funcionalidad completa y navegación
 - **Pendientes**: Sin funcionalidad, solo cierran el menú sin errores
 - **Críticas**: Color rojo para acciones destructivas (Eliminar)
+
+## **MENÚS DE OPCIONES - ESPECÍFICOS POR MÓDULO**
+
+### Grados (Grilla)
+
+- Orden estándar del menú por fila:
+  1. Ver Detalle
+  2. Lista de Estudiantes
+  3. Ver Horario
+  4. Registro de Asistencia
+  5. Imprimir Códigos QR
+  6. Registro de Notas Detalladas
+  7. Apreciaciones / Recomendaciones
+  8. Editar Grado
+  9. Eliminar Grado
+- Estado de acciones:
+  - Implementadas: Ver, Editar, Eliminar
+  - Pendientes (no-op): Lista de Estudiantes, Ver Horario, Registro de Asistencia, Imprimir Códigos QR, Registro de Notas Detalladas, Apreciaciones / Recomendaciones
+- Archivo: `frontend/src/pages/Mantenimientos/Grados/GradosList.js`
+
+### Áreas (Grilla)
+
+- Orden estándar del menú por fila:
+  1. Ver Detalle
+  2. Cursos del Área
+  3. Editar Área
+  4. Eliminar Área
+- Estado de acciones:
+  - Implementadas: Ver, Editar, Eliminar
+  - Pendiente (no-op): Cursos del Área
+- Archivo: `frontend/src/pages/Mantenimientos/Areas/AreasList.js`

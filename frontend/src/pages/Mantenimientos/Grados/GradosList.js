@@ -48,7 +48,10 @@ import {
   Class as ClassIcon,
   CalendarToday as CalendarIcon,
   People as PeopleIcon,
-  Print as PrintIcon
+  Print as PrintIcon,
+  QrCode as QrCodeIcon,
+  Assignment as AssignmentIcon,
+  ThumbUpAlt as ThumbUpAltIcon
 } from '@mui/icons-material';
 import { gradosService, nivelesService } from '../../../services/apiService';
 import Swal from 'sweetalert2';
@@ -221,17 +224,13 @@ const GradosList = () => {
         case 'delete':
           handleDelete(selectedGrado);
           break;
+        // Acciones sin funcionalidad implementada: no hacer nada por ahora
         case 'students':
-          // Futura funcionalidad: lista de estudiantes
-          Swal.fire('Información', 'Funcionalidad de estudiantes próximamente', 'info');
-          break;
         case 'schedule':
-          // Futura funcionalidad: horario
-          Swal.fire('Información', 'Funcionalidad de horario próximamente', 'info');
-          break;
         case 'attendance':
-          // Futura funcionalidad: asistencia
-          Swal.fire('Información', 'Funcionalidad de asistencia próximamente', 'info');
+        case 'qr':
+        case 'grades':
+        case 'remarks':
           break;
         default:
           break;
@@ -536,14 +535,7 @@ const GradosList = () => {
           <ListItemIcon>
             <ViewIcon color="info" />
           </ListItemIcon>
-          <ListItemText primary="Ver Detalles" />
-        </MenuItem>
-
-        <MenuItem onClick={() => handleMenuAction('edit')}>
-          <ListItemIcon>
-            <EditIcon color="primary" />
-          </ListItemIcon>
-          <ListItemText primary="Editar Grado" />
+          <ListItemText primary="Ver Detalle" />
         </MenuItem>
 
         <MenuItem onClick={() => handleMenuAction('students')}>
@@ -565,6 +557,34 @@ const GradosList = () => {
             <ClassIcon color="warning" />
           </ListItemIcon>
           <ListItemText primary="Registro de Asistencia" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('qr')}>
+          <ListItemIcon>
+            <QrCodeIcon color="secondary" />
+          </ListItemIcon>
+          <ListItemText primary="Imprimir Códigos QR" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('grades')}>
+          <ListItemIcon>
+            <AssignmentIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Registro de Notas Detalladas" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('remarks')}>
+          <ListItemIcon>
+            <ThumbUpAltIcon color="success" />
+          </ListItemIcon>
+          <ListItemText primary="Apreciaciones / Recomendaciones" />
+        </MenuItem>
+
+        <MenuItem onClick={() => handleMenuAction('edit')}>
+          <ListItemIcon>
+            <EditIcon color="primary" />
+          </ListItemIcon>
+          <ListItemText primary="Editar Grado" />
         </MenuItem>
 
         <MenuItem onClick={() => handleMenuAction('delete')} sx={{ color: 'error.main' }}>

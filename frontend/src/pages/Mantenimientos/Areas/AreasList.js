@@ -227,16 +227,7 @@ const AreasList = () => {
           handleDelete(selectedArea);
           break;
         case 'courses':
-          // Futura funcionalidad: cursos del área
-          Swal.fire('Información', 'Funcionalidad de cursos próximamente', 'info');
-          break;
-        case 'curriculum':
-          // Futura funcionalidad: currículo
-          Swal.fire('Información', 'Funcionalidad de currículo próximamente', 'info');
-          break;
-        case 'reports':
-          // Futura funcionalidad: reportes
-          Swal.fire('Información', 'Funcionalidad de reportes próximamente', 'info');
+          // Sin funcionalidad por ahora (no-op)
           break;
         default:
           break;
@@ -506,14 +497,7 @@ const AreasList = () => {
           <ListItemIcon>
             <ViewIcon color="info" />
           </ListItemIcon>
-          <ListItemText primary="Ver Detalles" />
-        </MenuItem>
-
-        <MenuItem onClick={() => handleMenuAction('edit')}>
-          <ListItemIcon>
-            <EditIcon color="primary" />
-          </ListItemIcon>
-          <ListItemText primary="Editar Área" />
+          <ListItemText primary="Ver Detalle" />
         </MenuItem>
 
         <MenuItem onClick={() => handleMenuAction('courses')}>
@@ -523,18 +507,11 @@ const AreasList = () => {
           <ListItemText primary="Cursos del Área" />
         </MenuItem>
 
-        <MenuItem onClick={() => handleMenuAction('curriculum')}>
+        <MenuItem onClick={() => handleMenuAction('edit')}>
           <ListItemIcon>
-            <AssignmentIcon color="info" />
+            <EditIcon color="primary" />
           </ListItemIcon>
-          <ListItemText primary="Currículo" />
-        </MenuItem>
-
-        <MenuItem onClick={() => handleMenuAction('reports')}>
-          <ListItemIcon>
-            <PrintIcon color="warning" />
-          </ListItemIcon>
-          <ListItemText primary="Reportes" />
+          <ListItemText primary="Editar Área" />
         </MenuItem>
 
         <MenuItem onClick={() => handleMenuAction('delete')} sx={{ color: 'error.main' }}>

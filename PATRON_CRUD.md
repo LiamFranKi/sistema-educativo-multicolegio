@@ -1430,6 +1430,61 @@ const getMenuOptions = (rol) => {
 **Versión:** 1.1
 **Estado:** Patrón de menús condicionales por rol implementado y funcional
 
+---
+
+## 🧭 Actualización 2025-01-16: Menú de Opciones en Grados (Lista)
+
+### 🧩 Definición
+
+Estándar de opciones del menú contextual por fila en la grilla de `Grados`, con orden fijo y respeto por funcionalidades existentes.
+
+### 📋 Opciones y Orden
+
+1. Ver Detalle
+2. Lista de Estudiantes
+3. Ver Horario
+4. Registro de Asistencia
+5. Imprimir Códigos QR
+6. Registro de Notas Detalladas
+7. Apreciaciones / Recomendaciones
+8. Editar Grado
+9. Eliminar Grado
+
+### 🔌 Implementación
+
+- Acciones activas: `view`, `edit`, `delete` (se mantienen sin cambios)
+- Acciones no implementadas: `students`, `schedule`, `attendance`, `qr`, `grades`, `remarks` → no-op (no abren nada y cierran el menú)
+- Archivo: `frontend/src/pages/Mantenimientos/Grados/GradosList.js`
+
+### 🗄️ Backend relacionado (consistencia de datos)
+
+Se amplió el `PUT /api/grados/:id` para permitir actualizar también:
+
+- `seccion`, `anio_escolar`, `direccion_archivos`, `link_aula_virtual`, además de `turno` y campos existentes.
+- Archivo: `backend/routes/grados.js`
+
+---
+
+## 🧭 Actualización 2025-01-16: Menú de Opciones en Áreas (Lista)
+
+### 🧩 Definición
+
+Estándar de opciones del menú contextual por fila en la grilla de `Áreas`, con orden fijo y respeto por funcionalidades existentes.
+
+### 📋 Opciones y Orden
+
+1. Ver Detalle
+2. Cursos del Área
+3. Editar Área
+4. Eliminar Área
+
+### 🔌 Implementación
+
+- Acciones activas: `view`, `edit`, `delete` (se mantienen sin cambios)
+- Acción no implementada: `courses` → no-op (no abre nada y cierra el menú)
+- Removidas opciones anteriores no requeridas: `Currículo`, `Reportes`
+- Archivo: `frontend/src/pages/Mantenimientos/Areas/AreasList.js`
+
  
  - - - 
  
