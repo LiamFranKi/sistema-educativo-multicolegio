@@ -1,6 +1,7 @@
 # PATRÓN UNIFICADO PARA MANTENIMIENTOS CRUD
 
 ## 📋 Estructura Establecida
+
 ### Actualización 2025-09-16: Impresión de Carné QR (Usuarios)
 
 - Modal `UsuarioQRPrint` con formato carné real de 5.5cm x 8.5cm.
@@ -8,7 +9,6 @@
 - Exportación fiel a impresión/PDF mediante `html2canvas` (scale 2, CORS habilitado).
 - Botones en el modal: Imprimir y Guardar PDF.
 - Accesibilidad: textos claros, sin fondos en chips de rol para impresión.
-
 
 ### **Objetivo:**
 
@@ -1008,9 +1008,11 @@ try {
 ## 🔐 **2.8. PATRÓN DE GESTIÓN DE PERMISOS (USUARIOS)**
 
 ### **Objetivo:**
+
 Modal independiente para actualizar únicamente Rol y Contraseña de un usuario, sin afectar otros campos.
 
 ### **Frontend (UsuariosList / UsuarioPermisosForm):**
+
 - Abrir desde menú de opciones: acción "Gestionar Permisos".
 - Campos del modal:
   - Select Rol (valores permitidos, ver lista más abajo).
@@ -1024,6 +1026,7 @@ Modal independiente para actualizar únicamente Rol y Contraseña de un usuario,
 - Rendimiento/UX: no cerrar el menú antes de abrir el modal; memoizar handlers.
 
 ### **Backend (Ruta específica):**
+
 - `PUT /api/usuarios/:id/permisos` (solo Administrador).
 - Permite actualizar selectivamente:
   - `rol` (valores validados).
@@ -1034,9 +1037,11 @@ Modal independiente para actualizar únicamente Rol y Contraseña de un usuario,
   - 200 con usuario actualizado si OK.
 
 ### **Lista de Roles permitidos (alineación FE/BE/BD):**
+
 `Administrador`, `Docente`, `Alumno`, `Apoderado`, `Tutor`, `Psicologia`, `Secretaria`, `Director`, `Promotor`.
 
 ### **Base de Datos:**
+
 - Constraint CHECK de `usuarios.rol` debe incluir todos los roles anteriores.
 - Migración recomendada: `ALTER TABLE usuarios DROP CONSTRAINT ...; ADD CONSTRAINT ... CHECK (rol IN (...))`.
 
@@ -1346,6 +1351,84 @@ const handleNivelFilter = (event) => {
 **Fecha de creación:** 2024-12-19
 **Versión:** 1.0
 **Estado:** ✅ Establecido y listo para implementación
+
+---
+
+## 🎯 **PATRÓN DE MENÚS CONDICIONALES POR ROL**
+
+### **📋 DEFINICIÓN**
+
+Implementación de menús desplegables dinámicos que muestran opciones específicas según el rol del usuario en la grilla de listados, manteniendo consistencia en la interfaz y preparando el sistema para futuras funcionalidades.
+
+### **🔧 IMPLEMENTACIÓN**
+
+#### **Frontend - Función `getMenuOptions(rol)`:**
+
+```javascript
+const getMenuOptions = (rol) => {
+  switch (rol) {
+    case "Alumno":
+      return [
+        /* 9 opciones específicas */
+      ];
+    case "Docente":
+    case "Apoderado":
+      return [
+        /* 7 opciones específicas */
+      ];
+    case "Administrador":
+    case "Director":
+    case "Secretaria":
+    case "Psicologia":
+    case "Tutor":
+    case "Promotor":
+      return [
+        /* 7 opciones estándar */
+      ];
+    default:
+      return commonOptions;
+  }
+};
+```
+
+#### **Manejo de Acciones:**
+
+- **Acciones implementadas**: `view`, `edit`, `permissions`, `delete`, `qr`
+- **Acciones sin funcionalidad**: `message`, `alumnos`, `matriculas`, `padres`, `pagos`, `cursos`, `horarios`, `hijos`, `comunicados`, `reportes`, `estadisticas`, `evaluaciones`, `seguimiento`, `tutelados`, `prospectos`
+- **Comportamiento**: Las opciones sin funcionalidad simplemente cierran el menú sin generar errores
+
+### **📊 CONFIGURACIÓN POR ROL**
+
+| Rol           | Opciones | Funcionalidades Implementadas            | Pendientes                         |
+| ------------- | -------- | ---------------------------------------- | ---------------------------------- |
+| Alumno        | 9        | Ver Info, QR, Permisos, Editar, Eliminar | Mensaje, Matrículas, Padres, Pagos |
+| Docente       | 7        | Ver Info, QR, Permisos, Editar, Eliminar | Horario, Mensaje                   |
+| Apoderado     | 7        | Ver Info, QR, Permisos, Editar, Eliminar | Alumnos, Mensaje                   |
+| Administrador | 7        | Ver Info, QR, Permisos, Editar, Eliminar | Horario, Mensaje                   |
+| Director      | 7        | Ver Info, QR, Permisos, Editar, Eliminar | Horario, Mensaje                   |
+| Secretaria    | 7        | Ver Info, QR, Permisos, Editar, Eliminar | Horario, Mensaje                   |
+| Psicologia    | 7        | Ver Info, QR, Permisos, Editar, Eliminar | Horario, Mensaje                   |
+| Tutor         | 7        | Ver Info, QR, Permisos, Editar, Eliminar | Horario, Mensaje                   |
+| Promotor      | 7        | Ver Info, QR, Permisos, Editar, Eliminar | Horario, Mensaje                   |
+
+### **🎨 CARACTERÍSTICAS DEL DISEÑO**
+
+- **Ubicación**: Icono de tres puntos verticales en cada fila
+- **Comportamiento**: Menú contextual según el rol del usuario
+- **Diseño**: Fondo blanco, sombra sutil, bordes redondeados
+- **Iconos**: Material-UI icons con colores temáticos por tipo de acción
+- **Estados**: Color rojo para acciones destructivas (Eliminar)
+
+### **🛠️ HERRAMIENTAS UTILIZADAS**
+
+- **Material-UI Icons** para iconografía consistente
+- **Switch/Case** para lógica condicional de menús
+- **React State Management** para control de menús y selección de usuarios
+- **JavaScript Fall-through** para consolidar múltiples roles con las mismas opciones
+
+**Fecha de establecimiento:** 2025-01-16
+**Versión:** 1.1
+**Estado:** Patrón de menús condicionales por rol implementado y funcional
 
  
  - - - 
@@ -2394,5 +2477,11 @@ const handleNivelFilter = (event) => {
  * * F e c h a   d e   e s t a b l e c i m i e n t o : * *   2 0 2 4 - 1 2 - 1 9 
  * * V e r s i � n : * *   1 . 0 
  * * E s t a d o : * *     P a t r o n e s   d e   s u b i d a   d e   a r c h i v o s   y   e l i m i n a c i � n   e s t a b l e c i d o s   y   d o c u m e n t a d o s 
+ 
+ 
+
+---
+
+# #   P A T R O N   D E   M E N U S   C O N D I C I O N A L E S   P O R   R O L 
  
  

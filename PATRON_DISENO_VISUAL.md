@@ -1860,7 +1860,7 @@ El sistema implementa un formato de grilla/tabla profesional para módulos de co
 3. **Búsqueda Integrada**: Barra de búsqueda con iconos y funcionalidad de limpiar
 4. **Tabla Profesional**: Headers con fondo gris, filas alternadas, hover effects
 5. **Paginación Completa**: Control de filas por página y navegación
-6. **Acciones por Fila**: Botones de editar/eliminar en cada fila
+6. **Menús de Opciones Condicionales**: Menús desplegables según rol del usuario
 7. **Estados Visuales**: Resaltado especial para elementos importantes
 8. **Responsive**: Adaptable a diferentes tamaños de pantalla
 
@@ -1878,3 +1878,25 @@ El sistema implementa un formato de grilla/tabla profesional para módulos de co
 - ✅ **Grados Educativos**: CRUD completo con filtro por nivel, Chips de estado/código y generación automática de códigos
 - ✅ **Áreas Educativas**: CRUD completo con 12 áreas predefinidas, códigos únicos y filtros por estado
 - ✅ **Gestión de Años Escolares**: Con ordenamiento por año descendente
+
+## **MENÚS DE OPCIONES CONDICIONALES POR ROL**
+
+### **Patrón de Menús Desplegables:**
+
+- **Ubicación**: Icono de tres puntos verticales en cada fila de la grilla
+- **Comportamiento**: Menú contextual que muestra opciones según el rol del usuario
+- **Diseño**: Fondo blanco, sombra sutil, bordes redondeados
+- **Íconos**: Material-UI Icons con colores temáticos por tipo de acción
+
+### **Configuración por Rol:**
+
+- **Alumno**: 9 opciones (Ver Información, Imprimir Código QR, Enviar Mensaje, Matrículas Registradas, Padres de Familia, Historial de Pagos, Gestionar Permisos, Editar Usuario, Eliminar Usuario)
+- **Docente**: 7 opciones (Ver Información, Imprimir Código QR, Ver Horario, Enviar Mensaje, Gestionar Permisos, Editar Usuario, Eliminar Usuario)
+- **Apoderado**: 7 opciones (Ver Información, Imprimir Código QR, Alumnos a Cargo, Enviar Mensaje, Gestionar Permisos, Editar Usuario, Eliminar Usuario)
+- **Roles administrativos**: 7 opciones (Administrador, Director, Secretaria, Psicologia, Tutor, Promotor): Ver Información, Imprimir Código QR, Ver Horario, Enviar Mensaje, Gestionar Permisos, Editar Usuario, Eliminar Usuario
+
+### **Estados de Opciones:**
+
+- **Implementadas**: Con funcionalidad completa y navegación
+- **Pendientes**: Sin funcionalidad, solo cierran el menú sin errores
+- **Críticas**: Color rojo para acciones destructivas (Eliminar)
