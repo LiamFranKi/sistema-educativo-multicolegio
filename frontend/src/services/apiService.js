@@ -400,4 +400,37 @@ export const turnosService = {
   },
 };
 
+// Servicios de avatars
+export const avatarsService = {
+  getAvatars: async (params = {}) => {
+    const response = await api.get('/avatars', { params });
+    return response.data;
+  },
+
+  getAvatar: async (id) => {
+    const response = await api.get(`/avatars/${id}`);
+    return response.data;
+  },
+
+  createAvatar: async (avatarData) => {
+    const response = await api.post('/avatars', avatarData);
+    return response.data;
+  },
+
+  updateAvatar: async (id, avatarData) => {
+    const response = await api.put(`/avatars/${id}`, avatarData);
+    return response.data;
+  },
+
+  deleteAvatar: async (id) => {
+    const response = await api.delete(`/avatars/${id}`);
+    return response.data;
+  },
+
+  getEstadisticas: async () => {
+    const response = await api.get('/avatars/estadisticas/general');
+    return response.data;
+  },
+};
+
 export default api;

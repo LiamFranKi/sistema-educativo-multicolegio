@@ -1,5 +1,49 @@
 # CHANGELOG
 
+## [2025-01-16] - Correcciones y Mejoras en Módulo de Avatars
+
+### 🔧 Correcciones Técnicas
+
+- **Campo género faltante**: Agregado campo `genero` al FormData en formulario de avatars
+- **Headers multipart**: Corregido Content-Type para subida de archivos
+- **Patrón de subida de archivos**: Migrado a `fileService` siguiendo estándar de usuarios
+- **Error path undefined**: Agregados imports de `path` y `fs` en backend de avatars
+- **Constraint de base de datos**: Creado script para cambiar validación de nivel único a nivel+genero único
+- **Menú contextual**: Corregido error de `anchorEl` y flujo de datos en acciones del menú
+
+### 🎨 Mejoras de UI/UX
+
+- **Espaciado del formulario**: Aumentado margen superior del campo nombre (mt: 2)
+- **Título del módulo**: Corregido formato para seguir patrón de otros módulos (Typography h4)
+- **Menú de opciones**: Simplificado a solo 3 acciones (Ver Detalle, Editar Avatar, Eliminar Avatar)
+- **Imports limpiados**: Eliminados iconos no utilizados (SchoolIcon, PrintIcon)
+
+### 🐞 Bugs Corregidos
+
+- **Error 400 en creación**: Solucionado problema de validación de nivel único
+- **Error 500 en actualización**: Corregido problema de path undefined
+- **Menú contextual abierto**: Solucionado problema de menú que se quedaba abierto
+- **Demora en formularios**: Corregido problema de doble click para abrir formularios
+- **Datos vacíos al editar**: Solucionado problema de datos que no se cargaban
+
+### 📊 Base de Datos
+
+- **Script de migración**: `fix_avatars_unique_constraint.sql` para corregir constraint
+- **Validación actualizada**: Permite mismo nivel con diferente género
+- **Datos existentes**: Mantiene compatibilidad con avatars preexistentes
+
+### 🎯 Estado Final
+
+- ✅ **CRUD completo** funcionando correctamente
+- ✅ **Subida de imágenes** con fileService
+- ✅ **Validaciones** de nivel + género único
+- ✅ **Menú contextual** sin errores
+- ✅ **Formularios** se abren al primer click con datos correctos
+- ✅ **Título** con formato estándar del sistema
+- ✅ **Base de datos** con constraints correctas
+
+---
+
 ## [2025-09-16] - Gestión de Permisos, Nuevos Roles, Accesibilidad e Impresión QR
 
 ### ✨ Nuevas Funcionalidades
@@ -3037,3 +3081,135 @@ Implementar menús de opciones dinámicos en la grilla de usuarios que muestren 
 - **Acciones sin funcionalidad**: Preparadas para futuras implementaciones sin generar errores
 - **Consistencia**: Todos los roles mantienen las opciones básicas (Ver, QR, Permisos, Editar, Eliminar)
 - **Escalabilidad**: Fácil agregar nuevos roles o modificar opciones existentes
+
+---
+
+## **2025-01-16 - Módulo de Avatars del Sistema Gamificado**
+
+### **🎯 OBJETIVO:**
+
+Implementar el módulo completo de gestión de avatars para el sistema gamificado educativo, permitiendo la administración de avatars que los alumnos pueden canjear con puntos obtenidos por actividades académicas.
+
+### **🔧 CAMBIOS TÉCNICOS:**
+
+#### **Backend:**
+
+- **Nueva tabla `avatars`** con estructura completa:
+  - `id`, `nombre`, `descripcion`, `nivel` (1-20), `puntos` (≥0)
+  - `imagen`, `activo`, `created_at`, `updated_at`
+  - Restricciones UNIQUE para nombre y nivel
+  - Restricciones CHECK para validar rangos
+- **Rutas API completas** (`/api/avatars`):
+  - `GET /` - Listar con filtros (búsqueda, nivel, estado, paginación)
+  - `GET /:id` - Obtener avatar específico
+  - `POST /` - Crear nuevo avatar con subida de imagen
+  - `PUT /:id` - Actualizar avatar existente
+  - `DELETE /:id` - Eliminar avatar
+  - `GET /estadisticas/general` - Estadísticas del sistema
+- **Gestión de imágenes** con multer:
+  - Subida a `/uploads/avatars/`
+  - Validación de tipos (JPEG, PNG, GIF, WEBP)
+  - Límite de 2MB por archivo
+  - Eliminación automática de imágenes al borrar avatars
+- **20 avatars predefinidos** con progresión de puntos (0 a 7500)
+
+#### **Frontend:**
+
+- **Servicio `avatarsService`** en apiService.js con todas las operaciones CRUD
+- **Componente `AvatarsList`**:
+  - Grilla con diseño estándar (colores, hover, paginación)
+  - Búsqueda por nombre/descripción
+  - Filtros por nivel (1-20) y estado
+  - Menú "Opciones" con acciones contextuales
+  - Avatares con preview de imagen
+  - Chips de nivel con colores progresivos
+  - Puntos con icono de estrella
+- **Componente `AvatarsForm`**:
+  - Formulario completo para crear/editar
+  - Subida de imagen con preview
+  - Validaciones de nivel (1-20) y puntos (≥0)
+  - Campos: nombre, descripción, nivel, puntos, estado
+  - Validación de archivos (tipo y tamaño)
+- **Componente `AvatarsView`**:
+  - Vista detallada del avatar
+  - Información principal y sistema gamificado
+  - Progresión visual del nivel
+  - Imagen grande del avatar
+  - Información del sistema (fechas)
+- **Rutas integradas** en AdminLayout (`/dashboard/avatars`)
+- **Menú en sidebar** ya existente
+
+### **🎨 CARACTERÍSTICAS DEL DISEÑO:**
+
+#### **Grilla de Avatars:**
+
+- **Header azul** `#61a7d1` con texto blanco
+- **Filas alternadas** blanco y `#e7f1f8`
+- **Hover naranja** `#ffe6d9 !important`
+- **Menú "Opciones"** con acciones contextuales
+- **Avatares circulares** con preview de imagen
+- **Chips de nivel** con colores progresivos (verde → azul → naranja → rojo)
+- **Puntos con estrella** y formato numérico
+
+#### **Formulario de Avatar:**
+
+- **Layout de 2 columnas** (imagen + formulario)
+- **Subida de imagen** con preview y validación
+- **Campos organizados** con validaciones en tiempo real
+- **Switch de estado** con chip visual
+- **Validaciones completas** (nivel, puntos, archivos)
+
+#### **Vista de Detalle:**
+
+- **Header con avatar** y información básica
+- **Cards organizadas** por categorías
+- **Progresión visual** del nivel con barra de progreso
+- **Información del sistema** con fechas
+- **Diseño responsive** y profesional
+
+### **📊 FUNCIONALIDADES IMPLEMENTADAS:**
+
+#### **Gestión de Avatars:**
+
+- ✅ **Crear avatar** con imagen y validaciones
+- ✅ **Editar avatar** existente
+- ✅ **Ver detalle** completo del avatar
+- ✅ **Eliminar avatar** con confirmación
+- ✅ **Búsqueda** por nombre/descripción
+- ✅ **Filtros** por nivel y estado
+- ✅ **Paginación** estándar del sistema
+
+#### **Sistema Gamificado:**
+
+- ✅ **20 niveles** predefinidos (1-20)
+- ✅ **Progresión de puntos** (0 a 7500)
+- ✅ **Rangos de nivel** (Principiante, Intermedio, Avanzado, Experto)
+- ✅ **Colores progresivos** según nivel
+- ✅ **Validaciones** de unicidad (nombre y nivel)
+
+#### **Gestión de Imágenes:**
+
+- ✅ **Subida de archivos** con validación
+- ✅ **Preview en tiempo real**
+- ✅ **Validación de tipos** y tamaño
+- ✅ **Eliminación automática** al borrar avatar
+- ✅ **Imagen por defecto** si no se sube
+
+### **🔧 HERRAMIENTAS UTILIZADAS:**
+
+- **Backend**: Express.js, Multer, PostgreSQL
+- **Frontend**: React, Material-UI, SweetAlert2
+- **Validaciones**: Nivel (1-20), Puntos (≥0), Archivos (2MB)
+- **Estilos**: Patrón de colores estándar del sistema
+- **Imágenes**: Gestión con utils/imageUtils.js
+
+### **📝 NOTAS DE IMPLEMENTACIÓN:**
+
+- **Tabla `avatars`** creada con 20 avatars predefinidos
+- **Rutas backend** completamente funcionales
+- **Frontend** siguiendo patrones establecidos del sistema
+- **Validaciones** robustas en backend y frontend
+- **Diseño** consistente con otros módulos
+- **Preparado** para futuras funcionalidades de gamificación
+
+**Estado:** Módulo de Avatars completamente implementado y funcional

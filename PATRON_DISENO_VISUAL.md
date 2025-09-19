@@ -19,6 +19,8 @@ Unificar el diseño visual de todos los componentes reutilizables del sistema pa
 
 **FORMATO ESTÁNDAR DE GRILLAS/TABLAS:** Patrón establecido para todas las grillas futuras del sistema: cabecera azul `#61a7d1` con texto blanco negrita, filas alternadas blanco y `#e7f1f8`, hover `#ffe6d9 !important`, botón "Opciones" con menú desplegable contextual, colores unificados y funcionalidad modular preparada para futuras opciones según necesidades.
 
+**MÓDULO DE AVATARS - SISTEMA GAMIFICADO:** Implementación completa del CRUD para avatars del sistema gamificado con diseño consistente: header con icono `Face`, título con formato estándar (Typography h4), búsqueda por nombre/descripción, filtros por nivel (1-20) y género (Masculino/Femenino), botón "Nuevo Avatar", tabla profesional con colores estándar (cabecera azul #61a7d1, filas alternadas blanco/#e7f1f8, hover naranja #ffe6d9), menú contextual simplificado (Ver Detalle, Editar Avatar, Eliminar Avatar), formulario completo con subida de imágenes usando fileService, validaciones robustas, y diseño uniforme con otros módulos del sistema.
+
 **SISTEMA DE GAMIFICACIÓN EDUCATIVA (FUTURO):** Planificación de un sistema de gamificación que convertirá cada bimestre en un "mundo" explorable estilo videojuego, con progresión lineal, elementos lúdicos (retos, puntos, avatares), y experiencia inmersiva para motivar el aprendizaje de los estudiantes.
 
 **PWA (PROGRESSIVE WEB APP) - FUTURO:** Planificación para convertir el sistema web en aplicación móvil instalable con funcionalidad offline, notificaciones push, y experiencia nativa en dispositivos móviles.

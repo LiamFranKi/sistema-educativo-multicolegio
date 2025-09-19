@@ -41,7 +41,12 @@ import {
   Person as PersonIcon,
   QrCode as QrCodeIcon,
   Security as SecurityIcon,
-  FilterList as FilterIcon
+  FilterList as FilterIcon,
+  Message as MessageIcon,
+  School as SchoolIcon,
+  Group as FamilyIcon,
+  Payment as PaymentIcon,
+  Schedule as ScheduleIcon
 } from '@mui/icons-material';
 import { toast } from 'react-hot-toast';
 import { userService } from '../../../services/apiService';
@@ -250,6 +255,25 @@ const UsuariosList = () => {
           setShowQRPrint(true);
           // No cerrar el menú aquí para mantener selectedUser
           break;
+        // Acciones sin funcionalidad implementada - no hacer nada
+        case 'message':
+        case 'alumnos':
+        case 'matriculas':
+        case 'padres':
+        case 'pagos':
+        case 'cursos':
+        case 'horarios':
+        case 'hijos':
+        case 'comunicados':
+        case 'reportes':
+        case 'estadisticas':
+        case 'evaluaciones':
+        case 'seguimiento':
+        case 'tutelados':
+        case 'prospectos':
+          // No hacer nada hasta implementar la funcionalidad
+          handleMenuClose();
+          break;
         default:
           handleMenuClose();
           break;
@@ -346,6 +370,73 @@ const UsuariosList = () => {
     if (filename.startsWith('http')) return filename;
     // Construir URL del servidor
     return `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${filename}`;
+  };
+
+  // Función para obtener las opciones del menú según el rol
+  const getMenuOptions = (rol) => {
+    const commonOptions = [
+      { action: 'view', label: 'Ver Información', icon: <VisibilityIcon color="info" /> },
+      { action: 'qr', label: 'Imprimir Código QR', icon: <QrCodeIcon color="secondary" /> },
+      { action: 'edit', label: 'Editar Usuario', icon: <EditIcon color="primary" /> },
+      { action: 'permissions', label: 'Gestionar Permisos', icon: <SecurityIcon color="warning" /> },
+      { action: 'delete', label: 'Eliminar Usuario', icon: <DeleteIcon color="error" /> }
+    ];
+
+    switch (rol) {
+      case 'Alumno':
+        return [
+          { action: 'view', label: 'Ver Información', icon: <VisibilityIcon color="info" /> },
+          { action: 'qr', label: 'Imprimir Código QR', icon: <QrCodeIcon color="secondary" /> },
+          { action: 'message', label: 'Enviar Mensaje', icon: <MessageIcon color="primary" /> },
+          { action: 'matriculas', label: 'Matrículas Registradas', icon: <SchoolIcon color="info" /> },
+          { action: 'padres', label: 'Padres de Familia', icon: <FamilyIcon color="warning" /> },
+          { action: 'pagos', label: 'Historial de Pagos', icon: <PaymentIcon color="success" /> },
+          { action: 'permissions', label: 'Gestionar Permisos', icon: <SecurityIcon color="warning" /> },
+          { action: 'edit', label: 'Editar Usuario', icon: <EditIcon color="primary" /> },
+          { action: 'delete', label: 'Eliminar Usuario', icon: <DeleteIcon color="error" /> }
+        ];
+
+      case 'Docente':
+        return [
+          { action: 'view', label: 'Ver Información', icon: <VisibilityIcon color="info" /> },
+          { action: 'qr', label: 'Imprimir Código QR', icon: <QrCodeIcon color="secondary" /> },
+          { action: 'horarios', label: 'Ver Horario', icon: <ScheduleIcon color="info" /> },
+          { action: 'message', label: 'Enviar Mensaje', icon: <MessageIcon color="primary" /> },
+          { action: 'permissions', label: 'Gestionar Permisos', icon: <SecurityIcon color="warning" /> },
+          { action: 'edit', label: 'Editar Usuario', icon: <EditIcon color="primary" /> },
+          { action: 'delete', label: 'Eliminar Usuario', icon: <DeleteIcon color="error" /> }
+        ];
+
+      case 'Apoderado':
+        return [
+          { action: 'view', label: 'Ver Información', icon: <VisibilityIcon color="info" /> },
+          { action: 'qr', label: 'Imprimir Código QR', icon: <QrCodeIcon color="secondary" /> },
+          { action: 'alumnos', label: 'Alumnos a Cargo', icon: <SchoolIcon color="info" /> },
+          { action: 'message', label: 'Enviar Mensaje', icon: <MessageIcon color="primary" /> },
+          { action: 'permissions', label: 'Gestionar Permisos', icon: <SecurityIcon color="warning" /> },
+          { action: 'edit', label: 'Editar Usuario', icon: <EditIcon color="primary" /> },
+          { action: 'delete', label: 'Eliminar Usuario', icon: <DeleteIcon color="error" /> }
+        ];
+
+      case 'Administrador':
+      case 'Director':
+      case 'Secretaria':
+      case 'Psicologia':
+      case 'Tutor':
+      case 'Promotor':
+        return [
+          { action: 'view', label: 'Ver Información', icon: <VisibilityIcon color="info" /> },
+          { action: 'qr', label: 'Imprimir Código QR', icon: <QrCodeIcon color="secondary" /> },
+          { action: 'horarios', label: 'Ver Horario', icon: <ScheduleIcon color="info" /> },
+          { action: 'message', label: 'Enviar Mensaje', icon: <MessageIcon color="primary" /> },
+          { action: 'permissions', label: 'Gestionar Permisos', icon: <SecurityIcon color="warning" /> },
+          { action: 'edit', label: 'Editar Usuario', icon: <EditIcon color="primary" /> },
+          { action: 'delete', label: 'Eliminar Usuario', icon: <DeleteIcon color="error" /> }
+        ];
+
+      default:
+        return commonOptions;
+    }
   };
 
   return (
@@ -613,7 +704,7 @@ const UsuariosList = () => {
         type="error"
       />
 
-      {/* Menú de opciones */}
+      {/* Menú de opciones dinámico según el rol */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -634,40 +725,18 @@ const UsuariosList = () => {
           horizontal: 'right',
         }}
       >
-        <MenuItem onClick={() => handleMenuAction('view')}>
-          <ListItemIcon>
-            <VisibilityIcon color="info" />
-          </ListItemIcon>
-          <ListItemText primary="Ver Detalles" />
-        </MenuItem>
-
-        <MenuItem onClick={() => handleMenuAction('edit')}>
-          <ListItemIcon>
-            <EditIcon color="primary" />
-          </ListItemIcon>
-          <ListItemText primary="Editar Usuario" />
-        </MenuItem>
-
-        <MenuItem onClick={() => handleMenuAction('qr')}>
-          <ListItemIcon>
-            <QrCodeIcon color="secondary" />
-          </ListItemIcon>
-          <ListItemText primary="Imprimir Código QR" />
-        </MenuItem>
-
-        <MenuItem onClick={() => handleMenuAction('permissions')}>
-          <ListItemIcon>
-            <SecurityIcon color="warning" />
-          </ListItemIcon>
-          <ListItemText primary="Gestionar Permisos" />
-        </MenuItem>
-
-        <MenuItem onClick={() => handleMenuAction('delete')} sx={{ color: 'error.main' }}>
-          <ListItemIcon>
-            <DeleteIcon color="error" />
-          </ListItemIcon>
-          <ListItemText primary="Eliminar Usuario" />
-        </MenuItem>
+        {selectedUser && getMenuOptions(selectedUser.rol).map((option) => (
+          <MenuItem
+            key={option.action}
+            onClick={() => handleMenuAction(option.action)}
+            sx={option.action === 'delete' ? { color: 'error.main' } : {}}
+          >
+            <ListItemIcon>
+              {option.icon}
+            </ListItemIcon>
+            <ListItemText primary={option.label} />
+          </MenuItem>
+        ))}
       </Menu>
 
       {/* Formulario de Permisos */}

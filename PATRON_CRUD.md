@@ -38,6 +38,8 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 
 **MÓDULO DE TURNOS ESCOLARES:** Implementación completa del CRUD para turnos escolares con 3 turnos predefinidos (Mañana-M, Tarde-T, Noche-N), abreviaturas únicas, búsqueda por nombre/abreviatura, filtro por estado, paginación y validaciones de unicidad en backend. Integrado en módulo de Configuración siguiendo patrón de Años Escolares, con formulario simple (nombre y abreviatura), tabla profesional con chips de colores, y notificaciones con SweetAlert2.
 
+**MÓDULO DE AVATARS - SISTEMA GAMIFICADO:** Implementación completa del CRUD para avatars del sistema gamificado con 20 avatars predefinidos por niveles (1-20), sistema de géneros (Masculino/Femenino), validación de nivel+género único, subida de imágenes con fileService, formulario completo (nombre, descripción, nivel, puntos, género, imagen), tabla profesional con filtros por nivel y género, menú contextual simplificado (Ver Detalle, Editar Avatar, Eliminar Avatar), validaciones robustas en backend y frontend, y diseño consistente con otros módulos del sistema.
+
 ---
 
 ## 📚 **MÓDULO DE NIVELES EDUCATIVOS - CONFIGURACIÓN AVANZADA**
