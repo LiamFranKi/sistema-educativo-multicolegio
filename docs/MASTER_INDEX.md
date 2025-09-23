@@ -3,8 +3,10 @@
 ## 📋 **CHANGELOG POR MÓDULOS**
 
 ### 🔄 **Historial de Cambios**
+
 - **Usuarios**: [docs/changelog/usuarios.md](./changelog/usuarios.md)
 - **Avatars**: [docs/changelog/avatars.md](./changelog/avatars.md)
+- **Cursos**: [docs/changelog/cursos.md](./changelog/cursos.md)
 - **Grados**: [docs/changelog/grados.md](./changelog/grados.md)
 - **Áreas**: [docs/changelog/areas.md](./changelog/areas.md)
 - **Niveles**: [docs/changelog/niveles.md](./changelog/niveles.md)
@@ -14,13 +16,16 @@
 ## 🎯 **PATRONES DE DESARROLLO**
 
 ### 📚 **CRUD Patterns**
+
 - **Estructura General**: [docs/patrones/crud-estructura.md](./patrones/crud-estructura.md)
 - **Componentes Frontend**: [docs/patrones/crud-componentes.md](./patrones/crud-componentes.md)
 - **Backend API**: [docs/patrones/crud-backend.md](./patrones/crud-backend.md)
 - **Validaciones**: [docs/patrones/crud-validaciones.md](./patrones/crud-validaciones.md)
+- **Correcciones y Mejores Prácticas**: [docs/patrones/crud-correcciones.md](./patrones/crud-correcciones.md)
 - **Menús Contextuales**: [docs/patrones/crud-menus.md](./patrones/crud-menus.md)
 
 ### 🎨 **Diseño Visual**
+
 - **Colores y Temas**: [docs/patrones/diseno-colores.md](./patrones/diseno-colores.md)
 - **Componentes UI**: [docs/patrones/diseno-componentes.md](./patrones/diseno-componentes.md)
 - **Grillas y Tablas**: [docs/patrones/diseno-grillas.md](./patrones/diseno-grillas.md)
@@ -30,28 +35,54 @@
 ## 🏗️ **MÓDULOS DEL SISTEMA**
 
 ### 👥 **Gestión de Usuarios**
+
 - **Usuarios**: [docs/modulos/usuarios.md](./modulos/usuarios.md)
 - **Roles y Permisos**: [docs/modulos/roles-permisos.md](./modulos/roles-permisos.md)
 - **Autenticación**: [docs/modulos/autenticacion.md](./modulos/autenticacion.md)
 
 ### 🎓 **Sistema Educativo**
+
 - **Niveles Educativos**: [docs/modulos/niveles.md](./modulos/niveles.md)
 - **Grados Educativos**: [docs/modulos/grados.md](./modulos/grados.md)
 - **Áreas Curriculares**: [docs/modulos/areas.md](./modulos/areas.md)
 - **Turnos Escolares**: [docs/modulos/turnos.md](./modulos/turnos.md)
 
 ### 🎮 **Sistema Gamificado**
+
 - **Avatars**: [docs/modulos/avatars.md](./modulos/avatars.md)
 - **Puntos y Niveles**: [docs/modulos/gamificacion.md](./modulos/gamificacion.md)
 
+### 📚 **Sistema Académico**
+
+- **Cursos**: [docs/modulos/cursos.md](./modulos/cursos.md)
+
 ### ⚙️ **Configuración**
+
 - **Configuración del Colegio**: [docs/modulos/configuracion.md](./modulos/configuracion.md)
 - **Años Escolares**: [docs/modulos/anos-escolares.md](./modulos/anos-escolares.md)
 
+### 🌐 **Funcionalidades Futuras**
+
+- **Sitio Web CMS**: [docs/modulos/sitio-web-cms.md](./modulos/sitio-web-cms.md)
+
+## 🚀 **PLANIFICACIÓN FUTURA**
+
+### 📋 **Roadmap de Desarrollo**
+
+- **Roadmap General**: [docs/futuro/roadmap.md](./futuro/roadmap.md)
+
+## 🎨 **DISEÑOS Y PROPUESTAS**
+
+### 📐 **Propuestas Visuales**
+
+- **Página Principal Propuesta**: [docs/diseños/pagina-principal-propuesta.html](./diseños/pagina-principal-propuesta.html)
+- **Comparación WIX vs Propuesta**: [docs/diseños/comparacion-wix-vs-propuesta.md](./diseños/comparacion-wix-vs-propuesta.md)
+
 ## 📁 **ARCHIVOS ORIGINALES (BACKUP)**
-- **CHANGELOG Completo**: [CHANGELOG.md](../CHANGELOG.md) *(3,216 líneas)*
-- **PATRON_CRUD Completo**: [PATRON_CRUD.md](../PATRON_CRUD.md) *(2,545 líneas)*
-- **PATRON_DISENO Completo**: [PATRON_DISENO_VISUAL.md](../PATRON_DISENO_VISUAL.md) *(1,900+ líneas)*
+
+- **CHANGELOG Completo**: [CHANGELOG.md](../CHANGELOG.md) _(3,216 líneas)_
+- **PATRON_CRUD Completo**: [PATRON_CRUD.md](../PATRON_CRUD.md) _(2,545 líneas)_
+- **PATRON_DISENO Completo**: [PATRON_DISENO_VISUAL.md](../PATRON_DISENO_VISUAL.md) _(1,900+ líneas)_
 
 ---
 
@@ -64,6 +95,6 @@
 
 ---
 
-**Última actualización**: 2025-01-16  
-**Versión**: 1.0  
-**Estado**: ✅ Estructura creada y funcional
+**Última actualización**: 2025-01-16
+**Versión**: 1.3
+**Estado**: ✅ Estructura creada y funcional + Módulo Cursos completo + Patrones de correcciones documentados
