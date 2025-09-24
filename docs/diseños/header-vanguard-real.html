@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Vanguard Schools - Diseño Real</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5;
+        }
+
+        /* Header de ancho completo */
+        .header-container {
+            width: 100%;
+            background: white;
+            position: relative;
+            z-index: 1000;
+        }
+
+        /* Barra Superior Azul Oscuro */
+        .header-top-bar {
+            background: #1A4060;
+            color: white;
+            padding: 14px 0;
+            font-size: 14px;
+        }
+
+        .top-bar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr; /* Redes | Contacto | VanguardNet */
+            align-items: center;
+            justify-items: center;
+            gap: 16px;
+        }
+
+        .top-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            justify-content: center;
+            justify-self: center;
+        }
+
+        /* Redes Sociales */
+        .social-icons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .social-icon {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-1px) scale(1.05);
+            opacity: 0.8;
+        }
+
+        /* Información de Contacto */
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            justify-content: center; /* Centrado en la franja */
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .contact-item + .contact-item {
+            padding-left: 18px;
+            border-left: 1px solid rgba(255,255,255,0.3); /* Separador sutil */
+        }
+
+        .contact-icon {
+            width: 24px;
+            height: 24px;
+            background: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #ffffff;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Botón VanguardNet llamativo */
+        .vanguardnet-btn {
+            background: linear-gradient(135deg, #3C8DFF 0%, #1E5ED6 100%);
+            color: white;
+            padding: 6px 14px;
+            border: 2px solid #ffffff;
+            border-radius: 999px; /* píldora */
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 6px 18px rgba(30,94,214,0.35);
+            position: relative;
+            justify-self: end;
+        }
+
+        .vanguardnet-btn::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 999px;
+            border: 2px solid rgba(255,255,255,0.35);
+            pointer-events: none;
+        }
+
+        .vanguardnet-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 22px rgba(30,94,214,0.45);
+            filter: brightness(1.03);
+        }
+
+        /* Barra Principal Blanca */
+        .header-main {
+            background: white;
+            padding: 16px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 75px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0;
+            align-items: center;
+        }
+
+        .nav-item { position: relative; }
+
+        .nav-link {
+            display: block;
+            padding: 12px 22px;
+            color: #1A4060;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            transition: all 0.2s ease-in-out;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: #1A4060;
+        }
+        .nav-link.active {
+            background: #1A4060;
+            color: white;
+        }
+
+        /* Banner/Hero Section */
+        .hero-banner {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content { text-align: center; color: white; z-index: 2; position: relative; }
+        .hero-title { font-size: 48px; font-weight: 700; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .hero-subtitle { font-size: 24px; font-weight: 400; opacity: 0.9; }
+        .hero-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.3; z-index: 1; }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .top-bar-content { grid-template-columns: 1fr; gap: 10px; padding: 0 20px; }
+            .top-left { justify-content: center; }
+            .contact-info { justify-content: center; gap: 16px; }
+            .main-content { flex-direction: column; gap: 18px; padding: 0 20px; }
+            .nav-menu { flex-wrap: wrap; justify-content: center; }
+            .nav-link { padding: 10px 14px; font-size: 14px; }
+            .hero-title { font-size: 32px; }
+            .hero-subtitle { font-size: 18px; }
+        }
+
+        /* Demo Content */
+        .demo-content { padding: 40px; text-align: center; color: #666; max-width: 1200px; margin: 0 auto; }
+        .demo-section { margin-bottom: 30px; }
+        .demo-title { font-size: 24px; color: #1A4060; margin-bottom: 15px; }
+        .demo-text { line-height: 1.6; max-width: 600px; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <!-- Barra Superior Azul Oscuro -->
+        <div class="header-top-bar">
+            <div class="top-bar-content">
+                <div class="top-left">
+                    <!-- Redes Sociales -->
+                    <div class="social-icons">
+                        <a href="#" class="social-icon" title="Facebook">
+                            <img src="icons/facebook-white.png" alt="Facebook" style="width: 28px; height: 28px;">
+                        </a>
+                        <a href="#" class="social-icon" title="Instagram">
+                            <img src="icons/instagram-white.png" alt="Instagram" style="width: 28px; height: 28px;">
+                        </a>
+                        <a href="#" class="social-icon" title="TikTok">
+                            <img src="icons/tiktok-white.png" alt="TikTok" style="width: 28px; height: 28px;">
+                        </a>
+                        <a href="#" class="social-icon" title="YouTube">
+                            <img src="icons/youtube-white.png" alt="YouTube" style="width: 28px; height: 28px;">
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Información de Contacto -->
+                <div class="contact-info">
+                        <div class="contact-item">
+                            <div class="contact-icon">🏫</div>
+                            <span>Jr Toribio de Luzuriaga Mz F lote 18 y 19 - SMP</span>
+                        </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <span>946 592 100 / 922 084 833</span>
+                    </div>
+                </div>
+
+                <!-- Botón VanguardNet -->
+                <button class="vanguardnet-btn" title="Acceder a Intranet">Intranet <span style="color: white; filter: brightness(0) invert(1); font-size: 16px; line-height: 1;">👥</span></button>
+            </div>
+        </div>
+
+        <!-- Barra Principal Blanca -->
+        <div class="header-main">
+            <div class="main-content">
+                <!-- Logo -->
+                <div class="logo-section">
+                    <img src="logo-vanguard.png" alt="Vanguard Schools" class="logo">
+                </div>
+
+                <!-- Navegación -->
+                <ul class="nav-menu">
+                    <li class="nav-item"><a href="#" class="nav-link active">Home</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Niveles</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Documentos</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Preguntas Frecuentes</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Trabaja con Nosotros</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banner/Hero Section - PERTENECE AL BODY -->
+    <div class="hero-banner">
+        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" alt="Campo deportivo" class="hero-image">
+        <div class="hero-content">
+            <h1 class="hero-title">A LA VANGUARDIA</h1>
+            <p class="hero-subtitle">DE LA TECNOLOGÍA</p>
+        </div>
+    </div>
+
+    <!-- Contenido Demo -->
+    <div class="demo-content">
+        <div class="demo-section">
+            <h2 class="demo-title">🎨 Header Vanguard Schools - 100% Administrable</h2>
+            <p class="demo-text">
+                Este es el header completo del diseño de Vanguard Schools. <strong>TODO ES ADMINISTRABLE</strong> desde la base de datos.
+                El banner de abajo pertenece al BODY de la página.
+            </p>
+        </div>
+
+        <div class="demo-section">
+            <h3 class="demo-title">🎯 Elementos Administrables del Header:</h3>
+            <p class="demo-text">
+                ✅ <strong>Color de la barra superior</strong> - Cambia automáticamente todos los colores del menú<br>
+                ✅ <strong>Menús de navegación</strong> - Agregar/editar/eliminar páginas<br>
+                ✅ <strong>Dirección y teléfonos</strong> - Extraídos de la base de datos<br>
+                ✅ <strong>Logo principal</strong> - Subir/cambiar imagen<br>
+                ✅ <strong>Redes sociales</strong> - Seleccionar cuáles usar y sus enlaces<br>
+                ✅ <strong>Iconos de redes</strong> - Subir iconos personalizados<br>
+                ✅ <strong>Botón Intranet</strong> - Texto, color y enlace configurables<br>
+                ✅ <strong>Responsive</strong> - Funciona en computadora y móviles
+            </p>
+        </div>
+
+        <div class="demo-section">
+            <h3 class="demo-title">📱 Responsive Design:</h3>
+            <p class="demo-text">
+                • <strong>Desktop</strong> - Layout horizontal completo<br>
+                • <strong>Tablet</strong> - Adaptación automática<br>
+                • <strong>Mobile</strong> - Menú hamburguesa y elementos apilados<br>
+                • <strong>Banner</strong> - Separado del header, pertenece al BODY
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        document.querySelector('.vanguardnet-btn').addEventListener('click', function() {
+            alert('VanguardNet - Acceso al sistema educativo');
+        });
+    </script>
+</body>
+</html>

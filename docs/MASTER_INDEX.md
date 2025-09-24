@@ -12,6 +12,7 @@
 - **Niveles**: [docs/changelog/niveles.md](./changelog/niveles.md)
 - **Turnos**: [docs/changelog/turnos.md](./changelog/turnos.md)
 - **Configuración**: [docs/changelog/configuracion.md](./changelog/configuracion.md)
+- **Página Web**: [docs/changelog/pagina-web.md](./changelog/pagina-web.md)
 
 ## 🎯 **PATRONES DE DESARROLLO**
 
@@ -31,6 +32,7 @@
 - **Grillas y Tablas**: [docs/patrones/diseno-grillas.md](./patrones/diseno-grillas.md)
 - **Formularios**: [docs/patrones/diseno-formularios.md](./patrones/diseno-formularios.md)
 - **Navegación**: [docs/patrones/diseno-navegacion.md](./patrones/diseno-navegacion.md)
+- **Web CMS**: [docs/patrones/web-cms.md](./patrones/web-cms.md)
 
 ## 🏗️ **MÓDULOS DEL SISTEMA**
 
@@ -76,6 +78,7 @@
 ### 📐 **Propuestas Visuales**
 
 - **Página Principal Propuesta**: [docs/diseños/pagina-principal-propuesta.html](./diseños/pagina-principal-propuesta.html)
+- **Header Vanguard Real**: [docs/diseños/header-vanguard-real.html](./diseños/header-vanguard-real.html)
 - **Comparación WIX vs Propuesta**: [docs/diseños/comparacion-wix-vs-propuesta.md](./diseños/comparacion-wix-vs-propuesta.md)
 
 ## 📁 **ARCHIVOS ORIGINALES (BACKUP)**
@@ -95,6 +98,6 @@
 
 ---
 
-**Última actualización**: 2025-01-16
-**Versión**: 1.3
-**Estado**: ✅ Estructura creada y funcional + Módulo Cursos completo + Patrones de correcciones documentados
+**Última actualización**: 2025-01-19
+**Versión**: 1.4
+**Estado**: ✅ Estructura creada y funcional + Módulo Cursos completo + Header de página web diseñado y documentado

@@ -37,6 +37,7 @@ import {
   Settings as SettingsIcon,
   Logout as LogoutIcon,
   AccountCircle as AccountCircleIcon,
+  Web as WebIcon,
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 
@@ -86,6 +87,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
       'Notificaciones': '#7C4DFF', // Púrpura brillante
       'Reportes': '#FF9100', // Naranja intenso
       'Configuración': '#00BCD4', // Cian profundo
+      'Página Web': '#2196F3', // Azul web
     };
     return colors[iconName] || 'white';
   };
@@ -93,6 +95,7 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
     { text: 'Mi Perfil', icon: <PersonIcon />, path: '/perfil' },
+    { text: 'Página Web', icon: <WebIcon />, path: '/dashboard/pagina-web' },
     { text: 'Matrículas', icon: <MatriculasIcon />, path: '/dashboard/matriculas' },
     { text: 'Usuarios', icon: <PeopleIcon />, path: '/dashboard/usuarios' },
     { text: 'Avatars', icon: <AvatarsIcon />, path: '/dashboard/avatars' },
