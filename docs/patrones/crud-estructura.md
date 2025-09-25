@@ -3,6 +3,7 @@
 ## 📋 Estructura Establecida
 
 ### **Objetivo:**
+
 Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo patrón para mantener consistencia y facilitar el desarrollo.
 
 **NOTA IMPORTANTE:** El sistema es de un solo colegio. No existe el módulo de Colegios ni el rol Superadministrador.
@@ -26,6 +27,7 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 ## 🏗️ **1. ESTRUCTURA DE CARPETAS**
 
 ### **Backend:**
+
 ```
 backend/
 ├── config/
@@ -45,6 +47,7 @@ backend/
 ```
 
 ### **Frontend:**
+
 ```
 frontend/src/
 ├── pages/
@@ -90,6 +93,7 @@ frontend/src/
 ## 📋 **2. PATRÓN DE NOMENCLATURA**
 
 ### **Archivos:**
+
 - **Lista**: `[Modulo]List.js`
 - **Formulario**: `[Modulo]Form.js`
 - **Vista**: `[Modulo]View.js`
@@ -97,12 +101,14 @@ frontend/src/
 - **Servicios**: `[modulo]Service` (camelCase)
 
 ### **Componentes:**
+
 - **Páginas**: PascalCase (`UsuariosList`)
 - **Componentes**: PascalCase (`DataTable`)
 - **Servicios**: camelCase (`usuariosService`)
 - **Rutas**: kebab-case (`/api/usuarios`)
 
 ### **Base de Datos:**
+
 - **Tablas**: plural, snake_case (`usuarios`, `avatars`)
 - **Campos**: snake_case (`nombre`, `fecha_creacion`)
 - **Constraints**: prefijo + descripción (`uk_usuarios_email`)
@@ -112,29 +118,33 @@ frontend/src/
 ## 🔄 **3. FLUJO DE DESARROLLO**
 
 ### **Paso 1: Base de Datos**
+
 1. Crear script de migración en `backend/migrations/`
 2. Ejecutar migración
 3. Verificar estructura
 
 ### **Paso 2: Backend API**
+
 1. Crear rutas en `backend/routes/[modulo].js`
 2. Implementar CRUD endpoints
 3. Agregar validaciones
 4. Registrar rutas en `server.js`
 
 ### **Paso 3: Frontend**
+
 1. Crear servicio en `apiService.js`
 2. Crear componentes (List, Form, View)
 3. Integrar en `AdminLayout.js`
 4. Agregar al `AdminSidebar.js`
 
 ### **Paso 4: Documentación**
+
 1. Actualizar `CHANGELOG.md`
 2. Actualizar patrones
 3. Crear documentación específica
 
 ---
 
-**Última actualización**: 2025-01-16  
-**Versión**: 1.0  
+**Última actualización**: 2025-01-16
+**Versión**: 1.0
 **Estado**: ✅ Patrón establecido y funcional

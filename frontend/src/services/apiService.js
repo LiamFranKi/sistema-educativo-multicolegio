@@ -433,4 +433,37 @@ export const avatarsService = {
   },
 };
 
+// Servicios de cursos
+export const cursosService = {
+  getCursos: async (params = {}) => {
+    const response = await api.get('/cursos', { params });
+    return response.data;
+  },
+
+  getCurso: async (id) => {
+    const response = await api.get(`/cursos/${id}`);
+    return response.data;
+  },
+
+  createCurso: async (cursoData) => {
+    const response = await api.post('/cursos', cursoData);
+    return response.data;
+  },
+
+  updateCurso: async (id, cursoData) => {
+    const response = await api.put(`/cursos/${id}`, cursoData);
+    return response.data;
+  },
+
+  deleteCurso: async (id) => {
+    const response = await api.delete(`/cursos/${id}`);
+    return response.data;
+  },
+
+  getNiveles: async () => {
+    const response = await api.get('/cursos/niveles/lista');
+    return response.data;
+  },
+};
+
 export default api;

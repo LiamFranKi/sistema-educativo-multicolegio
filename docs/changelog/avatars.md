@@ -79,6 +79,6 @@
 
 ---
 
-**Última actualización**: 2025-01-16  
-**Versión**: 1.0  
+**Última actualización**: 2025-01-16
+**Versión**: 1.0
 **Estado**: ✅ Módulo completo y funcional

@@ -157,3 +157,5 @@ docs/
 _Última actualización: 2025-01-19_
 _Versión: 1.0.0_
 _Estado: En desarrollo_
+
+

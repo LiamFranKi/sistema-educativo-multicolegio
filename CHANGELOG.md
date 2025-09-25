@@ -1,5 +1,70 @@
 # CHANGELOG
 
+## [2025-01-16] - Implementación Completa del Módulo de Cursos
+
+### ✨ Nuevas Funcionalidades
+
+- **Módulo de Cursos**: Implementación completa del CRUD para gestión de cursos/áreas curriculares
+- **Base de datos**: Tabla cursos con relación a niveles educativos y cursos predefinidos
+- **API Backend**: Rutas completas para CRUD de cursos con validaciones y subida de imágenes
+- **Frontend**: Componentes CursosList, CursosForm y CursosView siguiendo patrones del sistema
+
+### 🗄️ Base de Datos
+
+- **Tabla cursos**: Estructura completa con campos nombre, descripción, abreviatura, nivel_id, imagen, activo
+- **Constraints**: Unicidad por nombre+nivel y abreviatura única
+- **Cursos predefinidos**: 24 cursos distribuidos por niveles (Inicial: 6, Primaria: 8, Secundaria: 10)
+- **Relaciones**: Foreign key a tabla niveles con restricción
+
+### 🔧 Backend API
+
+- **Rutas implementadas**: GET, POST, PUT, DELETE para /api/cursos
+- **Filtros**: Por nivel, estado y búsqueda por nombre/descripción/abreviatura
+- **Paginación**: Sistema completo de paginación con totales
+- **Subida de imágenes**: Integración con multer para archivos de hasta 5MB
+- **Validaciones**: Unicidad de abreviatura y nombre+nivel, verificación de niveles existentes
+- **Endpoint adicional**: /api/cursos/niveles/lista para obtener niveles activos
+
+### 🎨 Frontend
+
+- **CursosList**: Lista principal con grilla estándar, filtros, búsqueda y menú contextual
+- **CursosForm**: Formulario modal para crear/editar con subida de imágenes y validaciones
+- **CursosView**: Vista detallada en modal con información completa del curso
+- **Servicio API**: cursosService con métodos completos para todas las operaciones CRUD
+
+### 🎯 Características del Diseño
+
+- **Colores estándar**: Header azul #61a7d1, filas alternadas blanco/#e7f1f8, hover naranja #ffe6d9
+- **Botón Opciones**: Menú contextual con Ver Detalle, Editar Curso, Eliminar Curso
+- **Filtros**: Por nivel educativo y estado (Activo/Inactivo)
+- **Búsqueda**: Por nombre, descripción y abreviatura
+- **Paginación**: Con opciones 5, 10, 25, 50 filas por página
+- **Imágenes**: Avatar circular en lista, imagen grande en formulario y vista
+
+### 🛠️ Tecnologías Utilizadas
+
+- **Backend**: Node.js, Express.js, PostgreSQL, Multer
+- **Frontend**: React, Material-UI, SweetAlert2, fileService
+- **Validaciones**: Frontend y backend con mensajes de error específicos
+- **Archivos**: Subida con validación de tipo y tamaño, eliminación automática
+
+### 📊 Datos Predefinidos
+
+- **Nivel Inicial**: Comunicación, Matemática, Personal Social, Ciencia y Ambiente, Arte, Psicomotricidad
+- **Nivel Primaria**: Comunicación, Matemática, Personal Social, Ciencia y Ambiente, Arte y Cultura, Educación Física, Inglés, Religión
+- **Nivel Secundaria**: Comunicación, Matemática, Historia/Geografía/Economía, Ciencia/Tecnología/Ambiente, Arte y Cultura, Educación Física, Inglés, Religión, Formación Ciudadana y Cívica, Educación para el Trabajo
+
+### 🎯 Estado Final
+
+- ✅ **CRUD completo** funcionando correctamente
+- ✅ **Base de datos** con estructura optimizada y datos predefinidos
+- ✅ **API Backend** con validaciones robustas y manejo de archivos
+- ✅ **Frontend** con diseño consistente y funcionalidades completas
+- ✅ **Integración** perfecta con sistema de niveles existente
+- ✅ **Patrones** seguidos según estándares del sistema
+
+---
+
 ## [2025-01-16] - Correcciones y Mejoras en Módulo de Avatars
 
 ### 🔧 Correcciones Técnicas

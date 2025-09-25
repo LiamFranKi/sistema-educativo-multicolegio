@@ -1893,7 +1893,7 @@ const ConfiguracionList = () => {
                     <TableCell align="center">
                       <Button
                         variant="outlined"
-                        size="small"
+                          size="small"
                         onClick={(e) => handleMenuOpen(e, nivel, 'nivel')}
                         endIcon={<MoreVertIcon />}
                         sx={{
@@ -2117,9 +2117,9 @@ const ConfiguracionList = () => {
                         />
                     </TableCell>
                     <TableCell align="center">
-                      <Button
-                        variant="outlined"
-                        size="small"
+                          <Button
+                            variant="outlined"
+                          size="small"
                         onClick={(e) => handleMenuOpen(e, turno, 'turno')}
                         endIcon={<MoreVertIcon />}
                         sx={{
@@ -2135,7 +2135,7 @@ const ConfiguracionList = () => {
                         }}
                       >
                         Opciones
-                      </Button>
+                        </Button>
                     </TableCell>
                   </TableRow>
                 ))}

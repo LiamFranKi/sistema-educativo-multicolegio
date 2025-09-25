@@ -40,6 +40,8 @@ Unificar todos los mantenimientos (Usuarios, Configuración, etc.) bajo el mismo
 
 **MÓDULO DE AVATARS - SISTEMA GAMIFICADO:** Implementación completa del CRUD para avatars del sistema gamificado con 20 avatars predefinidos por niveles (1-20), sistema de géneros (Masculino/Femenino), validación de nivel+género único, subida de imágenes con fileService, formulario completo (nombre, descripción, nivel, puntos, género, imagen), tabla profesional con filtros por nivel y género, menú contextual simplificado (Ver Detalle, Editar Avatar, Eliminar Avatar), validaciones robustas en backend y frontend, y diseño consistente con otros módulos del sistema.
 
+**MÓDULO DE CURSOS - ÁREAS CURRICULARES:** Implementación completa del CRUD para gestión de cursos/áreas curriculares con 24 cursos predefinidos distribuidos por niveles educativos (Inicial: 6, Primaria: 8, Secundaria: 10), validación de nombre+nivel único y abreviatura única, subida de imágenes con fileService, formulario completo (nombre, descripción, abreviatura, nivel_id, imagen, activo), tabla profesional con filtros por nivel y estado, menú contextual estándar (Ver Detalle, Editar Curso, Eliminar Curso), validaciones robustas en backend y frontend, relación con tabla niveles, y diseño consistente con patrones establecidos del sistema.
+
 ---
 
 ## 📚 **MÓDULO DE NIVELES EDUCATIVOS - CONFIGURACIÓN AVANZADA**

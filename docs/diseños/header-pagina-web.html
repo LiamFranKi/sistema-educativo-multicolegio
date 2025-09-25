@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header - Vanguard Schools</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f5f5f5;
+        }
+
+        /* Header de ancho completo */
+        .header-container {
+            width: 100%;
+            background: white;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        /* Header Superior */
+        .header-top {
+            background: linear-gradient(135deg, #0165a1 0%, #014a7a 100%);
+            color: white;
+            padding: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .header-top-content {
+            max-width: 1200px;
+            width: 100%;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            height: 70px;
+            width: auto;
+            object-fit: contain;
+            filter: brightness(0) invert(1); /* Hace el logo blanco */
+            max-width: 200px; /* Evita que sea muy ancho */
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .acceder-btn {
+            background: linear-gradient(135deg, #ff6d00 0%, #e65100 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 109, 0, 0.3);
+            text-transform: uppercase;
+        }
+
+        .acceder-btn:hover {
+            background: linear-gradient(135deg, #e65100 0%, #bf360c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 109, 0, 0.4);
+        }
+
+        /* Navegación Principal */
+        .nav-main {
+            background: white;
+            padding: 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            width: 100%;
+            padding: 0 30px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0;
+            justify-content: center;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 20px 30px;
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            position: relative;
+            text-transform: uppercase;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #0165a1;
+            border-bottom-color: #0165a1;
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            color: #0165a1;
+            border-bottom-color: #0165a1;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #0165a1;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 80%;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #0165a1;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-top-content {
+                padding: 0 20px;
+            }
+
+            .logo {
+                height: 50px;
+                max-width: 150px;
+            }
+
+            .logo-text {
+                font-size: 20px;
+            }
+
+            .acceder-btn {
+                padding: 10px 18px;
+                font-size: 12px;
+            }
+
+            .nav-content {
+                padding: 0 20px;
+                position: relative;
+            }
+
+            .nav-menu {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+                z-index: 1000;
+                border-radius: 0 0 8px 8px;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                right: 20px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .nav-link {
+                padding: 18px 25px;
+                border-bottom: 1px solid #f0f0f0;
+                border-left: 4px solid transparent;
+                text-align: left;
+            }
+
+            .nav-link:hover,
+            .nav-link.active {
+                border-left-color: #0165a1;
+                border-bottom-color: #f0f0f0;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            }
+
+            .nav-link::after {
+                display: none;
+            }
+        }
+
+        /* Demo Content */
+        .demo-content {
+            padding: 40px;
+            text-align: center;
+            color: #666;
+        }
+
+        .demo-section {
+            margin-bottom: 30px;
+        }
+
+        .demo-title {
+            font-size: 24px;
+            color: #0165a1;
+            margin-bottom: 15px;
+        }
+
+        .demo-text {
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <!-- Header Superior -->
+        <div class="header-top">
+            <div class="header-top-content">
+                <div class="logo-section">
+                    <img src="logo-vanguard.png" alt="Vanguard Schools" class="logo">
+                    <div class="logo-text">VANGUARD SCHOOLS</div>
+                </div>
+                <button class="acceder-btn">ACCEDER AL SISTEMA</button>
+            </div>
+        </div>
+
+        <!-- Navegación Principal -->
+        <nav class="nav-main">
+            <div class="nav-content">
+                <button class="mobile-menu-btn">☰</button>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Niveles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Documentos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Preguntas Frecuentes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Trabaja con Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Contacto</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Contenido Demo -->
+        <div class="demo-content">
+            <div class="demo-section">
+                <h2 class="demo-title">🎨 Header Profesional - Vanguard Schools</h2>
+                <p class="demo-text">
+                    Este es el diseño profesional del header para la página web de Vanguard Schools.
+                    Incluye el logo real, ancho completo y todos los elementos solicitados.
+                </p>
+            </div>
+
+            <div class="demo-section">
+                <h3 class="demo-title">✨ Características Mejoradas:</h3>
+                <p class="demo-text">
+                    ✅ <strong>Logo real</strong> de Vanguard Schools integrado<br>
+                    ✅ <strong>Ancho completo</strong> sin bordes o contenedores<br>
+                    ✅ <strong>Gradientes modernos</strong> en colores corporativos<br>
+                    ✅ <strong>Botón CTA destacado</strong> con efectos 3D<br>
+                    ✅ <strong>Navegación profesional</strong> con animaciones<br>
+                    ✅ <strong>100% responsivo</strong> para todos los dispositivos<br>
+                    ✅ <strong>Efectos hover</strong> suaves y elegantes<br>
+                    ✅ <strong>Tipografía mejorada</strong> con letter-spacing
+                </p>
+            </div>
+
+            <div class="demo-section">
+                <h3 class="demo-title">🎯 Elementos Administrables:</h3>
+                <p class="demo-text">
+                    • <strong>Logo</strong> - Subir/cambiar imagen<br>
+                    • <strong>Nombre del colegio</strong> - Editar texto<br>
+                    • <strong>Menús</strong> - Agregar/editar/eliminar<br>
+                    • <strong>Botón acceder</strong> - Cambiar texto y color<br>
+                    • <strong>Colores</strong> - Personalizar esquema<br>
+                    • <strong>Efectos</strong> - Ajustar animaciones
+                </p>
+            </div>
+
+            <div class="demo-section">
+                <h3 class="demo-title">📱 Responsive Design:</h3>
+                <p class="demo-text">
+                    • <strong>Desktop</strong> - Navegación horizontal completa<br>
+                    • <strong>Tablet</strong> - Adaptación automática<br>
+                    • <strong>Mobile</strong> - Menú hamburguesa elegante<br>
+                    • <strong>Logo</strong> - Se ajusta automáticamente<br>
+                    • <strong>Botones</strong> - Tamaños optimizados
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle mobile menu
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('.nav-menu').classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            const navMenu = document.querySelector('.nav-menu');
+            const mobileBtn = document.querySelector('.mobile-menu-btn');
+
+            if (!navMenu.contains(e.target) && !mobileBtn.contains(e.target)) {
+                navMenu.classList.remove('active');
+            }
+        });
+
+        // Active menu item
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Remove active class from all links
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+                // Add active class to clicked link
+                this.classList.add('active');
+
+                // Close mobile menu
+                document.querySelector('.nav-menu').classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
