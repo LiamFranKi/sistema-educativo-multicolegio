@@ -187,7 +187,7 @@
             font-weight: 700;
             font-size: 15px;
             transition: all 0.2s ease-in-out;
-            border-radius: 6px;
+            border-radius: 0;
         }
 
         .nav-link:hover {
@@ -197,6 +197,85 @@
         .nav-link.active {
             background: #1A4060;
             color: white;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle::after {
+            content: ' ▼';
+            font-size: 10px;
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-toggle::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border-radius: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-link {
+            display: block;
+            padding: 15px 20px;
+            color: #1A4060;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            border-radius: 0;
+        }
+
+        .dropdown-link:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-link:hover {
+            background: #1A4060;
+            color: white;
+        }
+
+        .dropdown-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
+            transition: width 0.3s ease;
+        }
+
+        .dropdown-link:hover::before {
+            width: 3px;
         }
 
         /* Banner/Hero Section */
@@ -224,6 +303,41 @@
             .main-content { flex-direction: column; gap: 18px; padding: 0 20px; }
             .nav-menu { flex-wrap: wrap; justify-content: center; }
             .nav-link { padding: 10px 14px; font-size: 14px; }
+
+            /* Dropdown responsive styles */
+            .dropdown-menu {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                border: none;
+                background: #f8f9fa;
+                margin-left: 0;
+                border-radius: 0;
+                width: 100%;
+            }
+
+            .dropdown-link {
+                padding: 12px 20px;
+                font-size: 13px;
+                border-bottom: 1px solid #e9ecef;
+                border-radius: 0;
+            }
+
+            .dropdown-link:hover {
+                background: #e9ecef;
+            }
+
+            .dropdown-toggle::after {
+                content: ' ▶';
+                transform: none;
+            }
+
+            .dropdown:hover .dropdown-toggle::after {
+                transform: rotate(90deg);
+            }
+
             .hero-title { font-size: 32px; }
             .hero-subtitle { font-size: 18px; }
         }
@@ -286,7 +400,14 @@
                 <!-- Navegación -->
                 <ul class="nav-menu">
                     <li class="nav-item"><a href="#" class="nav-link active">Home</a></li>
-                    <li class="nav-item"><a href="#" class="nav-link">Niveles</a></li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle">Niveles</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="dropdown-link">Inicial</a></li>
+                            <li><a href="#" class="dropdown-link">Primaria</a></li>
+                            <li><a href="#" class="dropdown-link">Secundaria</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item"><a href="#" class="nav-link">Documentos</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">Preguntas Frecuentes</a></li>
                     <li class="nav-item"><a href="#" class="nav-link">Trabaja con Nosotros</a></li>
@@ -320,6 +441,7 @@
             <p class="demo-text">
                 ✅ <strong>Color de la barra superior</strong> - Cambia automáticamente todos los colores del menú<br>
                 ✅ <strong>Menús de navegación</strong> - Agregar/editar/eliminar páginas<br>
+                ✅ <strong>Submenús desplegables</strong> - Gestionar opciones de Niveles (Inicial, Primaria, Secundaria)<br>
                 ✅ <strong>Dirección y teléfonos</strong> - Extraídos de la base de datos<br>
                 ✅ <strong>Logo principal</strong> - Subir/cambiar imagen<br>
                 ✅ <strong>Redes sociales</strong> - Seleccionar cuáles usar y sus enlaces<br>

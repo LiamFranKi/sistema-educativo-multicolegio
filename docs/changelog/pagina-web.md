@@ -29,25 +29,35 @@ Documentación específica para el desarrollo de la página web administrable de
    - Agregar/editar/eliminar páginas desde admin
    - Estado activo y hover con color consistente
 
-3. **Información de contacto**
+3. **Submenús desplegables para Niveles**
+
+   - **Inicial** - Nivel educativo inicial
+   - **Primaria** - Nivel educativo primaria
+   - **Secundaria** - Nivel educativo secundaria
+   - **Hover effects** - Se abre al pasar el mouse
+   - **Fondo blanco** a la altura del menú principal
+   - **Transiciones suaves** (0.3s)
+   - **Responsive** - En móvil se muestran en cascada
+
+4. **Información de contacto**
 
    - Dirección: "Av. Principal 123, Lima, Perú"
    - Teléfonos: "+51 987 654 321" / "+51 1 234 5678"
    - Extraídos de la base de datos
 
-4. **Logo principal**
+5. **Logo principal**
 
    - Ubicación: `frontend/src/assets/images/logo-vanguard.png`
    - Dimensiones: 3116x1382px
    - Administrable desde CMS
 
-5. **Redes sociales**
+6. **Redes sociales**
 
    - Facebook, Instagram, TikTok, YouTube
    - Iconos en: `docs/diseños/icons/`
    - Enlaces configurables
 
-6. **Botón Intranet**
+7. **Botón Intranet**
    - Texto: "Intranet"
    - Icono: 👥 (dos usuarios)
    - Color: Gradiente azul con borde blanco
@@ -157,5 +167,3 @@ docs/
 _Última actualización: 2025-01-19_
 _Versión: 1.0.0_
 _Estado: En desarrollo_
-
-

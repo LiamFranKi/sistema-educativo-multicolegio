@@ -157,6 +157,86 @@
             width: 80%;
         }
 
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle::after {
+            content: ' ▼';
+            font-size: 10px;
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-toggle::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 180px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border-radius: 0 0 8px 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-link {
+            display: block;
+            padding: 15px 20px;
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+        }
+
+        .dropdown-link:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-link:hover {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #0165a1;
+            transform: translateX(5px);
+            padding-left: 25px;
+        }
+
+        .dropdown-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: linear-gradient(135deg, #0165a1 0%, #014a7a 100%);
+            transition: width 0.3s ease;
+        }
+
+        .dropdown-link:hover::before {
+            width: 3px;
+        }
+
         /* Mobile Menu */
         .mobile-menu-btn {
             display: none;
@@ -235,6 +315,40 @@
             .nav-link::after {
                 display: none;
             }
+
+            /* Dropdown responsive styles */
+            .dropdown-menu {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                border: none;
+                background: #f8f9fa;
+                margin-left: 20px;
+                border-radius: 0;
+            }
+
+            .dropdown-link {
+                padding: 12px 20px;
+                font-size: 13px;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .dropdown-link:hover {
+                transform: none;
+                padding-left: 20px;
+                background: #e9ecef;
+            }
+
+            .dropdown-toggle::after {
+                content: ' ▶';
+                transform: none;
+            }
+
+            .dropdown:hover .dropdown-toggle::after {
+                transform: rotate(90deg);
+            }
         }
 
         /* Demo Content */
@@ -282,8 +396,13 @@
                     <li class="nav-item">
                         <a href="#" class="nav-link active">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link">Niveles</a>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle">Niveles</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="dropdown-link">Inicial</a></li>
+                            <li><a href="#" class="dropdown-link">Primaria</a></li>
+                            <li><a href="#" class="dropdown-link">Secundaria</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">Documentos</a>
@@ -319,6 +438,7 @@
                     ✅ <strong>Gradientes modernos</strong> en colores corporativos<br>
                     ✅ <strong>Botón CTA destacado</strong> con efectos 3D<br>
                     ✅ <strong>Navegación profesional</strong> con animaciones<br>
+                    ✅ <strong>Submenús desplegables</strong> para Niveles (Inicial, Primaria, Secundaria)<br>
                     ✅ <strong>100% responsivo</strong> para todos los dispositivos<br>
                     ✅ <strong>Efectos hover</strong> suaves y elegantes<br>
                     ✅ <strong>Tipografía mejorada</strong> con letter-spacing
@@ -331,6 +451,7 @@
                     • <strong>Logo</strong> - Subir/cambiar imagen<br>
                     • <strong>Nombre del colegio</strong> - Editar texto<br>
                     • <strong>Menús</strong> - Agregar/editar/eliminar<br>
+                    • <strong>Submenús</strong> - Gestionar opciones de Niveles<br>
                     • <strong>Botón acceder</strong> - Cambiar texto y color<br>
                     • <strong>Colores</strong> - Personalizar esquema<br>
                     • <strong>Efectos</strong> - Ajustar animaciones
