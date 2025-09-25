@@ -19,10 +19,13 @@ Sistema de gestión de contenido (CMS) para la página web principal del colegio
 
 1. **Color de la barra superior** (`#1A4060`) - Cambia automáticamente todos los colores del menú
 2. **Menús de navegación** - Home, Niveles, Documentos, Preguntas Frecuentes, Trabaja con Nosotros, Contacto
-3. **Información de contacto** - Dirección y teléfonos extraídos de la base de datos
-4. **Logo principal** - Ubicado en `frontend/src/assets/images/logo-vanguard.png`
-5. **Redes sociales** - Facebook, Instagram, TikTok, YouTube con iconos configurables
-6. **Botón Intranet** - Texto, color y enlace configurables
+3. **Submenús desplegables** - Niveles (Inicial, Primaria, Secundaria) con hover effects
+4. **Información de contacto** - Dirección y teléfonos extraídos de la base de datos
+5. **Logo principal** - Ubicado en `frontend/src/assets/images/logo-vanguard.png`
+6. **Redes sociales** - Facebook, Instagram, TikTok, YouTube con iconos configurables
+7. **Botón Intranet** - Texto, color y enlace configurables
+8. **Banner del HOME** - Imagen, altura y marco superior configurables
+9. **Tipografía** - Fuente Poppins para toda la página web
 
 ### 📱 **Responsive Design**
 

@@ -39,25 +39,34 @@ Documentación específica para el desarrollo de la página web administrable de
    - **Transiciones suaves** (0.3s)
    - **Responsive** - En móvil se muestran en cascada
 
-4. **Información de contacto**
+4. **Banner del HOME optimizado**
+
+   - **Imagen al 100%** de visibilidad sin overlay
+   - **Altura**: 320px (desktop), 240px (mobile)
+   - **Marco superior**: 2px color #1A4060
+   - **Sin títulos** - Solo imagen limpia
+   - **Fuente**: Poppins para toda la página web
+   - **Diseño cuadrado** sin bordes redondeados
+
+5. **Información de contacto**
 
    - Dirección: "Av. Principal 123, Lima, Perú"
    - Teléfonos: "+51 987 654 321" / "+51 1 234 5678"
    - Extraídos de la base de datos
 
-5. **Logo principal**
+6. **Logo principal**
 
    - Ubicación: `frontend/src/assets/images/logo-vanguard.png`
    - Dimensiones: 3116x1382px
    - Administrable desde CMS
 
-6. **Redes sociales**
+7. **Redes sociales**
 
    - Facebook, Instagram, TikTok, YouTube
    - Iconos en: `docs/diseños/icons/`
    - Enlaces configurables
 
-7. **Botón Intranet**
+8. **Botón Intranet**
    - Texto: "Intranet"
    - Icono: 👥 (dos usuarios)
    - Color: Gradiente azul con borde blanco

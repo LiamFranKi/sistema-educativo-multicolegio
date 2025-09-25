@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Header Vanguard Schools - Diseño Real</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap&v=2" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,7 +13,7 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', 'Helvetica Neue', 'Arial', sans-serif;
             background: #f5f5f5;
         }
 
@@ -30,6 +31,7 @@
             color: white;
             padding: 14px 0;
             font-size: 14px;
+            font-family: 'Poppins', 'Arial', sans-serif;
         }
 
         .top-bar-content {
@@ -186,6 +188,7 @@
             text-decoration: none;
             font-weight: 700;
             font-size: 15px;
+            font-family: 'Poppins', 'Arial', sans-serif;
             transition: all 0.2s ease-in-out;
             border-radius: 0;
         }
@@ -247,6 +250,7 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
+            font-family: 'Poppins', 'Arial', sans-serif;
             letter-spacing: 0.3px;
             transition: all 0.3s ease;
             border-bottom: 1px solid #f0f0f0;
@@ -281,19 +285,17 @@
         /* Banner/Hero Section */
         .hero-banner {
             width: 100%;
-            height: 400px;
+            height: 320px;
             background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
+            border-top: 2px solid #1A4060;
         }
 
-        .hero-content { text-align: center; color: white; z-index: 2; position: relative; }
-        .hero-title { font-size: 48px; font-weight: 700; margin-bottom: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .hero-subtitle { font-size: 24px; font-weight: 400; opacity: 0.9; }
-        .hero-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.3; z-index: 1; }
+        .hero-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 1; z-index: 1; }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
@@ -338,15 +340,14 @@
                 transform: rotate(90deg);
             }
 
-            .hero-title { font-size: 32px; }
-            .hero-subtitle { font-size: 18px; }
+            .hero-banner { height: 240px; }
         }
 
         /* Demo Content */
         .demo-content { padding: 40px; text-align: center; color: #666; max-width: 1200px; margin: 0 auto; }
         .demo-section { margin-bottom: 30px; }
-        .demo-title { font-size: 24px; color: #1A4060; margin-bottom: 15px; }
-        .demo-text { line-height: 1.6; max-width: 600px; margin: 0 auto; }
+        .demo-title { font-size: 24px; font-family: 'Museo', 'Arial', sans-serif; color: #1A4060; margin-bottom: 15px; }
+        .demo-text { line-height: 1.6; max-width: 600px; margin: 0 auto; font-family: 'Museo', 'Arial', sans-serif; }
     </style>
 </head>
 <body>
@@ -419,20 +420,16 @@
 
     <!-- Banner/Hero Section - PERTENECE AL BODY -->
     <div class="hero-banner">
-        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" alt="Campo deportivo" class="hero-image">
-        <div class="hero-content">
-            <h1 class="hero-title">A LA VANGUARDIA</h1>
-            <p class="hero-subtitle">DE LA TECNOLOGÍA</p>
-        </div>
+        <img src="banner-images/bannerhome.jpg" alt="Colegio Vanguard Schools" class="hero-image">
     </div>
 
     <!-- Contenido Demo -->
     <div class="demo-content">
         <div class="demo-section">
-            <h2 class="demo-title">🎨 Header Vanguard Schools - 100% Administrable</h2>
+            <h2 class="demo-title">🎨 Header + Banner HOME - 100% Administrable</h2>
             <p class="demo-text">
-                Este es el header completo del diseño de Vanguard Schools. <strong>TODO ES ADMINISTRABLE</strong> desde la base de datos.
-                El banner de abajo pertenece al BODY de la página.
+                Este es el header completo + banner del HOME de Vanguard Schools. <strong>TODO ES ADMINISTRABLE</strong> desde la base de datos.
+                El banner pertenece al BODY de la página, tiene altura de 320px con imagen al 100% de visibilidad y marco superior de 2px.
             </p>
         </div>
 
@@ -447,6 +444,7 @@
                 ✅ <strong>Redes sociales</strong> - Seleccionar cuáles usar y sus enlaces<br>
                 ✅ <strong>Iconos de redes</strong> - Subir iconos personalizados<br>
                 ✅ <strong>Botón Intranet</strong> - Texto, color y enlace configurables<br>
+                ✅ <strong>Banner del HOME</strong> - Imagen y altura configurables<br>
                 ✅ <strong>Responsive</strong> - Funciona en computadora y móviles
             </p>
         </div>
