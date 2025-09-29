@@ -322,6 +322,19 @@
             color: #1A4060;
             margin-bottom: 20px;
             font-family: 'Poppins', 'Arial', sans-serif;
+            position: relative;
+        }
+
+        .home-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border-radius: 2px;
         }
 
         .home-description {
@@ -512,29 +525,29 @@
             }
 
             .hero-banner { height: 240px; }
-            
+
             /* Responsive para sección HOME */
             .main-home-section { padding: 40px 0; }
             .home-title { font-size: 28px; }
             .home-description { font-size: 16px; }
             .home-quote { font-size: 14px; }
             .saber-mas-btn { padding: 12px 25px; font-size: 14px; }
-            
+
             /* Responsive para contenido desplegable */
             .section-title { font-size: 24px; margin-bottom: 30px; }
-            .identity-grid, .niveles-grid, .programas-grid, .instalaciones-grid { 
-                grid-template-columns: 1fr; 
-                gap: 20px; 
+            .identity-grid, .niveles-grid, .programas-grid, .instalaciones-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
             }
-            .identity-card, .nivel-card, .programa-card, .instalacion-card { 
-                padding: 25px; 
+            .identity-card, .nivel-card, .programa-card, .instalacion-card {
+                padding: 25px;
             }
             .card-icon { font-size: 40px; }
-            .identity-card h3, .nivel-card h3, .programa-card h3, .instalacion-card h3 { 
-                font-size: 20px; 
+            .identity-card h3, .nivel-card h3, .programa-card h3, .instalacion-card h3 {
+                font-size: 20px;
             }
-            .identity-card p, .nivel-card p, .programa-card p, .instalacion-card p { 
-                font-size: 14px; 
+            .identity-card p, .nivel-card p, .programa-card p, .instalacion-card p {
+                font-size: 14px;
             }
         }
 
@@ -677,7 +690,7 @@
                                 <div class="card-icon">👶</div>
                                 <h3>Educación Inicial</h3>
                                 <div class="title-line"></div>
-                                <p>Desarrollo integral de niños de 3 a 5 años a través del juego, exploración y descubrimiento. Estimulamos la creatividad y el aprendizaje significativo.</p>
+                                <p>Desarrollo integral de niños de 3 a 5 años a través del juego, exploración y descubrimiento. Estimulamos la creatividad y el aprendizaje significativo con Metodología STEAM.</p>
                             </div>
                             <div class="nivel-card">
                                 <div class="card-icon">🎒</div>
@@ -702,13 +715,13 @@
                                 <div class="card-icon">🌍</div>
                                 <h3>Programa Bilingüe</h3>
                                 <div class="title-line"></div>
-                                <p>Inmersión total en inglés desde inicial hasta secundaria. Certificaciones internacionales y preparación para estudios en el extranjero.</p>
+                                <p>Inmersión total en inglés desde inicial hasta secundaria y preparación para estudios en el extranjero.</p>
                             </div>
                             <div class="programa-card">
                                 <div class="card-icon">💻</div>
                                 <h3>Tecnología Educativa</h3>
                                 <div class="title-line"></div>
-                                <p>Integración de tecnología de vanguardia en el proceso de aprendizaje. Robótica, programación y herramientas digitales innovadoras.</p>
+                                <p>Integración de tecnología de vanguardia en el proceso de aprendizaje. Programación y herramientas digitales innovadoras.</p>
                             </div>
                             <div class="programa-card">
                                 <div class="card-icon">🎨</div>
@@ -720,7 +733,19 @@
                                 <div class="card-icon">⚽</div>
                                 <h3>Deportes</h3>
                                 <div class="title-line"></div>
-                                <p>Programa deportivo integral que promueve la salud física, trabajo en equipo y valores deportivos. Fútbol, básquet, natación y más.</p>
+                                <p>Programa deportivo integral que promueve la salud física, trabajo en equipo y valores deportivos. Fútbol, balonmano, natación y más.</p>
+                            </div>
+                            <div class="programa-card">
+                                <div class="card-icon">📱</div>
+                                <h3>Libros Digitales Interactivos</h3>
+                                <div class="title-line"></div>
+                                <p>Plataforma digital con libros interactivos, recursos multimedia y herramientas de aprendizaje personalizado para una educación moderna.</p>
+                            </div>
+                            <div class="programa-card">
+                                <div class="card-icon">👨‍🏫</div>
+                                <h3>Club con Trainers Extranjeros</h3>
+                                <div class="title-line"></div>
+                                <p>Clubes especializados con instructores nativos de inglés para inmersión total en el idioma y cultura anglosajona.</p>
                             </div>
                         </div>
                     </div>
@@ -739,19 +764,31 @@
                                 <div class="card-icon">🔬</div>
                                 <h3>Laboratorios</h3>
                                 <div class="title-line"></div>
-                                <p>Laboratorios de ciencias, computación y robótica completamente equipados para experimentación y aprendizaje práctico.</p>
+                                <p>Laboratorios de ciencias y computación completamente equipados para experimentación y aprendizaje práctico.</p>
                             </div>
                             <div class="instalacion-card">
                                 <div class="card-icon">📚</div>
                                 <h3>Biblioteca</h3>
                                 <div class="title-line"></div>
-                                <p>Biblioteca moderna con amplia colección de libros, recursos digitales y espacios de estudio individual y grupal.</p>
+                                <p>Biblioteca moderna con recursos digitales y espacios de estudio individual y grupal.</p>
                             </div>
                             <div class="instalacion-card">
                                 <div class="card-icon">🏃</div>
                                 <h3>Áreas Deportivas</h3>
                                 <div class="title-line"></div>
-                                <p>Canchas deportivas, piscina, gimnasio y áreas verdes para actividades físicas y recreativas.</p>
+                                <p>Canchas deportivas, piscina y áreas verdes para actividades físicas y recreativas.</p>
+                            </div>
+                            <div class="instalacion-card">
+                                <div class="card-icon">🏊</div>
+                                <h3>Natación</h3>
+                                <div class="title-line"></div>
+                                <p>Piscinas temperadas para clases de natación y actividades acuáticas durante todo el año.</p>
+                            </div>
+                            <div class="instalacion-card">
+                                <div class="card-icon">🏟️</div>
+                                <h3>02 Canchas Sintéticas Polideportivos</h3>
+                                <div class="title-line"></div>
+                                <p>Dos canchas sintéticas de última generación para fútbol, balonmano y múltiples deportes.</p>
                             </div>
                         </div>
                     </div>
