@@ -374,46 +374,95 @@
         .saber-mas-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease;
+            transition: max-height 0.8s ease;
             margin-top: 30px;
         }
 
         .saber-mas-content.active {
-            max-height: 1000px;
+            max-height: 3000px;
         }
 
-        .content-grid {
+        /* Secciones del contenido */
+        .nosotros-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1A4060;
+            text-align: center;
+            margin-bottom: 40px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border-radius: 2px;
+        }
+
+        /* Grids para diferentes secciones */
+        .identity-grid, .niveles-grid, .programas-grid, .instalaciones-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
-            margin-top: 20px;
+            margin-top: 30px;
         }
 
-        .content-item {
+        /* Cards generales */
+        .identity-card, .nivel-card, .programa-card, .instalacion-card {
             background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            text-align: left;
-            transition: transform 0.3s ease;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
         }
 
-        .content-item:hover {
-            transform: translateY(-5px);
+        .identity-card:hover, .nivel-card:hover, .programa-card:hover, .instalacion-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
         }
 
-        .content-item h3 {
-            font-size: 20px;
+        /* Iconos de las cards */
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* Títulos de las cards */
+        .identity-card h3, .nivel-card h3, .programa-card h3, .instalacion-card h3 {
+            font-size: 22px;
             font-weight: 600;
             color: #1A4060;
             margin-bottom: 15px;
             font-family: 'Poppins', 'Arial', sans-serif;
         }
 
-        .content-item p {
-            font-size: 14px;
+        /* Línea amarilla debajo de cada título */
+        .title-line {
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            margin: 0 auto 20px auto;
+            border-radius: 1px;
+        }
+
+        /* Texto de las cards */
+        .identity-card p, .nivel-card p, .programa-card p, .instalacion-card p {
+            font-size: 15px;
             color: #666;
-            line-height: 1.6;
+            line-height: 1.7;
             font-family: 'Poppins', 'Arial', sans-serif;
         }
 
@@ -470,10 +519,23 @@
             .home-description { font-size: 16px; }
             .home-quote { font-size: 14px; }
             .saber-mas-btn { padding: 12px 25px; font-size: 14px; }
-            .content-grid { grid-template-columns: 1fr; gap: 20px; }
-            .content-item { padding: 20px; }
-            .content-item h3 { font-size: 18px; }
-            .content-item p { font-size: 13px; }
+            
+            /* Responsive para contenido desplegable */
+            .section-title { font-size: 24px; margin-bottom: 30px; }
+            .identity-grid, .niveles-grid, .programas-grid, .instalaciones-grid { 
+                grid-template-columns: 1fr; 
+                gap: 20px; 
+            }
+            .identity-card, .nivel-card, .programa-card, .instalacion-card { 
+                padding: 25px; 
+            }
+            .card-icon { font-size: 40px; }
+            .identity-card h3, .nivel-card h3, .programa-card h3, .instalacion-card h3 { 
+                font-size: 20px; 
+            }
+            .identity-card p, .nivel-card p, .programa-card p, .instalacion-card p { 
+                font-size: 14px; 
+            }
         }
 
         /* Demo Content */
@@ -574,30 +636,123 @@
                 <p class="home-quote">
                     "En Vanguard Schools, tu hijo no solo estudia: vive una experiencia que transforma su presente y asegura su futuro."
                 </p>
-                
+
                 <!-- Botón Saber Más con contenido desplegable -->
                 <button class="saber-mas-btn" onclick="toggleSaberMas()">
                     Saber Más <span class="arrow">▼</span>
                 </button>
-                
+
                 <!-- Contenido desplegable -->
                 <div class="saber-mas-content" id="saberMasContent">
-                    <div class="content-grid">
-                        <div class="content-item">
-                            <h3>🎓 Educación Integral</h3>
-                            <p>Desarrollamos habilidades académicas, sociales y emocionales para formar ciudadanos del mundo.</p>
+                    <!-- Sección Misión, Visión y Valores -->
+                    <div class="nosotros-section">
+                        <h2 class="section-title">Nuestra Identidad</h2>
+                        <div class="identity-grid">
+                            <div class="identity-card">
+                                <div class="card-icon">🎯</div>
+                                <h3>Misión</h3>
+                                <div class="title-line"></div>
+                                <p>Formar estudiantes autónomos, bilingües y con sólidos valores, preparados para enfrentar los retos del futuro a través de una educación integral que desarrolla habilidades académicas, sociales y emocionales.</p>
+                            </div>
+                            <div class="identity-card">
+                                <div class="card-icon">👁️</div>
+                                <h3>Visión</h3>
+                                <div class="title-line"></div>
+                                <p>Ser reconocidos como la institución educativa líder en formación integral, innovación tecnológica y excelencia académica, formando ciudadanos del mundo comprometidos con el desarrollo sostenible.</p>
+                            </div>
+                            <div class="identity-card">
+                                <div class="card-icon">💎</div>
+                                <h3>Valores</h3>
+                                <div class="title-line"></div>
+                                <p>Respeto, responsabilidad, honestidad, solidaridad y excelencia. Formamos estudiantes con principios sólidos que contribuyen positivamente a la sociedad.</p>
+                            </div>
                         </div>
-                        <div class="content-item">
-                            <h3>🌍 Bilingüismo</h3>
-                            <p>Programa de inglés intensivo que prepara a nuestros estudiantes para un mundo globalizado.</p>
+                    </div>
+
+                    <!-- Sección Niveles Educativos -->
+                    <div class="nosotros-section">
+                        <h2 class="section-title">Niveles Educativos</h2>
+                        <div class="niveles-grid">
+                            <div class="nivel-card">
+                                <div class="card-icon">👶</div>
+                                <h3>Educación Inicial</h3>
+                                <div class="title-line"></div>
+                                <p>Desarrollo integral de niños de 3 a 5 años a través del juego, exploración y descubrimiento. Estimulamos la creatividad y el aprendizaje significativo.</p>
+                            </div>
+                            <div class="nivel-card">
+                                <div class="card-icon">🎒</div>
+                                <h3>Educación Primaria</h3>
+                                <div class="title-line"></div>
+                                <p>Formación académica sólida de 6 a 11 años con enfoque en competencias básicas, pensamiento crítico y desarrollo de habilidades sociales.</p>
+                            </div>
+                            <div class="nivel-card">
+                                <div class="card-icon">🎓</div>
+                                <h3>Educación Secundaria</h3>
+                                <div class="title-line"></div>
+                                <p>Preparación integral de 12 a 16 años para la vida universitaria y profesional, desarrollando liderazgo, investigación y pensamiento crítico.</p>
+                            </div>
                         </div>
-                        <div class="content-item">
-                            <h3>💻 Tecnología</h3>
-                            <p>Integramos tecnología educativa de vanguardia en todos nuestros procesos de aprendizaje.</p>
+                    </div>
+
+                    <!-- Sección Programas Especiales -->
+                    <div class="nosotros-section">
+                        <h2 class="section-title">Programas Especiales</h2>
+                        <div class="programas-grid">
+                            <div class="programa-card">
+                                <div class="card-icon">🌍</div>
+                                <h3>Programa Bilingüe</h3>
+                                <div class="title-line"></div>
+                                <p>Inmersión total en inglés desde inicial hasta secundaria. Certificaciones internacionales y preparación para estudios en el extranjero.</p>
+                            </div>
+                            <div class="programa-card">
+                                <div class="card-icon">💻</div>
+                                <h3>Tecnología Educativa</h3>
+                                <div class="title-line"></div>
+                                <p>Integración de tecnología de vanguardia en el proceso de aprendizaje. Robótica, programación y herramientas digitales innovadoras.</p>
+                            </div>
+                            <div class="programa-card">
+                                <div class="card-icon">🎨</div>
+                                <h3>Arte y Cultura</h3>
+                                <div class="title-line"></div>
+                                <p>Desarrollo de habilidades artísticas y culturales. Música, danza, teatro y artes plásticas para una formación integral.</p>
+                            </div>
+                            <div class="programa-card">
+                                <div class="card-icon">⚽</div>
+                                <h3>Deportes</h3>
+                                <div class="title-line"></div>
+                                <p>Programa deportivo integral que promueve la salud física, trabajo en equipo y valores deportivos. Fútbol, básquet, natación y más.</p>
+                            </div>
                         </div>
-                        <div class="content-item">
-                            <h3>🏆 Valores</h3>
-                            <p>Formamos estudiantes con principios sólidos, respeto y responsabilidad social.</p>
+                    </div>
+
+                    <!-- Sección Instalaciones -->
+                    <div class="nosotros-section">
+                        <h2 class="section-title">Nuestras Instalaciones</h2>
+                        <div class="instalaciones-grid">
+                            <div class="instalacion-card">
+                                <div class="card-icon">🏫</div>
+                                <h3>Aulas Modernas</h3>
+                                <div class="title-line"></div>
+                                <p>Aulas equipadas con tecnología de punta, pizarras interactivas y espacios diseñados para el aprendizaje colaborativo.</p>
+                            </div>
+                            <div class="instalacion-card">
+                                <div class="card-icon">🔬</div>
+                                <h3>Laboratorios</h3>
+                                <div class="title-line"></div>
+                                <p>Laboratorios de ciencias, computación y robótica completamente equipados para experimentación y aprendizaje práctico.</p>
+                            </div>
+                            <div class="instalacion-card">
+                                <div class="card-icon">📚</div>
+                                <h3>Biblioteca</h3>
+                                <div class="title-line"></div>
+                                <p>Biblioteca moderna con amplia colección de libros, recursos digitales y espacios de estudio individual y grupal.</p>
+                            </div>
+                            <div class="instalacion-card">
+                                <div class="card-icon">🏃</div>
+                                <h3>Áreas Deportivas</h3>
+                                <div class="title-line"></div>
+                                <p>Canchas deportivas, piscina, gimnasio y áreas verdes para actividades físicas y recreativas.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -660,7 +815,7 @@
         function toggleSaberMas() {
             const content = document.getElementById('saberMasContent');
             const button = document.querySelector('.saber-mas-btn');
-            
+
             if (content.classList.contains('active')) {
                 // Ocultar contenido
                 content.classList.remove('active');
