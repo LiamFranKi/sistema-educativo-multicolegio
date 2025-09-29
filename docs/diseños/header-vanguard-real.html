@@ -515,6 +515,271 @@
             font-family: 'Poppins', 'Arial', sans-serif;
         }
 
+        /* Sección Proceso de Admisión */
+        .admission-section {
+            background: white;
+            padding: 80px 0;
+        }
+
+        .admission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin: 50px 0;
+        }
+
+        .admission-step {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .admission-step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 auto 20px auto;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .admission-step h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1A4060;
+            margin-bottom: 15px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .admission-step p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .admission-cta {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .agenda-btn {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: white;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
+        }
+
+        .agenda-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+        }
+
+        /* Sección Testimonios */
+        .testimonials-section {
+            background: #f8f9fa;
+            padding: 80px 0;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 60px;
+            color: #1A4060;
+            font-family: serif;
+            opacity: 0.3;
+        }
+
+        .testimonial-text {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            border-top: 2px solid #1A4060;
+            padding-top: 20px;
+        }
+
+        .author-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1A4060;
+            margin-bottom: 5px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .author-role {
+            font-size: 14px;
+            color: #666;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        /* Sección Video */
+        .video-section {
+            background: white;
+            padding: 80px 0;
+        }
+
+        .video-container {
+            max-width: 800px;
+            margin: 50px auto;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+        }
+
+        .video-description {
+            text-align: center;
+            font-size: 16px;
+            color: #666;
+            margin-top: 30px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        /* Sección Ubicación */
+        .location-section {
+            background: #f8f9fa;
+            padding: 80px 0;
+        }
+
+        .location-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-top: 50px;
+            align-items: start;
+        }
+
+        .location-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .location-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .location-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+            text-align: center;
+        }
+
+        .location-card h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1A4060;
+            margin-bottom: 20px;
+            text-align: center;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .location-card p {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .map-container {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .map-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .map-btn {
+            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
+            color: white;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            box-shadow: 0 6px 20px rgba(26, 64, 96, 0.3);
+        }
+
+        .map-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(26, 64, 96, 0.4);
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .top-bar-content { grid-template-columns: 1fr; gap: 10px; padding: 0 20px; }
@@ -582,9 +847,32 @@
             .identity-card h3, .nivel-card h3, .programa-card h3, .instalacion-card h3 {
                 font-size: 20px;
             }
-            .identity-card p, .nivel-card p, .programa-card p, .instalacion-card p {
-                font-size: 14px;
+            .identity-card p, .nivel-card p, .programa-card p, .instalacion-card p { 
+                font-size: 14px; 
             }
+            
+            /* Responsive para nuevas secciones */
+            .admission-grid { grid-template-columns: 1fr; gap: 25px; }
+            .admission-step { padding: 25px; }
+            .step-number { width: 50px; height: 50px; font-size: 20px; }
+            .admission-step h3 { font-size: 18px; }
+            .admission-step p { font-size: 13px; }
+            .agenda-btn { padding: 15px 30px; font-size: 16px; }
+            
+            .testimonials-grid { grid-template-columns: 1fr; gap: 20px; }
+            .testimonial-card { padding: 30px; }
+            .testimonial-text { font-size: 15px; }
+            .author-name { font-size: 16px; }
+            .author-role { font-size: 13px; }
+            
+            .video-container { margin: 30px auto; }
+            .video-description { font-size: 14px; }
+            
+            .location-grid { grid-template-columns: 1fr; gap: 30px; }
+            .location-card { padding: 30px; }
+            .location-card h3 { font-size: 20px; }
+            .location-card p { font-size: 14px; }
+            .map-btn { padding: 12px 25px; font-size: 14px; }
         }
 
         /* Demo Content */
@@ -826,6 +1114,146 @@
                                 <div class="title-line"></div>
                                 <p>Dos canchas sintéticas de última generación para fútbol, balonmano y múltiples deportes.</p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección Proceso de Admisión -->
+    <div class="admission-section">
+        <div class="container">
+            <div class="admission-content">
+                <h2 class="section-title">Proceso de Admisión Simple y Transparente</h2>
+                <div class="admission-grid">
+                    <div class="admission-step">
+                        <div class="step-number">1</div>
+                        <h3>Solicita Información</h3>
+                        <div class="title-line"></div>
+                        <p>Comunícate con nosotros para recibir información detallada sobre nuestros programas educativos y proceso de admisión.</p>
+                    </div>
+                    <div class="admission-step">
+                        <div class="step-number">2</div>
+                        <h3>Visita Guiada</h3>
+                        <div class="title-line"></div>
+                        <p>Agenda una visita guiada para conocer nuestras instalaciones, metodología y ambiente educativo.</p>
+                    </div>
+                    <div class="admission-step">
+                        <div class="step-number">3</div>
+                        <h3>Evaluación</h3>
+                        <div class="title-line"></div>
+                        <p>Realizamos una evaluación integral para conocer las necesidades y potencial de cada estudiante.</p>
+                    </div>
+                    <div class="admission-step">
+                        <div class="step-number">4</div>
+                        <h3>Matrícula</h3>
+                        <div class="title-line"></div>
+                        <p>Completa el proceso de matrícula y forma parte de la familia Vanguard Schools.</p>
+                    </div>
+                </div>
+                <div class="admission-cta">
+                    <a href="https://wa.me/51970877642?text=Hola,%20me%20interesa%20agendar%20una%20visita%20guiada%20a%20Vanguard%20Schools" class="agenda-btn" target="_blank">
+                        📅 Agenda tu Visita
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección Testimonios -->
+    <div class="testimonials-section">
+        <div class="container">
+            <div class="testimonials-content">
+                <h2 class="section-title">Lo que dicen nuestras familias</h2>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">
+                            "Vanguard Schools ha transformado completamente la educación de mi hijo. El programa bilingüe y la tecnología integrada son excepcionales."
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-name">María González</div>
+                            <div class="author-role">Madre de familia - Primaria</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">
+                            "La metodología STEAM y el enfoque en valores hacen que nuestros hijos no solo aprendan, sino que se desarrollen integralmente."
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-name">Carlos Mendoza</div>
+                            <div class="author-role">Padre de familia - Secundaria</div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">
+                            "Las instalaciones son modernas y los profesores están muy comprometidos. Mi hija está feliz y motivada todos los días."
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-name">Ana Rodríguez</div>
+                            <div class="author-role">Madre de familia - Inicial</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección Video Institucional -->
+    <div class="video-section">
+        <div class="container">
+            <div class="video-content">
+                <h2 class="section-title">Video Institucional Vanguard Schools</h2>
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe 
+                            src="https://www.youtube.com/embed/VIDEO_ID_AQUI" 
+                            title="Video Institucional Vanguard Schools"
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+                <p class="video-description">
+                    Conoce más sobre nuestra propuesta educativa, instalaciones y la experiencia única que ofrecemos a nuestros estudiantes.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección Ubicación -->
+    <div class="location-section">
+        <div class="container">
+            <div class="location-content">
+                <h2 class="section-title">¿Ya sabes cómo llegar a Vanguard Schools?</h2>
+                <div class="location-grid">
+                    <div class="location-info">
+                        <div class="location-card">
+                            <div class="location-icon">📍</div>
+                            <h3>Nuestra Ubicación</h3>
+                            <div class="title-line"></div>
+                            <p><strong>Dirección:</strong><br>Jr. Toribio de Luzuriaga Mz F<br>lote 18 y 19 - SMP</p>
+                            <p><strong>Teléfonos:</strong><br>946 592 100 / 922 084 833</p>
+                            <p><strong>Email:</strong><br>admin@vanguardschools.edu.pe</p>
+                        </div>
+                    </div>
+                    <div class="location-map">
+                        <div class="map-container">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=MAP_LINK_AQUI" 
+                                width="100%" 
+                                height="300" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                        <div class="map-actions">
+                            <a href="https://maps.google.com/?q=Jr.+Toribio+de+Luzuriaga+Mz+F+lote+18+y+19+-+SMP" class="map-btn" target="_blank">
+                                🗺️ Ver en Google Maps
+                            </a>
                         </div>
                     </div>
                 </div>
