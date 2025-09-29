@@ -387,12 +387,16 @@
         .saber-mas-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.8s ease;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             margin-top: 30px;
+            opacity: 0;
+            transform: translateY(-20px);
         }
 
         .saber-mas-content.active {
             max-height: 3000px;
+            opacity: 1;
+            transform: translateY(0);
         }
 
         /* Secciones del contenido */
@@ -439,7 +443,38 @@
             text-align: center;
             transition: all 0.3s ease;
             border: 1px solid #f0f0f0;
+            opacity: 0;
+            transform: translateY(30px);
         }
+
+        .saber-mas-content.active .identity-card,
+        .saber-mas-content.active .nivel-card,
+        .saber-mas-content.active .programa-card,
+        .saber-mas-content.active .instalacion-card {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Transiciones escalonadas para efecto elegante */
+        .saber-mas-content.active .identity-card:nth-child(1) { transition-delay: 0.1s; }
+        .saber-mas-content.active .identity-card:nth-child(2) { transition-delay: 0.2s; }
+        .saber-mas-content.active .identity-card:nth-child(3) { transition-delay: 0.3s; }
+        .saber-mas-content.active .nivel-card:nth-child(1) { transition-delay: 0.1s; }
+        .saber-mas-content.active .nivel-card:nth-child(2) { transition-delay: 0.2s; }
+        .saber-mas-content.active .nivel-card:nth-child(3) { transition-delay: 0.3s; }
+        .saber-mas-content.active .programa-card:nth-child(1) { transition-delay: 0.1s; }
+        .saber-mas-content.active .programa-card:nth-child(2) { transition-delay: 0.2s; }
+        .saber-mas-content.active .programa-card:nth-child(3) { transition-delay: 0.3s; }
+        .saber-mas-content.active .programa-card:nth-child(4) { transition-delay: 0.4s; }
+        .saber-mas-content.active .programa-card:nth-child(5) { transition-delay: 0.5s; }
+        .saber-mas-content.active .programa-card:nth-child(6) { transition-delay: 0.6s; }
+        .saber-mas-content.active .instalacion-card:nth-child(1) { transition-delay: 0.1s; }
+        .saber-mas-content.active .instalacion-card:nth-child(2) { transition-delay: 0.2s; }
+        .saber-mas-content.active .instalacion-card:nth-child(3) { transition-delay: 0.3s; }
+        .saber-mas-content.active .instalacion-card:nth-child(4) { transition-delay: 0.4s; }
+        .saber-mas-content.active .instalacion-card:nth-child(5) { transition-delay: 0.5s; }
+        .saber-mas-content.active .instalacion-card:nth-child(6) { transition-delay: 0.6s; }
 
         .identity-card:hover, .nivel-card:hover, .programa-card:hover, .instalacion-card:hover {
             transform: translateY(-8px);
