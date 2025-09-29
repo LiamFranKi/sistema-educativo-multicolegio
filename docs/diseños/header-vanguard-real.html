@@ -299,6 +299,124 @@
 
         .hero-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 1; z-index: 1; }
 
+        /* Sección Principal del HOME */
+        .main-home-section {
+            background: #f8f9fa;
+            padding: 60px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .home-content {
+            text-align: center;
+            color: #333;
+        }
+
+        .home-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1A4060;
+            margin-bottom: 20px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .home-description {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .home-quote {
+            font-size: 16px;
+            color: #1A4060;
+            font-style: italic;
+            margin-bottom: 40px;
+            line-height: 1.5;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        /* Botón Saber Más */
+        .saber-mas-btn {
+            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            box-shadow: 0 4px 15px rgba(26, 64, 96, 0.3);
+        }
+
+        .saber-mas-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 64, 96, 0.4);
+        }
+
+        .arrow {
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .saber-mas-btn.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Contenido desplegable */
+        .saber-mas-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            margin-top: 30px;
+        }
+
+        .saber-mas-content.active {
+            max-height: 1000px;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .content-item {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+
+        .content-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .content-item h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1A4060;
+            margin-bottom: 15px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .content-item p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .top-bar-content { grid-template-columns: 1fr; gap: 10px; padding: 0 20px; }
@@ -345,6 +463,17 @@
             }
 
             .hero-banner { height: 240px; }
+            
+            /* Responsive para sección HOME */
+            .main-home-section { padding: 40px 0; }
+            .home-title { font-size: 28px; }
+            .home-description { font-size: 16px; }
+            .home-quote { font-size: 14px; }
+            .saber-mas-btn { padding: 12px 25px; font-size: 14px; }
+            .content-grid { grid-template-columns: 1fr; gap: 20px; }
+            .content-item { padding: 20px; }
+            .content-item h3 { font-size: 18px; }
+            .content-item p { font-size: 13px; }
         }
 
         /* Demo Content */
@@ -434,13 +563,56 @@
         <img src="banner-images/bannerhome.jpg" alt="Colegio Vanguard Schools" class="hero-image">
     </div>
 
+    <!-- Sección Principal del HOME -->
+    <div class="main-home-section">
+        <div class="container">
+            <div class="home-content">
+                <h2 class="home-title">¿Por qué estudiar en Vanguard Schools?</h2>
+                <p class="home-description">
+                    Formamos estudiantes autónomos, bilingües y con sólidos valores, preparados para enfrentar los retos del futuro
+                </p>
+                <p class="home-quote">
+                    "En Vanguard Schools, tu hijo no solo estudia: vive una experiencia que transforma su presente y asegura su futuro."
+                </p>
+                
+                <!-- Botón Saber Más con contenido desplegable -->
+                <button class="saber-mas-btn" onclick="toggleSaberMas()">
+                    Saber Más <span class="arrow">▼</span>
+                </button>
+                
+                <!-- Contenido desplegable -->
+                <div class="saber-mas-content" id="saberMasContent">
+                    <div class="content-grid">
+                        <div class="content-item">
+                            <h3>🎓 Educación Integral</h3>
+                            <p>Desarrollamos habilidades académicas, sociales y emocionales para formar ciudadanos del mundo.</p>
+                        </div>
+                        <div class="content-item">
+                            <h3>🌍 Bilingüismo</h3>
+                            <p>Programa de inglés intensivo que prepara a nuestros estudiantes para un mundo globalizado.</p>
+                        </div>
+                        <div class="content-item">
+                            <h3>💻 Tecnología</h3>
+                            <p>Integramos tecnología educativa de vanguardia en todos nuestros procesos de aprendizaje.</p>
+                        </div>
+                        <div class="content-item">
+                            <h3>🏆 Valores</h3>
+                            <p>Formamos estudiantes con principios sólidos, respeto y responsabilidad social.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Contenido Demo -->
     <div class="demo-content">
         <div class="demo-section">
-            <h2 class="demo-title">🎨 Header + Banner HOME - 100% Administrable</h2>
+            <h2 class="demo-title">🎨 Header + Banner HOME + Sección Principal - 100% Administrable</h2>
             <p class="demo-text">
-                Este es el header completo + banner del HOME de Vanguard Schools. <strong>TODO ES ADMINISTRABLE</strong> desde la base de datos.
+                Este es el header completo + banner del HOME + sección principal de Vanguard Schools. <strong>TODO ES ADMINISTRABLE</strong> desde la base de datos.
                 El banner pertenece al BODY de la página, tiene altura de 320px con imagen al 100% de visibilidad y marco superior de 2px.
+                La sección principal incluye botón "Saber Más" con contenido desplegable y responsive.
             </p>
         </div>
 
@@ -483,6 +655,22 @@
         document.querySelector('.vanguardnet-btn').addEventListener('click', function() {
             alert('VanguardNet - Acceso al sistema educativo');
         });
+
+        // Función para el botón Saber Más
+        function toggleSaberMas() {
+            const content = document.getElementById('saberMasContent');
+            const button = document.querySelector('.saber-mas-btn');
+            
+            if (content.classList.contains('active')) {
+                // Ocultar contenido
+                content.classList.remove('active');
+                button.classList.remove('active');
+            } else {
+                // Mostrar contenido
+                content.classList.add('active');
+                button.classList.add('active');
+            }
+        }
     </script>
 </body>
 </html>
