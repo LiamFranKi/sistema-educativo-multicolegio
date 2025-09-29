@@ -25,12 +25,19 @@ Documentación específica para el desarrollo de la página web administrable de
 
 2. **Menús de navegación**
 
-   - Home, Niveles, Documentos, Preguntas Frecuentes, Trabaja con Nosotros, Contacto
+   - Inicio, Niveles, Documentos de Interés, Trabaja con Nosotros, Contacto
    - Agregar/editar/eliminar páginas desde admin
    - Estado activo y hover con color consistente
 
-3. **Submenús desplegables para Niveles**
+3. **Submenús desplegables**
 
+   **Inicio:**
+   - **Lista de Útiles** - Lista de materiales escolares
+   - **Visitas Guiadas** - Información sobre visitas al colegio
+   - **Tour Virtual** - Recorrido virtual del colegio
+   - **Preguntas Frecuentes** - FAQ del colegio
+
+   **Niveles:**
    - **Inicial** - Nivel educativo inicial
    - **Primaria** - Nivel educativo primaria
    - **Secundaria** - Nivel educativo secundaria

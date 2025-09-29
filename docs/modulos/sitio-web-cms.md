@@ -18,8 +18,8 @@ Sistema de gestión de contenido (CMS) para la página web principal del colegio
 ### ✅ **Elementos Administrables del Header**
 
 1. **Color de la barra superior** (`#1A4060`) - Cambia automáticamente todos los colores del menú
-2. **Menús de navegación** - Home, Niveles, Documentos, Preguntas Frecuentes, Trabaja con Nosotros, Contacto
-3. **Submenús desplegables** - Niveles (Inicial, Primaria, Secundaria) con hover effects
+2. **Menús de navegación** - Inicio, Niveles, Documentos de Interés, Trabaja con Nosotros, Contacto
+3. **Submenús desplegables** - Inicio (Lista de Útiles, Visitas Guiadas, Tour Virtual, Preguntas Frecuentes) y Niveles (Inicial, Primaria, Secundaria)
 4. **Información de contacto** - Dirección y teléfonos extraídos de la base de datos
 5. **Logo principal** - Ubicado en `frontend/src/assets/images/logo-vanguard.png`
 6. **Redes sociales** - Facebook, Instagram, TikTok, YouTube con iconos configurables
