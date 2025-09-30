@@ -53,10 +53,28 @@ app.use('/uploads', cors({
 }, express.static('uploads'));
 
 // Servir estático para previsualización de la web pública (docs/diseños)
+// Con CSP relajado SOLO para esta ruta
 app.use('/web-preview', cors({
   origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true
-}), express.static(path.join(__dirname, '..', 'docs', 'diseños')));
+}), (req, res, next) => {
+  // Permitir imágenes externas (Unsplash, Pravatar), iframes (YouTube, Google Maps), y scripts inline para preview
+  const csp = [
+    "default-src 'self'",
+    "img-src 'self' data: https://images.unsplash.com https://i.pravatar.cc",
+    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+    "script-src-attr 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'",
+    "frame-src https://www.youtube.com https://www.google.com",
+    "connect-src 'self'",
+    "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
+  ].join('; ');
+  res.setHeader('Content-Security-Policy', csp);
+  next();
+}, express.static(path.join(__dirname, '..', 'docs', 'diseños')));
+
+// Favicon vacío para evitar 404 en la preview
+app.get('/web-preview/favicon.ico', (req, res) => res.status(204).end());
 
 // Rutas de la API
 app.use('/api/auth', require('./routes/auth'));
