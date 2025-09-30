@@ -98,8 +98,10 @@ const PaginaWebDashboard = () => {
   };
 
   const handlePreview = () => {
-    // Abrir la previsualización servida por el backend
-    const previewUrl = `${window.location.origin.replace(':3000', ':5000')}/web-preview/header-vanguard-real.html`;
+    // Abrir la previsualización servida por el backend con parámetro de no-cache
+    const base = window.location.origin.replace(':3000', ':5000');
+    const ts = Date.now();
+    const previewUrl = `${base}/web-preview/header-vanguard-real.html?v=preview&t=${ts}`;
     window.open(previewUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
   };
 

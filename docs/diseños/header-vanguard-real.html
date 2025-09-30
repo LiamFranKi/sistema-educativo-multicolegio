@@ -1665,6 +1665,76 @@
                 button.classList.add('active');
             }
         }
+
+        // --- Preview dinámica solo cuando se sirve desde /web-preview o con ?v=preview ---
+        (function habilitarPreviewDinamica() {
+            try {
+                const url = new URL(window.location.href);
+                const esPreviewRuta = window.location.pathname.startsWith('/web-preview');
+                const esPreviewQuery = url.searchParams.get('v') === 'preview';
+                if (!esPreviewRuta && !esPreviewQuery) return;
+
+                // Cargar Axios dinámicamente
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js';
+                script.onload = async () => {
+                    try {
+                        const [menusRes, bannerRes, principalRes] = await Promise.all([
+                            axios.get('/api/web/menus'),
+                            axios.get('/api/web/home/banner'),
+                            axios.get('/api/web/home/principal')
+                        ]);
+
+                        if (menusRes?.data?.success) actualizarMenus(menusRes.data.data || []);
+                        if (bannerRes?.data?.success && bannerRes.data.data) actualizarBanner(bannerRes.data.data);
+                        if (principalRes?.data?.success && principalRes.data.data) actualizarContenidoPrincipal(principalRes.data.data);
+                    } catch (e) {
+                        console.error('Error cargando preview dinámica:', e);
+                    }
+                };
+                document.body.appendChild(script);
+
+                function actualizarMenus(menus) {
+                    const navMenu = document.querySelector('.nav-menu');
+                    if (!navMenu || !Array.isArray(menus)) return;
+                    navMenu.innerHTML = '';
+                    menus.forEach(menu => {
+                        const li = document.createElement('li');
+                        li.className = 'nav-item';
+                        if (menu.submenus && menu.submenus.length > 0) {
+                            li.classList.add('dropdown');
+                            li.innerHTML = `
+                                <a href="${menu.url || '#'}" class="nav-link dropdown-toggle">${menu.nombre}</a>
+                                <ul class="dropdown-menu">
+                                    ${(menu.submenus || []).map(sub => `<li><a href="${sub.url || '#'}" class="dropdown-link">${sub.nombre}</a></li>`).join('')}
+                                </ul>
+                            `;
+                        } else {
+                            li.innerHTML = `<a href="${menu.url || '#'}" class="nav-link">${menu.nombre}</a>`;
+                        }
+                        navMenu.appendChild(li);
+                    });
+                }
+
+                function actualizarBanner(banner) {
+                    const bannerImg = document.querySelector('.banner-image img');
+                    const bannerContainer = document.querySelector('.banner-image');
+                    if (bannerImg && banner?.imagen_url) bannerImg.src = banner.imagen_url;
+                    if (bannerContainer && banner?.altura_px) bannerContainer.style.height = `${banner.altura_px}px`;
+                }
+
+                function actualizarContenidoPrincipal(principal) {
+                    const titulo = document.querySelector('.home-title');
+                    const descripcion = document.querySelector('.home-description');
+                    const cita = document.querySelector('.home-quote');
+                    if (titulo && principal?.titulo) titulo.textContent = principal.titulo;
+                    if (descripcion && principal?.descripcion_larga) descripcion.textContent = principal.descripcion_larga;
+                    if (cita && principal?.cita) cita.textContent = `"${principal.cita}"`;
+                }
+            } catch (e) {
+                console.error('Preview dinámica no disponible:', e);
+            }
+        })();
     </script>
 </body>
 </html>
