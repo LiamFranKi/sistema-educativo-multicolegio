@@ -467,3 +467,39 @@ export const cursosService = {
 };
 
 export default api;
+
+// API Web (sitio público)
+export const webApi = {
+  getMenus: async () => (await api.get('/web/menus')).data,
+  getHomeBanner: async () => (await api.get('/web/home/banner')).data,
+  getHomePrincipal: async () => (await api.get('/web/home/principal')).data,
+  getPageContent: async (slug) => (await api.get(`/web/pages/${slug}`)).data,
+};
+
+// API Admin para gestión de páginas web
+export const webAdminApi = {
+  // Pages
+  getPages: () => api.get('/web-admin/pages'),
+  getPageById: (id) => api.get(`/web-admin/pages/${id}`),
+  createPage: (data) => api.post('/web-admin/pages', data),
+  updatePage: (id, data) => api.put(`/web-admin/pages/${id}`, data),
+  deletePage: (id) => api.delete(`/web-admin/pages/${id}`),
+  
+  // Sections
+  getSectionsByPage: (pageId) => api.get(`/web-admin/pages/${pageId}/sections`),
+  createSection: (data) => api.post('/web-admin/sections', data),
+  updateSection: (id, data) => api.put(`/web-admin/sections/${id}`, data),
+  deleteSection: (id) => api.delete(`/web-admin/sections/${id}`),
+  
+  // Blocks
+  getBlocksBySection: (sectionId) => api.get(`/web-admin/sections/${sectionId}/blocks`),
+  createBlock: (data) => api.post('/web-admin/blocks', data),
+  updateBlock: (id, data) => api.put(`/web-admin/blocks/${id}`, data),
+  deleteBlock: (id) => api.delete(`/web-admin/blocks/${id}`),
+  
+  // Home Legacy
+  getHomeBanner: () => api.get('/web-admin/home/banner'),
+  updateHomeBanner: (data) => api.put('/web-admin/home/banner', data),
+  getHomePrincipal: () => api.get('/web-admin/home/principal'),
+  updateHomePrincipal: (data) => api.put('/web-admin/home/principal', data),
+};

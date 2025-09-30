@@ -91,6 +91,7 @@ app.use('/api/turnos', require('./routes/turnos'));
 app.use('/api/avatars', require('./routes/avatars'));
 app.use('/api/cursos', require('./routes/cursos'));
 app.use('/api/web', require('./routes/web'));
+app.use('/api/web-admin', require('./routes/webAdmin'));
 
 // Ruta de salud
 app.get('/api/health', (req, res) => {
