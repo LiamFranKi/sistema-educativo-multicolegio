@@ -106,8 +106,16 @@ const PaginaWebDashboard = () => {
   };
 
   const handleEditSeccion = (seccionId) => {
-    // TODO: Implementar edición de sección
-    console.log('Editar sección:', seccionId);
+    if (seccionId === 'home') {
+      navigate('/pagina-web/paginas');
+    } else {
+      // TODO: Implementar edición de otras secciones
+      console.log('Editar sección:', seccionId);
+    }
+  };
+
+  const handleGestionarPaginas = () => {
+    navigate('/pagina-web/paginas');
   };
 
   const handleConfiguracion = () => {
@@ -158,10 +166,20 @@ const PaginaWebDashboard = () => {
             Las demás secciones están pendientes de implementación.
           </Alert>
 
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color="text.secondary" gutterBottom>
             Gestiona el contenido de tu página web de forma fácil y profesional.
             Cada sección se puede editar independientemente y ver en tiempo real.
           </Typography>
+
+          <Box mt={2}>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleGestionarPaginas}
+            >
+              📄 Gestionar Todas las Páginas
+            </Button>
+          </Box>
         </CardContent>
       </Card>
 
