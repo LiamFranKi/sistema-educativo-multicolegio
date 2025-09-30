@@ -811,6 +811,199 @@
             box-shadow: 0 10px 30px rgba(26, 64, 96, 0.4);
         }
 
+        /* Footer Styles */
+        .main-footer {
+            background: linear-gradient(135deg, #1A4060 0%, #2c5282 100%);
+            color: white;
+            padding: 60px 0 20px 0;
+            margin-top: 80px;
+        }
+
+        .footer-main {
+            margin-bottom: 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .footer-section:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .footer-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #FFD700;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            text-align: center;
+            position: relative;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border-radius: 1px;
+        }
+
+        .footer-content {
+            color: #f0f0f0;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .contact-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .contact-info {
+            font-size: 14px;
+            line-height: 1.6;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .contact-info strong {
+            color: #FFD700;
+            font-weight: 600;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-link {
+            color: #f0f0f0;
+            text-decoration: none;
+            font-size: 14px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFD700;
+            transform: translateX(5px);
+        }
+
+        .footer-bottom {
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+            padding-top: 30px;
+        }
+
+        .footer-bottom-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .footer-logo {
+            flex-shrink: 0;
+        }
+
+        .logo-footer {
+            height: 60px;
+            width: auto;
+            filter: brightness(0) invert(1);
+            transition: all 0.3s ease;
+        }
+
+        .logo-footer:hover {
+            transform: scale(1.05);
+            filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(45deg);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            color: #f0f0f0;
+            text-decoration: none;
+            font-size: 14px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            padding: 10px 15px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #FFD700;
+            transform: translateY(-3px);
+        }
+
+        .footer-copyright {
+            text-align: center;
+            color: #f0f0f0;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .footer-copyright p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .footer-subtitle {
+            color: #FFD700 !important;
+            font-weight: 600;
+            font-size: 16px !important;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .top-bar-content { grid-template-columns: 1fr; gap: 10px; padding: 0 20px; }
@@ -906,6 +1099,23 @@
             .location-card h3 { font-size: 20px; }
             .location-card p { font-size: 14px; }
             .map-btn { padding: 12px 25px; font-size: 14px; }
+            
+            /* Footer Responsive */
+            .main-footer { padding: 40px 0 15px 0; margin-top: 60px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 25px; }
+            .footer-section { padding: 25px; }
+            .footer-title { font-size: 18px; margin-bottom: 20px; }
+            .contact-item { padding: 12px; margin-bottom: 15px; }
+            .contact-icon { font-size: 20px; }
+            .contact-info { font-size: 13px; }
+            .footer-link { padding: 8px 12px; font-size: 13px; }
+            .footer-bottom-content { flex-direction: column; text-align: center; gap: 20px; }
+            .footer-brand { flex-direction: column; gap: 20px; }
+            .logo-footer { height: 50px; }
+            .footer-social { justify-content: center; flex-wrap: wrap; }
+            .social-link { padding: 8px 12px; font-size: 13px; }
+            .footer-copyright p { font-size: 13px; }
+            .footer-subtitle { font-size: 14px !important; }
         }
 
         /* Demo Content */
@@ -1308,6 +1518,111 @@
             </div>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <!-- Sección Principal del Footer -->
+            <div class="footer-main">
+                <div class="footer-grid">
+                    <!-- Información de Contacto -->
+                    <div class="footer-section">
+                        <h3 class="footer-title">📞 CONTACTO</h3>
+                        <div class="footer-content">
+                            <div class="contact-item">
+                                <div class="contact-icon">📱</div>
+                                <div class="contact-info">
+                                    <strong>Teléfonos:</strong><br>
+                                    946 592 100<br>
+                                    922 084 833
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">📍</div>
+                                <div class="contact-info">
+                                    <strong>Dirección:</strong><br>
+                                    Jr. Toribio de Luzuriaga Mz F<br>
+                                    lote 18 y 19 - SMP
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <div class="contact-icon">✉️</div>
+                                <div class="contact-info">
+                                    <strong>Email:</strong><br>
+                                    admin@vanguardschools.edu.pe
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Menú de Navegación -->
+                    <div class="footer-section">
+                        <h3 class="footer-title">🧭 MENÚ</h3>
+                        <div class="footer-content">
+                            <div class="footer-links">
+                                <a href="/inicio" class="footer-link">🏠 Inicio</a>
+                                <a href="/visita-guiada" class="footer-link">👥 Visita Guiada</a>
+                                <a href="/lista-utiles" class="footer-link">📋 Lista de Útiles</a>
+                                <a href="/documentos" class="footer-link">📄 Documentos de Interés</a>
+                                <a href="/trabaja-nosotros" class="footer-link">💼 Trabaja con Nosotros</a>
+                                <a href="/contacto" class="footer-link">📞 Contacto</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Niveles Educativos -->
+                    <div class="footer-section">
+                        <h3 class="footer-title">🎓 NIVELES</h3>
+                        <div class="footer-content">
+                            <div class="footer-links">
+                                <a href="/inicial" class="footer-link">👶 Educación Inicial</a>
+                                <a href="/primaria" class="footer-link">🎒 Educación Primaria</a>
+                                <a href="/secundaria" class="footer-link">🎓 Educación Secundaria</a>
+                                <a href="/tour-virtual" class="footer-link">🌐 Tour Virtual</a>
+                                <a href="/preguntas-frecuentes" class="footer-link">❓ Preguntas Frecuentes</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información Legal -->
+                    <div class="footer-section">
+                        <h3 class="footer-title">⚖️ SOBRE ESTE SITIO</h3>
+                        <div class="footer-content">
+                            <div class="footer-links">
+                                <a href="/politicas-privacidad" class="footer-link">🔒 Políticas de Privacidad</a>
+                                <a href="/libro-reclamaciones" class="footer-link">📝 Libro de Reclamaciones</a>
+                                <a href="/terminos-condiciones" class="footer-link">📋 Términos y Condiciones</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección Inferior del Footer -->
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <!-- Logo y Redes Sociales -->
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <img src="logo-vanguard.png" alt="Vanguard Schools" class="logo-footer">
+                        </div>
+                        <div class="footer-social">
+                            <a href="#" class="social-link facebook">📘 Facebook</a>
+                            <a href="#" class="social-link instagram">📷 Instagram</a>
+                            <a href="#" class="social-link tiktok">🎵 TikTok</a>
+                            <a href="#" class="social-link youtube">📺 YouTube</a>
+                        </div>
+                    </div>
+
+                    <!-- Copyright -->
+                    <div class="footer-copyright">
+                        <p>&copy; 2026 - Todos los derechos Reservados</p>
+                        <p class="footer-subtitle">Vanguard Schools - A la Vanguardia de la Tecnología</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <!-- Contenido Demo -->
     <div class="demo-content">
