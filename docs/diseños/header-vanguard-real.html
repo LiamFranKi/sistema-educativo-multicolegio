@@ -112,7 +112,7 @@
 
         /* Botón VanguardNet llamativo */
         .vanguardnet-btn {
-            background: linear-gradient(135deg, #3C8DFF 0%, #1E5ED6 100%);
+            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
             color: white;
             padding: 6px 14px;
             border: 2px solid #ffffff;
@@ -122,26 +122,34 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 6px 18px rgba(30,94,214,0.35);
+            gap: 8px;
+            transition: all 0.25s ease-in-out;
+            box-shadow: 0 6px 18px rgba(26,64,96,0.35);
             position: relative;
             justify-self: end;
+            overflow: hidden;
         }
 
         .vanguardnet-btn::after {
             content: '';
             position: absolute;
-            inset: -2px;
-            border-radius: 999px;
-            border: 2px solid rgba(255,255,255,0.35);
-            pointer-events: none;
+            top: 0;
+            left: -120%;
+            height: 100%;
+            width: 120%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+            transform: skewX(-25deg);
+            transition: left 0.5s ease;
         }
 
         .vanguardnet-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 22px rgba(30,94,214,0.45);
-            filter: brightness(1.03);
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: 0 10px 26px rgba(26,64,96,0.5);
+            filter: brightness(1.06);
+        }
+
+        .vanguardnet-btn:hover::after {
+            left: 120%;
         }
 
         /* Barra Principal Blanca */
@@ -1167,7 +1175,10 @@
                 </div>
 
                 <!-- Botón VanguardNet -->
-                <button class="vanguardnet-btn" title="Acceder a Intranet">Intranet <span style="color: white; filter: brightness(0) invert(1); font-size: 16px; line-height: 1;">👥</span></button>
+                <button class="vanguardnet-btn" title="Acceder a Intranet">
+                    <span style="font-size:16px;">👨‍💻</span>
+                    Intranet
+                </button>
             </div>
         </div>
 
@@ -1600,45 +1611,7 @@
                 </div>
             </div>
         </div>
-    </footer>
-
-    <!-- Contenido Demo -->
-    <div class="demo-content">
-        <div class="demo-section">
-            <h2 class="demo-title">🎨 Header + Banner HOME + Sección Principal - 100% Administrable</h2>
-            <p class="demo-text">
-                Este es el header completo + banner del HOME + sección principal de Vanguard Schools. <strong>TODO ES ADMINISTRABLE</strong> desde la base de datos.
-                El banner pertenece al BODY de la página, tiene altura de 320px con imagen al 100% de visibilidad y marco superior de 2px.
-                La sección principal incluye botón "Saber Más" con contenido desplegable y responsive.
-            </p>
-        </div>
-
-        <div class="demo-section">
-            <h3 class="demo-title">🎯 Elementos Administrables del Header:</h3>
-            <p class="demo-text">
-                ✅ <strong>Color de la barra superior</strong> - Cambia automáticamente todos los colores del menú<br>
-                ✅ <strong>Menús de navegación</strong> - Inicio, Niveles, Documentos de Interés, Trabaja con Nosotros, Contacto<br>
-                ✅ <strong>Submenús desplegables</strong> - Inicio (Lista de Útiles, Visitas Guiadas, Tour Virtual, Preguntas Frecuentes) y Niveles (Inicial, Primaria, Secundaria)<br>
-                ✅ <strong>Dirección y teléfonos</strong> - Extraídos de la base de datos<br>
-                ✅ <strong>Logo principal</strong> - Subir/cambiar imagen<br>
-                ✅ <strong>Redes sociales</strong> - Seleccionar cuáles usar y sus enlaces<br>
-                ✅ <strong>Iconos de redes</strong> - Subir iconos personalizados<br>
-                ✅ <strong>Botón Intranet</strong> - Texto, color y enlace configurables<br>
-                ✅ <strong>Banner del HOME</strong> - Imagen y altura configurables<br>
-                ✅ <strong>Responsive</strong> - Funciona en computadora y móviles
-            </p>
-        </div>
-
-        <div class="demo-section">
-            <h3 class="demo-title">📱 Responsive Design:</h3>
-            <p class="demo-text">
-                • <strong>Desktop</strong> - Layout horizontal completo<br>
-                • <strong>Tablet</strong> - Adaptación automática<br>
-                • <strong>Mobile</strong> - Menú hamburguesa y elementos apilados<br>
-                • <strong>Banner</strong> - Separado del header, pertenece al BODY
-            </p>
-        </div>
-    </div>
+  </footer>
 
     <script>
         document.querySelectorAll('.nav-link').forEach(link => {
