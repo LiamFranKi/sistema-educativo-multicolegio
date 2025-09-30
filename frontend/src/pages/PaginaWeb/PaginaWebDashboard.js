@@ -98,8 +98,9 @@ const PaginaWebDashboard = () => {
   };
 
   const handlePreview = () => {
-    // TODO: Implementar vista previa de la página web
-    console.log('Vista previa de la página web');
+    // Abrir el HTML de la página web en una nueva ventana
+    const previewUrl = '/docs/diseños/header-vanguard-real.html';
+    window.open(previewUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
   };
 
   const handleEditSeccion = (seccionId) => {
@@ -126,14 +127,15 @@ const PaginaWebDashboard = () => {
           subheader="Administra el contenido de la página web principal del colegio"
           action={
             <Box sx={{ display: 'flex', gap: 1 }}>
-              <Tooltip title="Vista Previa" arrow>
+              <Tooltip title="Ver como va quedando" arrow>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   startIcon={<PreviewIcon />}
                   onClick={handlePreview}
                   size="small"
+                  color="primary"
                 >
-                  Vista Previa
+                  Ver como va quedando
                 </Button>
               </Tooltip>
               <Tooltip title="Configuración" arrow>

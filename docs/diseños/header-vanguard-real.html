@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Header Vanguard Schools - Diseño Real</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap&v=2" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -837,42 +836,7 @@
             padding: 60px 0 20px 0;
             margin-top: 80px;
         }
-        
-        /* Botón Preview */
-        .preview-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(26,64,96,0.3);
-            z-index: 9999;
-            transition: all 0.3s ease;
-        }
-        
-        .preview-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(26,64,96,0.4);
-        }
-        
-        .preview-btn.loading {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-        
-        .preview-btn.success {
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        }
-        
-        .preview-btn.error {
-            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
-        }
+
 
         .footer-main {
             margin-bottom: 40px;
@@ -1673,11 +1637,6 @@
         </div>
     </footer>
 
-    <!-- Botón Preview -->
-    <button class="preview-btn" onclick="cargarContenidoReal()">
-        🔄 Ver como va quedando
-    </button>
-
     <script>
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function(e) {
@@ -1704,116 +1663,6 @@
                 // Mostrar contenido
                 content.classList.add('active');
                 button.classList.add('active');
-            }
-        }
-
-        // Función para cargar contenido real desde la API
-        async function cargarContenidoReal() {
-            const btn = document.querySelector('.preview-btn');
-            const originalText = btn.innerHTML;
-            
-            try {
-                btn.classList.add('loading');
-                btn.innerHTML = '⏳ Cargando...';
-                
-                // Cargar datos desde la API
-                const [menusRes, bannerRes, principalRes] = await Promise.all([
-                    axios.get('/api/web/menus'),
-                    axios.get('/api/web/home/banner'),
-                    axios.get('/api/web/home/principal')
-                ]);
-                
-                // Actualizar menús
-                if (menusRes.data.success && menusRes.data.data) {
-                    actualizarMenus(menusRes.data.data);
-                }
-                
-                // Actualizar banner
-                if (bannerRes.data.success && bannerRes.data.data) {
-                    actualizarBanner(bannerRes.data.data);
-                }
-                
-                // Actualizar contenido principal
-                if (principalRes.data.success && principalRes.data.data) {
-                    actualizarContenidoPrincipal(principalRes.data.data);
-                }
-                
-                btn.classList.remove('loading');
-                btn.classList.add('success');
-                btn.innerHTML = '✅ ¡Cargado desde BD!';
-                
-                setTimeout(() => {
-                    btn.classList.remove('success');
-                    btn.innerHTML = originalText;
-                }, 3000);
-                
-            } catch (error) {
-                console.error('Error cargando datos:', error);
-                btn.classList.remove('loading');
-                btn.classList.add('error');
-                btn.innerHTML = '❌ Error de conexión';
-                
-                setTimeout(() => {
-                    btn.classList.remove('error');
-                    btn.innerHTML = originalText;
-                }, 3000);
-            }
-        }
-        
-        function actualizarMenus(menus) {
-            const navMenu = document.querySelector('.nav-menu');
-            if (!navMenu) return;
-            
-            navMenu.innerHTML = '';
-            
-            menus.forEach(menu => {
-                const li = document.createElement('li');
-                li.className = 'nav-item';
-                
-                if (menu.submenus && menu.submenus.length > 0) {
-                    li.classList.add('dropdown');
-                    li.innerHTML = `
-                        <a href="${menu.url || '#'}" class="nav-link dropdown-toggle">${menu.nombre}</a>
-                        <ul class="dropdown-menu">
-                            ${menu.submenus.map(sub => `<li><a href="${sub.url || '#'}" class="dropdown-link">${sub.nombre}</a></li>`).join('')}
-                        </ul>
-                    `;
-                } else {
-                    li.innerHTML = `<a href="${menu.url || '#'}" class="nav-link">${menu.nombre}</a>`;
-                }
-                
-                navMenu.appendChild(li);
-            });
-        }
-        
-        function actualizarBanner(banner) {
-            const bannerImg = document.querySelector('.banner-image img');
-            const bannerContainer = document.querySelector('.banner-image');
-            
-            if (bannerImg && banner.imagen_url) {
-                bannerImg.src = banner.imagen_url;
-            }
-            
-            if (bannerContainer && banner.altura_px) {
-                bannerContainer.style.height = `${banner.altura_px}px`;
-            }
-        }
-        
-        function actualizarContenidoPrincipal(principal) {
-            const titulo = document.querySelector('.home-title');
-            const descripcion = document.querySelector('.home-description');
-            const cita = document.querySelector('.home-quote');
-            
-            if (titulo && principal.titulo) {
-                titulo.textContent = principal.titulo;
-            }
-            
-            if (descripcion && principal.descripcion_larga) {
-                descripcion.textContent = principal.descripcion_larga;
-            }
-            
-            if (cita && principal.cita) {
-                cita.textContent = `"${principal.cita}"`;
             }
         }
     </script>
