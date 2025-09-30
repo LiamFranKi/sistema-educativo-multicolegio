@@ -1002,14 +1002,30 @@
         }
 
         /* HOVER de iconos de redes igual que el logo del footer */
-        .footer-social img {
+        /* Iconos de redes con máscara (tinte controlable) */
+        .footer-social .icon {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            background-color: #ffffff;
             transition: all 0.3s ease;
+            -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            mask-position: center;
+            -webkit-mask-size: contain;
+            mask-size: contain;
         }
 
-        .footer-social a:hover img {
+        .footer-social .icon-fb { -webkit-mask-image: url('icons/facebook-white.png'); mask-image: url('icons/facebook-white.png'); }
+        .footer-social .icon-ig { -webkit-mask-image: url('icons/instagram-white.png'); mask-image: url('icons/instagram-white.png'); }
+        .footer-social .icon-tt { -webkit-mask-image: url('icons/tiktok-white.png'); mask-image: url('icons/tiktok-white.png'); }
+        .footer-social .icon-yt { -webkit-mask-image: url('icons/youtube-white.png'); mask-image: url('icons/youtube-white.png'); }
+
+        .footer-social a:hover .icon {
             transform: scale(1.05);
-            /* Mismo efecto que .logo-footer:hover */
-            filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(45deg);
+            /* Tinte verdoso similar al logo */
+            background-color: #7ED957;
         }
 
         .footer-copyright {
@@ -1608,16 +1624,16 @@
                         </div>
                         <div class="footer-social">
                             <a href="#" class="social-link facebook" title="Facebook">
-                                <img src="icons/facebook-white.png" alt="Facebook" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                                <span class="icon icon-fb" aria-hidden="true"></span>
                             </a>
                             <a href="#" class="social-link instagram" title="Instagram">
-                                <img src="icons/instagram-white.png" alt="Instagram" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                                <span class="icon icon-ig" aria-hidden="true"></span>
                             </a>
                             <a href="#" class="social-link tiktok" title="TikTok">
-                                <img src="icons/tiktok-white.png" alt="TikTok" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                                <span class="icon icon-tt" aria-hidden="true"></span>
                             </a>
                             <a href="#" class="social-link youtube" title="YouTube">
-                                <img src="icons/youtube-white.png" alt="YouTube" style="width: 24px; height: 24px; filter: brightness(0) invert(1);">
+                                <span class="icon icon-yt" aria-hidden="true"></span>
                             </a>
                         </div>
                     </div>
