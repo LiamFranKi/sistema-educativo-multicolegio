@@ -98,8 +98,8 @@ const PaginaWebDashboard = () => {
   };
 
   const handlePreview = () => {
-    // Abrir el HTML de la página web en una nueva ventana
-    const previewUrl = '/docs/diseños/header-vanguard-real.html';
+    // Abrir la previsualización servida por el backend
+    const previewUrl = `${window.location.origin.replace(':3000', ':5000')}/web-preview/header-vanguard-real.html`;
     window.open(previewUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
   };
 
@@ -291,5 +291,3 @@ const PaginaWebDashboard = () => {
 };
 
 export default PaginaWebDashboard;
-
-

@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
@@ -51,6 +52,12 @@ app.use('/uploads', cors({
   next();
 }, express.static('uploads'));
 
+// Servir estático para previsualización de la web pública (docs/diseños)
+app.use('/web-preview', cors({
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  credentials: true
+}), express.static(path.join(__dirname, '..', 'docs', 'diseños')));
+
 // Rutas de la API
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/usuarios', require('./routes/usuarios'));
@@ -65,6 +72,7 @@ app.use('/api/areas', require('./routes/areas'));
 app.use('/api/turnos', require('./routes/turnos'));
 app.use('/api/avatars', require('./routes/avatars'));
 app.use('/api/cursos', require('./routes/cursos'));
+app.use('/api/web', require('./routes/web'));
 
 // Ruta de salud
 app.get('/api/health', (req, res) => {
