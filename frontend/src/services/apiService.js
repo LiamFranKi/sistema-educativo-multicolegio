@@ -484,19 +484,19 @@ export const webAdminApi = {
   createPage: (data) => api.post('/web-admin/pages', data),
   updatePage: (id, data) => api.put(`/web-admin/pages/${id}`, data),
   deletePage: (id) => api.delete(`/web-admin/pages/${id}`),
-  
+
   // Sections
   getSectionsByPage: (pageId) => api.get(`/web-admin/pages/${pageId}/sections`),
   createSection: (data) => api.post('/web-admin/sections', data),
   updateSection: (id, data) => api.put(`/web-admin/sections/${id}`, data),
   deleteSection: (id) => api.delete(`/web-admin/sections/${id}`),
-  
+
   // Blocks
   getBlocksBySection: (sectionId) => api.get(`/web-admin/sections/${sectionId}/blocks`),
   createBlock: (data) => api.post('/web-admin/blocks', data),
   updateBlock: (id, data) => api.put(`/web-admin/blocks/${id}`, data),
   deleteBlock: (id) => api.delete(`/web-admin/blocks/${id}`),
-  
+
   // Home Legacy
   getHomeBanner: () => api.get('/web-admin/home/banner'),
   updateHomeBanner: (data) => api.put('/web-admin/home/banner', data),

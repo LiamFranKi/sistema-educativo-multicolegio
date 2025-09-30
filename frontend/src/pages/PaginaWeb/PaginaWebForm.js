@@ -39,7 +39,7 @@ const PaginaWebForm = () => {
   const [loading, setLoading] = useState(isEdit);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
-  
+
   const [formData, setFormData] = useState({
     slug: '',
     titulo: '',
@@ -60,7 +60,7 @@ const PaginaWebForm = () => {
       setError(null);
       const response = await webAdminApi.getPageById(id);
       const pagina = response.data.data;
-      
+
       setFormData({
         slug: pagina.slug || '',
         titulo: pagina.titulo || '',
@@ -94,7 +94,7 @@ const PaginaWebForm = () => {
         await webAdminApi.createPage(formData);
       }
 
-      navigate('/pagina-web/paginas');
+      navigate('/dashboard/pagina-web/paginas');
     } catch (err) {
       console.error('Error guardando página:', err);
       setError(err.response?.data?.message || 'Error al guardar la página');
@@ -109,7 +109,7 @@ const PaginaWebForm = () => {
   };
 
   const handleEditSection = (sectionId) => {
-    navigate(`/pagina-web/paginas/${id}/seccion/${sectionId}`);
+    navigate(`/dashboard/pagina-web/paginas/${id}/seccion/${sectionId}`);
   };
 
   if (loading) {
@@ -126,7 +126,7 @@ const PaginaWebForm = () => {
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Box display="flex" alignItems="center" gap={2} mb={2}>
-            <IconButton onClick={() => navigate('/pagina-web/paginas')}>
+            <IconButton onClick={() => navigate('/dashboard/pagina-web/paginas')}>
               <BackIcon />
             </IconButton>
             <Typography variant="h4" component="h1" color="primary">
@@ -199,7 +199,7 @@ const PaginaWebForm = () => {
                 <Box display="flex" gap={2} justifyContent="flex-end">
                   <Button
                     variant="outlined"
-                    onClick={() => navigate('/pagina-web/paginas')}
+                    onClick={() => navigate('/dashboard/pagina-web/paginas')}
                     disabled={saving}
                   >
                     Cancelar
@@ -232,7 +232,7 @@ const PaginaWebForm = () => {
                 variant="outlined"
                 size="small"
                 startIcon={<AddIcon />}
-                onClick={() => navigate(`/pagina-web/paginas/${id}/seccion/nueva`)}
+                onClick={() => navigate(`/dashboard/pagina-web/paginas/${id}/seccion/nueva`)}
               >
                 Nueva Sección
               </Button>
@@ -266,7 +266,7 @@ const PaginaWebForm = () => {
                       <Typography variant="body2" color="text.secondary" gutterBottom>
                         <strong>Orden:</strong> {section.orden}
                       </Typography>
-                      
+
                       <Box display="flex" gap={1} mt={2}>
                         <Button
                           size="small"

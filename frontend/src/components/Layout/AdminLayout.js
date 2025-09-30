@@ -18,7 +18,7 @@ import { CursosList } from '../../pages/Mantenimientos/Cursos';
 import AvatarsList from '../../pages/Mantenimientos/Avatars/AvatarsList';
 import Reportes from '../../pages/Admin/Reportes';
 import MiPerfil from '../../pages/MiPerfil';
-import { PaginaWebDashboard } from '../../pages/PaginaWeb';
+import PaginaWeb from '../../pages/PaginaWeb';
 
 // Componente de Sidebar
 import AdminSidebar from '../Sidebar/AdminSidebar';
@@ -149,7 +149,7 @@ const AdminLayout = ({ onLogout }) => {
               <Route path="/dashboard/areas" element={<AreasList />} />
               <Route path="/dashboard/cursos" element={<CursosList />} />
               <Route path="/dashboard/avatars" element={<AvatarsList />} />
-              <Route path="/dashboard/pagina-web" element={<PaginaWebDashboard />} />
+              <Route path="/dashboard/pagina-web/*" element={<PaginaWeb />} />
               <Route path="/reportes" element={<Reportes />} />
               <Route path="/perfil" element={<MiPerfil />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

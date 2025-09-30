@@ -107,7 +107,7 @@ const PaginaWebDashboard = () => {
 
   const handleEditSeccion = (seccionId) => {
     if (seccionId === 'home') {
-      navigate('/pagina-web/paginas');
+      navigate('/dashboard/pagina-web/paginas');
     } else {
       // TODO: Implementar edición de otras secciones
       console.log('Editar sección:', seccionId);
@@ -115,7 +115,7 @@ const PaginaWebDashboard = () => {
   };
 
   const handleGestionarPaginas = () => {
-    navigate('/pagina-web/paginas');
+    navigate('/dashboard/pagina-web/paginas');
   };
 
   const handleConfiguracion = () => {

@@ -16,4 +16,3 @@ const PaginaWeb = () => {
 };
 
 export default PaginaWeb;
-

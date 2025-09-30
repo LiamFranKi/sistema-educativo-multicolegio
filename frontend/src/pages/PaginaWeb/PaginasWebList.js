@@ -113,7 +113,7 @@ const PaginasWebList = () => {
               variant="contained"
               color="primary"
               startIcon={<AddIcon />}
-              onClick={() => navigate('/pagina-web/paginas/nueva')}
+              onClick={() => navigate('/dashboard/pagina-web/paginas/nueva')}
             >
               Nueva Página
             </Button>
@@ -201,7 +201,7 @@ const PaginasWebList = () => {
                           <IconButton
                             color="primary"
                             size="small"
-                            onClick={() => navigate(`/pagina-web/paginas/${pagina.id}`)}
+                            onClick={() => navigate(`/dashboard/pagina-web/paginas/${pagina.id}`)}
                           >
                             <EditIcon />
                           </IconButton>
