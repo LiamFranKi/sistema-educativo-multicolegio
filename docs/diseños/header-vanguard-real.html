@@ -710,7 +710,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 50px;
             margin-top: 50px;
-            align-items: start;
+            align-items: stretch;
         }
 
         .location-card {
@@ -754,6 +754,9 @@
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         .map-actions {
@@ -1240,13 +1243,13 @@
                     </div>
                     <div class="location-map">
                         <div class="map-container">
-                            <iframe
-                                src="https://www.google.com/maps/embed?pb=MAP_LINK_AQUI"
-                                width="100%"
-                                height="300"
-                                style="border:0;"
-                                allowfullscreen=""
-                                loading="lazy"
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=MAP_LINK_AQUI" 
+                                width="100%" 
+                                height="100%" 
+                                style="border:0; flex: 1;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
                                 referrerpolicy="no-referrer-when-downgrade">
                             </iframe>
                         </div>
