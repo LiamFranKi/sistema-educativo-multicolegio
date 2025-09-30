@@ -1666,7 +1666,7 @@
             }
         }
 
-        // --- Preview dinámica solo cuando se sirve desde /web-preview o con ?v=preview ---
+                // --- Preview dinámica solo cuando se sirve desde /web-preview o con ?v=preview ---
         (function habilitarPreviewDinamica() {
             try {
                 const url = new URL(window.location.href);
@@ -1679,15 +1679,17 @@
                 script.src = 'https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js';
                 script.onload = async () => {
                     try {
-                        const [menusRes, bannerRes, principalRes] = await Promise.all([
+                        const [menusRes, bannerRes, principalRes, pageRes] = await Promise.all([
                             axios.get('/api/web/menus'),
                             axios.get('/api/web/home/banner'),
-                            axios.get('/api/web/home/principal')
+                            axios.get('/api/web/home/principal'),
+                            axios.get('/api/web/pages/home')
                         ]);
 
                         if (menusRes?.data?.success) actualizarMenus(menusRes.data.data || []);
                         if (bannerRes?.data?.success && bannerRes.data.data) actualizarBanner(bannerRes.data.data);
                         if (principalRes?.data?.success && principalRes.data.data) actualizarContenidoPrincipal(principalRes.data.data);
+                        if (pageRes?.data?.success && pageRes.data.data?.sections) actualizarSaberMas(pageRes.data.data.sections);
                     } catch (e) {
                         console.error('Error cargando preview dinámica:', e);
                     }
@@ -1730,6 +1732,70 @@
                     if (titulo && principal?.titulo) titulo.textContent = principal.titulo;
                     if (descripcion && principal?.descripcion_larga) descripcion.textContent = principal.descripcion_larga;
                     if (cita && principal?.cita) cita.textContent = `"${principal.cita}"`;
+                }
+
+                function actualizarSaberMas(sections) {
+                    const saberMasSection = sections.find(s => s.key === 'saber-mas');
+                    if (!saberMasSection || !saberMasSection.blocks) return;
+
+                    const container = document.getElementById('saberMasContent');
+                    if (!container) return;
+
+                    container.innerHTML = ''; // Limpiar contenido estático
+
+                    saberMasSection.blocks.forEach(block => {
+                        if (block.tipo !== 'subsection') return;
+                        const data = block.contenido_json;
+                        
+                        const section = document.createElement('div');
+                        section.className = 'nosotros-section';
+                        
+                        const title = document.createElement('h2');
+                        title.className = 'section-title';
+                        title.textContent = data.titulo;
+                        section.appendChild(title);
+
+                        const grid = document.createElement('div');
+                        // Determinar clase de grid según el título
+                        if (data.titulo.includes('Identidad')) {
+                            grid.className = 'identity-grid';
+                        } else if (data.titulo.includes('Instalaciones')) {
+                            grid.className = 'instalaciones-grid';
+                        } else if (data.titulo.includes('Programas')) {
+                            grid.className = 'programas-grid';
+                        } else if (data.titulo.includes('Niveles')) {
+                            grid.className = 'niveles-grid';
+                        } else {
+                            grid.className = 'identity-grid'; // por defecto
+                        }
+
+                        (data.items || []).forEach(item => {
+                            const card = document.createElement('div');
+                            // Determinar clase de card
+                            if (data.titulo.includes('Identidad')) {
+                                card.className = 'identity-card';
+                            } else if (data.titulo.includes('Instalaciones')) {
+                                card.className = 'instalacion-card';
+                            } else if (data.titulo.includes('Programas')) {
+                                card.className = 'programa-card';
+                            } else if (data.titulo.includes('Niveles')) {
+                                card.className = 'nivel-card';
+                            } else {
+                                card.className = 'identity-card';
+                            }
+
+                            card.innerHTML = `
+                                <div class="card-icon">${item.icono}</div>
+                                <h3>${item.titulo}</h3>
+                                <div class="title-line"></div>
+                                <p>${item.descripcion}</p>
+                            `;
+                            grid.appendChild(card);
+                        });
+
+                        section.appendChild(grid);
+                        container.appendChild(section);
+                    });
                 }
             } catch (e) {
                 console.error('Preview dinámica no disponible:', e);
