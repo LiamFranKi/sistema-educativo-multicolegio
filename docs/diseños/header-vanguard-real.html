@@ -1001,6 +1001,17 @@
             transform: translateY(-3px);
         }
 
+        /* HOVER de iconos de redes igual que el logo del footer */
+        .footer-social img {
+            transition: all 0.3s ease;
+        }
+
+        .footer-social a:hover img {
+            transform: scale(1.05);
+            /* Mismo efecto que .logo-footer:hover */
+            filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(45deg);
+        }
+
         .footer-copyright {
             text-align: center;
             color: #f0f0f0;
