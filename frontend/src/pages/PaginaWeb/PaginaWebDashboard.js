@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Card,
@@ -28,6 +29,7 @@ import {
 } from '@mui/icons-material';
 
 const PaginaWebDashboard = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   // Secciones de la página web
