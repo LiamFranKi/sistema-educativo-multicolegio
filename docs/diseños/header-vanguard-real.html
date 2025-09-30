@@ -645,6 +645,31 @@
         .testimonial-author {
             border-top: 2px solid #1A4060;
             padding-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-photo {
+            flex-shrink: 0;
+        }
+
+        .profile-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #1A4060;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover .profile-img {
+            transform: scale(1.05);
+            border-color: #3470B3;
+        }
+
+        .author-info {
+            flex: 1;
         }
 
         .author-name {
@@ -868,6 +893,8 @@
             .testimonials-grid { grid-template-columns: 1fr; gap: 20px; }
             .testimonial-card { padding: 30px; }
             .testimonial-text { font-size: 15px; }
+            .testimonial-author { gap: 12px; }
+            .profile-img { width: 50px; height: 50px; }
             .author-name { font-size: 16px; }
             .author-role { font-size: 13px; }
 
@@ -1178,8 +1205,13 @@
                             "Vanguard Schools ha transformado completamente la educación de mi hijo. El programa bilingüe y la tecnología integrada son excepcionales."
                         </div>
                         <div class="testimonial-author">
-                            <div class="author-name">María González</div>
-                            <div class="author-role">Madre de familia - Primaria</div>
+                            <div class="author-photo">
+                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="María González" class="profile-img">
+                            </div>
+                            <div class="author-info">
+                                <div class="author-name">María González</div>
+                                <div class="author-role">Madre de familia - Primaria</div>
+                            </div>
                         </div>
                     </div>
                     <div class="testimonial-card">
@@ -1187,8 +1219,13 @@
                             "La metodología STEAM y el enfoque en valores hacen que nuestros hijos no solo aprendan, sino que se desarrollen integralmente."
                         </div>
                         <div class="testimonial-author">
-                            <div class="author-name">Ana Rodríguez</div>
-                            <div class="author-role">Madre de familia - Inicial</div>
+                            <div class="author-photo">
+                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Ana Rodríguez" class="profile-img">
+                            </div>
+                            <div class="author-info">
+                                <div class="author-name">Ana Rodríguez</div>
+                                <div class="author-role">Madre de familia - Inicial</div>
+                            </div>
                         </div>
                     </div>
                     <div class="testimonial-card">
@@ -1196,8 +1233,13 @@
                             "Las instalaciones son modernas y los profesores están muy comprometidos. Mi hija está feliz y motivada todos los días."
                         </div>
                         <div class="testimonial-author">
-                            <div class="author-name">Carlos Mendoza</div>
-                            <div class="author-role">Padre de familia - Secundaria</div>
+                            <div class="author-photo">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Carlos Mendoza" class="profile-img">
+                            </div>
+                            <div class="author-info">
+                                <div class="author-name">Carlos Mendoza</div>
+                                <div class="author-role">Padre de familia - Secundaria</div>
+                            </div>
                         </div>
                     </div>
                 </div>
