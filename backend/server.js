@@ -52,13 +52,18 @@ app.use('/uploads', cors({
   next();
 }, express.static('uploads'));
 
-// Servir estático para previsualización de la web pública (docs/diseños)
-// Con CSP relajado SOLO para esta ruta
-app.use('/web-preview', cors({
+// Servir previsualización de la web pública
+// Notas:
+// - Algunos entornos tienen problemas para resolver rutas con caracteres no ASCII ("ñ") en nombres de carpeta.
+// - Para evitar 404 por encoding, exponemos:
+//   a) Una ruta explícita para `header-vanguard-real.html`
+//   b) Una carpeta estática a `docs/diseños` para el resto de assets
+const previewCors = cors({
   origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true
-}), (req, res, next) => {
-  // Permitir imágenes externas (Unsplash, Pravatar), iframes (YouTube, Google Maps), y scripts inline para preview
+});
+
+function setPreviewCSP(req, res, next) {
   const csp = [
     "default-src 'self'",
     "img-src 'self' data: https://images.unsplash.com https://i.pravatar.cc",
@@ -71,7 +76,21 @@ app.use('/web-preview', cors({
   ].join('; ');
   res.setHeader('Content-Security-Policy', csp);
   next();
-}, express.static(path.join(__dirname, '..', 'docs', 'diseños')));
+}
+
+// a) Ruta explícita al HTML principal de preview
+app.get('/web-preview/header-vanguard-real.html', previewCors, setPreviewCSP, (req, res) => {
+  const filePath = path.join(__dirname, '..', 'docs', 'diseños', 'header-vanguard-real.html');
+  res.sendFile(filePath);
+});
+
+// Alias: acceder a /web-preview redirige al archivo principal
+app.get('/web-preview', (req, res) => {
+  res.redirect('/web-preview/header-vanguard-real.html');
+});
+
+// b) Servir assets estáticos (CSS/JS/IMG) desde la carpeta con "ñ"
+app.use('/web-preview', previewCors, setPreviewCSP, express.static(path.join(__dirname, '..', 'docs', 'diseños')));
 
 // Favicon vacío para evitar 404 en la preview
 app.get('/web-preview/favicon.ico', (req, res) => res.status(204).end());

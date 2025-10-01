@@ -3,6 +3,7 @@
 ## 📋 **1. COMPONENTE LISTA (List.js)**
 
 ### **Estructura Estándar:**
+
 ```javascript
 import React, { useState, useEffect } from 'react';
 import {
@@ -47,7 +48,7 @@ const [Modulo]List = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
-  
+
   // Handlers
   const handleSearch = (event) => setSearchTerm(event.target.value);
   const handleFilter = (event) => setFilterValue(event.target.value);
@@ -55,7 +56,7 @@ const [Modulo]List = () => {
     setAnchorEl(event.currentTarget);
     setSelectedItem(item);
   };
-  
+
   return (
     <Box>
       {/* Header */}
@@ -98,7 +99,7 @@ const [Modulo]List = () => {
               Nuevo [Módulo]
             </Button>
           </Box>
-          
+
           {/* Tabla */}
           <TableContainer component={Paper}>
             <Table>
@@ -114,7 +115,7 @@ const [Modulo]List = () => {
                   <TableRow key={item.id} hover sx={{ '&:hover': { backgroundColor: '#ffe6d9' } }}>
                     <TableCell>{item.nombre}</TableCell>
                     <TableCell>
-                      <Chip 
+                      <Chip
                         label={item.activo ? 'Activo' : 'Inactivo'}
                         color={item.activo ? 'success' : 'default'}
                         size="small"
@@ -135,7 +136,7 @@ const [Modulo]List = () => {
           </TableContainer>
         </CardContent>
       </Card>
-      
+
       {/* Menú Contextual */}
       <Menu
         anchorEl={anchorEl}
@@ -165,6 +166,7 @@ const [Modulo]List = () => {
 ## 📝 **2. COMPONENTE FORMULARIO (Form.js)**
 
 ### **Estructura Estándar:**
+
 ```javascript
 import React, { useState, useEffect } from 'react';
 import {
@@ -181,7 +183,7 @@ const [Modulo]Form = ({ open, mode, item, onClose, onSuccess }) => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  
+
   const handleChange = (field) => (event) => {
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -189,17 +191,17 @@ const [Modulo]Form = ({ open, mode, item, onClose, onSuccess }) => {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
-  
+
   const handleSubmit = async () => {
     // Validaciones
     const newErrors = {};
     if (!formData.nombre.trim()) newErrors.nombre = 'El nombre es requerido';
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    
+
     try {
       setLoading(true);
       if (mode === 'create') {
@@ -215,11 +217,11 @@ const [Modulo]Form = ({ open, mode, item, onClose, onSuccess }) => {
       setLoading(false);
     }
   };
-  
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
-        {mode === 'create' ? 'Nuevo [Módulo]' : 
+        {mode === 'create' ? 'Nuevo [Módulo]' :
          mode === 'edit' ? 'Editar [Módulo]' : 'Ver [Módulo]'}
       </DialogTitle>
       <DialogContent>
@@ -264,9 +266,9 @@ const [Modulo]Form = ({ open, mode, item, onClose, onSuccess }) => {
       <DialogActions>
         <Button onClick={onClose}>Cancelar</Button>
         {mode !== 'view' && (
-          <Button 
-            onClick={handleSubmit} 
-            variant="contained" 
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
             disabled={loading}
           >
             {mode === 'create' ? 'Crear' : 'Actualizar'}
@@ -283,6 +285,7 @@ const [Modulo]Form = ({ open, mode, item, onClose, onSuccess }) => {
 ## 👁️ **3. COMPONENTE VISTA (View.js)**
 
 ### **Estructura Estándar:**
+
 ```javascript
 import React from 'react';
 import {
@@ -292,7 +295,7 @@ import {
 
 const [Modulo]View = ({ open, item, onClose }) => {
   if (!item) return null;
-  
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>
@@ -317,7 +320,7 @@ const [Modulo]View = ({ open, item, onClose }) => {
               <Typography variant="subtitle2" color="text.secondary">
                 Estado
               </Typography>
-              <Chip 
+              <Chip
                 label={item.activo ? 'Activo' : 'Inactivo'}
                 color={item.activo ? 'success' : 'default'}
                 sx={{ mt: 1 }}
@@ -349,6 +352,7 @@ const [Modulo]View = ({ open, item, onClose }) => {
 ## 🎨 **4. ESTILOS Y COLORES ESTÁNDAR**
 
 ### **Colores de Grilla:**
+
 ```javascript
 // Cabecera de tabla
 backgroundColor: '#61a7d1'
@@ -361,19 +365,20 @@ backgroundColor: 'white'    // Filas impares
 '&:hover': { backgroundColor: '#ffe6d9 !important' }
 
 // Chips de estado
-<Chip 
-  label="Activo" 
-  color="success" 
-  size="small" 
+<Chip
+  label="Activo"
+  color="success"
+  size="small"
 />
-<Chip 
-  label="Inactivo" 
-  color="default" 
-  size="small" 
+<Chip
+  label="Inactivo"
+  color="default"
+  size="small"
 />
 ```
 
 ### **Títulos de Módulos:**
+
 ```javascript
 <Typography variant="h4" component="h1" color="primary">
   Gestión de [Módulo]
@@ -382,9 +387,6 @@ backgroundColor: 'white'    // Filas impares
 
 ---
 
-**Última actualización**: 2025-01-16  
-**Versión**: 1.0  
+**Última actualización**: 2025-01-16
+**Versión**: 1.0
 **Estado**: ✅ Patrón establecido y funcional
-
-
-
