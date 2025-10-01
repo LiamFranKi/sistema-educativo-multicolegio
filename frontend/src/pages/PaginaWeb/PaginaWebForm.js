@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
-  Card,
-  CardContent,
+  Paper,
   Typography,
   TextField,
   Button,
@@ -20,6 +19,7 @@ import {
   AccordionDetails,
   IconButton,
   Chip,
+  Toolbar,
 } from '@mui/material';
 import {
   ArrowBack as BackIcon,
@@ -27,7 +27,7 @@ import {
   ExpandMore as ExpandMoreIcon,
   Add as AddIcon,
   Edit as EditIcon,
-  Delete as DeleteIcon,
+  Web as WebIcon,
 } from '@mui/icons-material';
 import { webAdminApi } from '../../services/apiService';
 
@@ -123,28 +123,27 @@ const PaginaWebForm = () => {
   return (
     <Box>
       {/* Header */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Box display="flex" alignItems="center" gap={2} mb={2}>
-            <IconButton onClick={() => navigate('/dashboard/pagina-web/paginas')}>
-              <BackIcon />
-            </IconButton>
-            <Typography variant="h4" component="h1" color="primary">
-              {isEdit ? 'Editar Página' : 'Nueva Página'}
-            </Typography>
-          </Box>
+      <Paper sx={{ mb: 3 }}>
+        <Toolbar>
+          <IconButton onClick={() => navigate('/dashboard/pagina-web/paginas')} sx={{ mr: 2 }}>
+            <BackIcon />
+          </IconButton>
+          <WebIcon sx={{ mr: 2 }} color="primary" />
+          <Typography variant="h4" component="h1" sx={{ flexGrow: 1 }} color="primary">
+            {isEdit ? 'Editar Página' : 'Nueva Página'}
+          </Typography>
+        </Toolbar>
+      </Paper>
 
-          {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-        </CardContent>
-      </Card>
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
 
       {/* Formulario Principal */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
+      <Paper sx={{ mb: 3 }}>
+        <Box sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom>
             Información General
           </Typography>
@@ -217,13 +216,13 @@ const PaginaWebForm = () => {
               </Grid>
             </Grid>
           </form>
-        </CardContent>
-      </Card>
+        </Box>
+      </Paper>
 
       {/* Secciones (solo si es edición) */}
       {isEdit && (
-        <Card>
-          <CardContent>
+        <Paper>
+          <Box sx={{ p: 3 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
               <Typography variant="h6">
                 Secciones de la Página ({sections.length})
@@ -282,8 +281,8 @@ const PaginaWebForm = () => {
                 </Accordion>
               ))
             )}
-          </CardContent>
-        </Card>
+          </Box>
+        </Paper>
       )}
     </Box>
   );

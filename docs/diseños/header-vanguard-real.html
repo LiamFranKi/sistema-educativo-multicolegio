@@ -1746,10 +1746,10 @@
                     saberMasSection.blocks.forEach(block => {
                         if (block.tipo !== 'subsection') return;
                         const data = block.contenido_json;
-                        
+
                         const section = document.createElement('div');
                         section.className = 'nosotros-section';
-                        
+
                         const title = document.createElement('h2');
                         title.className = 'section-title';
                         title.textContent = data.titulo;

@@ -1,5 +1,66 @@
 # CHANGELOG
 
+## [2025-01-16] - Implementación del CRUD de Páginas Web
+
+### ✨ Nuevas Funcionalidades
+
+- **CRUD de Páginas Web**: Implementación completa del sistema de gestión de páginas web administrable
+- **Base de datos**: Tablas pages, sections, blocks para CMS genérico con estructura jerárquica
+- **API Backend**: Rutas completas para CRUD de páginas, secciones y bloques con validaciones
+- **Frontend**: Componentes PaginasWebList y PaginaWebForm siguiendo patrones del sistema
+- **Preview dinámico**: Sistema de vista previa que carga datos reales desde la base de datos
+
+### 🗄️ Base de Datos
+
+- **Tabla pages**: Estructura para páginas web con slug, título, estado y timestamps
+- **Tabla sections**: Secciones de páginas con layout, orden y configuración JSON
+- **Tabla blocks**: Bloques de contenido dentro de secciones con tipos y contenido JSON
+- **Tabla media**: Gestión de archivos multimedia del CMS
+- **Constraints**: Unicidad de slug por página, foreign keys entre tablas
+- **Datos iniciales**: Página 'home' con sección 'saber-mas' y contenido completo
+
+### 🔧 Backend API
+
+- **Rutas implementadas**: GET, POST, PUT, DELETE para /api/web-admin/pages, /api/web-admin/sections, /api/web-admin/blocks
+- **Filtros**: Por estado, búsqueda por título/slug
+- **Paginación**: Sistema completo de paginación con totales
+- **Validaciones**: Unicidad de slug, verificación de páginas existentes
+- **Endpoints públicos**: /api/web/* para consumo del frontend público
+- **Servicio estático**: /web-preview para servir archivos HTML con CSP relajado
+
+### 🎨 Frontend
+
+- **PaginasWebList**: Lista principal con grilla estándar, filtros, búsqueda y botón "Opciones"
+- **PaginaWebForm**: Formulario para crear/editar páginas con gestión de secciones en accordion
+- **Servicio API**: webAdminApi con métodos completos para todas las operaciones CRUD
+- **Navegación**: Rutas anidadas para gestión de páginas y secciones
+- **Preview**: Botón "Ver como va quedando" que abre preview con datos reales
+
+### 🎯 Características del Diseño
+
+- **Colores estándar**: Header azul #61a7d1, filas alternadas blanco/#e7f1f8, hover naranja #ffe6d9
+- **Botón Opciones**: Menú contextual con Ver Detalle, Editar Página, Eliminar Página
+- **Filtros**: Por estado (Borrador, Publicado, Archivado)
+- **Búsqueda**: Por título y slug
+- **Paginación**: Con opciones 5, 10, 25, 50 filas por página
+- **Estados**: Chips para mostrar estado actual de cada página
+
+### 🛠️ Tecnologías Utilizadas
+
+- **Backend**: Node.js, Express.js, PostgreSQL
+- **Frontend**: React, Material-UI, SweetAlert2, React Router
+- **Validaciones**: Frontend y backend con mensajes de error específicos
+- **Preview**: HTML estático con JavaScript dinámico y Axios para cargar datos
+- **CSP**: Content Security Policy relajado para preview con contenido externo
+
+### 🔄 Correcciones Técnicas
+
+- **Import paths**: Corregido import de `../db/postgres` a `../config/database` en controllers y routes
+- **Column names**: Aliasing de columnas `creado_en`/`actualizado_en` a `created_at`/`updated_at` para consistencia
+- **Navegación**: Agregado `useNavigate` hook en PaginaWebDashboard
+- **Rutas**: Configurado routing anidado para subpáginas del módulo web
+- **Export/Import**: Corregido uso de default vs named exports en componentes React
+
 ## [2025-01-16] - Implementación Completa del Módulo de Cursos
 
 ### ✨ Nuevas Funcionalidades

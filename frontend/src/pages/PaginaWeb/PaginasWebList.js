@@ -1,35 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Box,
-  Card,
-  CardContent,
-  Typography,
-  Button,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  IconButton,
-  Chip,
+  Typography,
   TextField,
-  InputAdornment,
-  Tooltip,
-  Alert,
+  Button,
+  Chip,
+  IconButton,
+  Menu,
+  MenuItem,
+  TablePagination,
   CircularProgress,
+  Alert,
 } from '@mui/material';
 import {
   Add as AddIcon,
+  Search as SearchIcon,
+  MoreVert as MoreVertIcon,
+  Visibility as VisibilityIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  Search as SearchIcon,
-  Visibility as PreviewIcon,
   Web as WebIcon,
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import { webAdminApi } from '../../services/apiService';
+import Swal from 'sweetalert2';
 
 const PaginasWebList = () => {
   const navigate = useNavigate();
@@ -37,194 +38,282 @@ const PaginasWebList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [total, setTotal] = useState(0);
 
-  useEffect(() => {
-    cargarPaginas();
-  }, []);
+  // Estados para el menú de opciones
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedPage, setSelectedPage] = useState(null);
 
   const cargarPaginas = async () => {
     try {
       setLoading(true);
-      setError(null);
       const response = await webAdminApi.getPages();
-      setPaginas(response.data.data || []);
-    } catch (err) {
-      console.error('Error cargando páginas:', err);
+
+      if (response.data.success) {
+        setPaginas(response.data.data || []);
+        setTotal(response.data.data?.length || 0);
+      } else {
+        setError('Error al cargar las páginas');
+      }
+    } catch (error) {
+      console.error('Error cargando páginas:', error);
       setError('Error al cargar las páginas');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async (id, titulo) => {
-    if (!window.confirm(`¿Estás seguro de eliminar la página "${titulo}"?\n\nEsto eliminará todas sus secciones y bloques.`)) {
-      return;
-    }
+  useEffect(() => {
+    cargarPaginas();
+  }, []);
 
-    try {
-      await webAdminApi.deletePage(id);
-      cargarPaginas();
-    } catch (err) {
-      console.error('Error eliminando página:', err);
-      alert('Error al eliminar la página');
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+    setPage(0);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  // Función para abrir el menú de opciones
+  const handleMenuOpen = (event, pagina) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedPage(pagina);
+  };
+
+  // Función para cerrar el menú de opciones
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedPage(null);
+  };
+
+  // Función para ver detalles
+  const handleView = (pagina) => {
+    navigate(`/dashboard/pagina-web/paginas/${pagina.id}`);
+    handleMenuClose();
+  };
+
+  // Función para editar
+  const handleEdit = (pagina) => {
+    navigate(`/dashboard/pagina-web/paginas/${pagina.id}`);
+    handleMenuClose();
+  };
+
+  // Función para eliminar
+  const handleDelete = async (pagina) => {
+    handleMenuClose();
+
+    const result = await Swal.fire({
+      title: 'Eliminar Página Permanentemente',
+      text: `¿Está seguro de que desea ELIMINAR PERMANENTEMENTE la página "${pagina.titulo}"? Esta acción NO se puede deshacer.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d32f2f',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await webAdminApi.deletePage(pagina.id);
+        Swal.fire('Eliminado', 'La página ha sido eliminada permanentemente de la base de datos', 'success');
+        cargarPaginas();
+      } catch (error) {
+        console.error('Error eliminando página:', error);
+        Swal.fire('Error', 'No se pudo eliminar la página', 'error');
+      }
     }
   };
 
-  const handlePreview = (slug) => {
-    const previewUrl = `${window.location.origin.replace(':3000', ':5000')}/web-preview/header-vanguard-real.html?v=preview&t=${Date.now()}`;
-    window.open(previewUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+  // Función para crear nueva página
+  const handleCreate = () => {
+    navigate('/dashboard/pagina-web/paginas/nueva');
   };
 
-  const getEstadoColor = (estado) => {
-    switch (estado) {
-      case 'publicado': return 'success';
-      case 'borrador': return 'warning';
-      case 'archivado': return 'default';
-      default: return 'default';
-    }
-  };
+  // Filtrar páginas según el término de búsqueda
+  const paginasFiltradas = paginas.filter(pagina =>
+    pagina.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    pagina.slug.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    pagina.estado.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const paginasFiltradas = paginas.filter(p =>
-    p.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.slug?.toLowerCase().includes(searchTerm.toLowerCase())
+  // Paginación
+  const paginasPaginadas = paginasFiltradas.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
   );
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
         <CircularProgress />
       </Box>
     );
   }
 
+  if (error) {
+    return (
+      <Alert severity="error" sx={{ m: 2 }}>
+        {error}
+      </Alert>
+    );
+  }
+
   return (
-    <Box>
-      {/* Header */}
-      <Card sx={{ mb: 3 }}>
-        <CardContent>
-          <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-            <Box display="flex" alignItems="center" gap={1}>
-              <WebIcon color="primary" sx={{ fontSize: 32 }} />
-              <Typography variant="h4" component="h1" color="primary">
-                Páginas del Sitio Web
-              </Typography>
-            </Box>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddIcon />}
-              onClick={() => navigate('/dashboard/pagina-web/paginas/nueva')}
-            >
-              Nueva Página
-            </Button>
+    <Box sx={{ p: 3 }}>
+      <Paper sx={{ overflow: 'hidden', borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+        {/* Header con icono y título */}
+        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <WebIcon color="primary" sx={{ fontSize: 20 }} />
+            <Typography variant="h6" color="primary">
+              Páginas Web
+            </Typography>
           </Box>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleCreate}
+            size="small"
+            sx={{ borderRadius: 2 }}
+          >
+            Nueva Página
+          </Button>
+        </Box>
 
-          {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
-            </Alert>
-          )}
-
-          {/* Buscador */}
+        {/* Barra de búsqueda */}
+        <Box sx={{ p: 2, borderBottom: '1px solid #e0e0e0' }}>
           <TextField
-            fullWidth
-            placeholder="Buscar por título o slug..."
+            placeholder="Buscar páginas..."
+            variant="outlined"
+            size="small"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleSearch}
             InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
+              startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />,
             }}
-            sx={{ maxWidth: 400 }}
+            sx={{ width: 400 }}
           />
-        </CardContent>
-      </Card>
+        </Box>
 
-      {/* Tabla */}
-      <Card>
-        <TableContainer component={Paper}>
+        {/* Tabla con formato estándar */}
+        <TableContainer>
           <Table>
             <TableHead>
-              <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                <TableCell align="center" sx={{ fontWeight: 'bold' }}>ID</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 'bold' }}>Título</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 'bold' }}>Slug</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 'bold' }}>Estado</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 'bold' }}>Última Actualización</TableCell>
-                <TableCell align="center" sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
+              <TableRow sx={{ backgroundColor: '#61a7d1' }}>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>
+                  Título
+                </TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>
+                  Slug
+                </TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>
+                  Estado
+                </TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>
+                  Fecha de Creación
+                </TableCell>
+                <TableCell align="center" sx={{ color: 'white', fontWeight: 'bold' }}>
+                  Acciones
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {paginasFiltradas.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
-                    <Typography color="text.secondary">
-                      {searchTerm ? 'No se encontraron páginas' : 'No hay páginas registradas'}
-                    </Typography>
+              {paginasPaginadas.map((pagina, index) => (
+                <TableRow
+                  key={pagina.id}
+                  hover
+                  sx={{
+                    backgroundColor: index % 2 === 0 ? 'white' : '#e7f1f8',
+                    '&:hover': { backgroundColor: '#ffe6d9 !important' }
+                  }}
+                >
+                  <TableCell align="center">{pagina.titulo}</TableCell>
+                  <TableCell align="center">
+                    <Chip
+                      label={pagina.slug}
+                      color="primary"
+                      variant="outlined"
+                      size="small"
+                    />
+                  </TableCell>
+                  <TableCell align="center">
+                    <Chip
+                      label={pagina.estado}
+                      color={pagina.estado === 'publicado' ? 'success' : 'warning'}
+                      variant="outlined"
+                      size="small"
+                    />
+                  </TableCell>
+                  <TableCell align="center">
+                    {new Date(pagina.created_at).toLocaleDateString('es-ES')}
+                  </TableCell>
+              <TableCell align="center">
+                <Button
+                  size="small"
+                  variant="outlined"
+                  onClick={(e) => handleMenuOpen(e, pagina)}
+                  startIcon={<MoreVertIcon />}
+                >
+                  Opciones
+                </Button>
                   </TableCell>
                 </TableRow>
-              ) : (
-                paginasFiltradas.map((pagina) => (
-                  <TableRow key={pagina.id} hover>
-                    <TableCell align="center">{pagina.id}</TableCell>
-                    <TableCell align="center">{pagina.titulo}</TableCell>
-                    <TableCell align="center">
-                      <code style={{ backgroundColor: '#f0f0f0', padding: '2px 6px', borderRadius: 4 }}>
-                        {pagina.slug}
-                      </code>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Chip
-                        label={pagina.estado}
-                        color={getEstadoColor(pagina.estado)}
-                        size="small"
-                      />
-                    </TableCell>
-                    <TableCell align="center">
-                      {pagina.updated_at ? new Date(pagina.updated_at).toLocaleDateString('es-PE') : '-'}
-                    </TableCell>
-                    <TableCell align="center">
-                      <Box display="flex" gap={1} justifyContent="center">
-                        <Tooltip title="Vista Previa" arrow>
-                          <IconButton
-                            color="info"
-                            size="small"
-                            onClick={() => handlePreview(pagina.slug)}
-                          >
-                            <PreviewIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Editar" arrow>
-                          <IconButton
-                            color="primary"
-                            size="small"
-                            onClick={() => navigate(`/dashboard/pagina-web/paginas/${pagina.id}`)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Eliminar" arrow>
-                          <IconButton
-                            color="error"
-                            size="small"
-                            onClick={() => handleDelete(pagina.id, pagina.titulo)}
-                            disabled={pagina.slug === 'home'} // No permitir eliminar home
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
-      </Card>
+
+        {/* Paginación */}
+        <TablePagination
+          component="div"
+          count={paginasFiltradas.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25]}
+          labelRowsPerPage="Filas por página:"
+          labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count}`}
+        />
+
+        {/* Menú de opciones */}
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+          PaperProps={{
+            sx: {
+              borderRadius: 2,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            },
+          }}
+        >
+          <MenuItem onClick={() => handleView(selectedPage)}>
+            <VisibilityIcon sx={{ mr: 1, color: 'info.main' }} />
+            Ver Detalles
+          </MenuItem>
+          <MenuItem onClick={() => handleEdit(selectedPage)}>
+            <EditIcon sx={{ mr: 1, color: 'primary.main' }} />
+            Editar Página
+          </MenuItem>
+          <MenuItem
+            onClick={() => handleDelete(selectedPage)}
+            sx={{ color: 'error.main' }}
+          >
+            <DeleteIcon sx={{ mr: 1 }} />
+            Eliminar Página
+          </MenuItem>
+        </Menu>
+      </Paper>
     </Box>
   );
 };

@@ -5,19 +5,46 @@
 ### **Estructura Estándar:**
 ```javascript
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, CardHeader, CardContent, 
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Button, IconButton, Menu, MenuItem, TextField, Select, FormControl,
-  InputLabel, Chip, Typography, Box, Paper
+import {
+  Box,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  TextField,
+  Button,
+  Chip,
+  IconButton,
+  Menu,
+  MenuItem,
+  TablePagination,
+  CircularProgress,
+  Alert,
+  Toolbar,
 } from '@mui/material';
+import {
+  Add as AddIcon,
+  Search as SearchIcon,
+  MoreVert as MoreVertIcon,
+  Visibility as VisibilityIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  [Icono] as [Icono]Icon,
+} from '@mui/icons-material';
 
 const [Modulo]List = () => {
   // Estados
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterValue, setFilterValue] = useState('');
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   
@@ -31,23 +58,31 @@ const [Modulo]List = () => {
   
   return (
     <Box>
-      <Card>
-        <CardHeader
-          avatar={<[Icono] sx={{ fontSize: 32, color: '#1976d2' }} />}
-          title={
-            <Typography variant="h4" component="h1" color="primary">
-              Gestión de [Módulo]
-            </Typography>
-          }
-          subheader="Administra los [módulos] del sistema"
-          sx={{ backgroundColor: '#f5f5f5' }}
-        />
-        <CardContent>
-          {/* Búsqueda y Filtros */}
-          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-            <TextField
-              label="Buscar"
-              value={searchTerm}
+      {/* Header */}
+      <Paper sx={{ mb: 3 }}>
+        <Toolbar>
+          <[Icono]Icon sx={{ mr: 2 }} color="primary" />
+          <Typography variant="h4" component="h1" sx={{ flexGrow: 1 }} color="primary">
+            Gestión de [Módulo]
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => navigate('/dashboard/[modulo]/nuevo')}
+          >
+            Nuevo [Módulo]
+          </Button>
+        </Toolbar>
+      </Paper>
+
+      {/* Grilla */}
+      <Paper>
+        {/* Búsqueda y Filtros */}
+        <Box sx={{ p: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
+          <TextField
+            label="Buscar"
+            value={searchTerm}
               onChange={handleSearch}
               size="small"
               sx={{ flexGrow: 1 }}

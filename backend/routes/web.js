@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { query } = require('../db/postgres');
+const { query } = require('../config/database');
 
 // NOTA: Endpoints públicos de la web. Por ahora devuelven datos de ejemplo
 // para permitir la integración inmediata del HOME. Luego se conectarán a BD.

@@ -1,10 +1,10 @@
-const { query } = require('../db/postgres');
+const { query } = require('../config/database');
 
 // ==================== PAGES ====================
 exports.getPages = async (req, res, next) => {
   try {
     const result = await query(
-      'SELECT id, slug, titulo, estado, created_at, updated_at FROM pages ORDER BY created_at DESC'
+      'SELECT id, slug, titulo, estado, creado_en as created_at, actualizado_en as updated_at FROM pages ORDER BY creado_en DESC'
     );
     res.json({ success: true, data: result.rows });
   } catch (error) {
@@ -16,7 +16,7 @@ exports.getPageById = async (req, res, next) => {
   try {
     const { id } = req.params;
     const pageRes = await query('SELECT * FROM pages WHERE id = $1', [id]);
-    
+
     if (pageRes.rowCount === 0) {
       return res.status(404).json({ success: false, message: 'Página no encontrada' });
     }
@@ -69,7 +69,7 @@ exports.updatePage = async (req, res, next) => {
     const { slug, titulo, estado } = req.body;
 
     const result = await query(
-      'UPDATE pages SET slug = $1, titulo = $2, estado = $3, updated_at = NOW() WHERE id = $4 RETURNING *',
+      'UPDATE pages SET slug = $1, titulo = $2, estado = $3, actualizado_en = NOW() WHERE id = $4 RETURNING *',
       [slug, titulo, estado, id]
     );
 
