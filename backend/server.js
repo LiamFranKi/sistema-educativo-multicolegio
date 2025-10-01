@@ -80,13 +80,16 @@ function setPreviewCSP(req, res, next) {
 }
 
 // ===== RUTAS DE WEB PREVIEW (ANTES DE LAS RUTAS DE API) =====
+console.log('🔧 Registrando rutas de web-preview...');
+
 // Debug: verificar qué archivos están disponibles
 app.get('/web-preview/debug', (req, res) => {
+  console.log('🔍 Debug endpoint llamado');
   const baseDir = path.join(__dirname, '..');
   const docsDir = path.join(baseDir, 'docs');
   const diseñosDir = path.join(docsDir, 'diseños');
   const webDir = path.join(docsDir, 'web');
-
+  
   const debug = {
     baseDir,
     docsDir,
@@ -103,12 +106,13 @@ app.get('/web-preview/debug', (req, res) => {
       web: fs.existsSync(webDir) ? fs.readdirSync(webDir) : []
     }
   };
-
+  
   res.json(debug);
 });
 
 // a) Ruta explícita al HTML principal de preview
 app.get('/web-preview/header-vanguard-real.html', previewCors, setPreviewCSP, (req, res) => {
+  console.log('📄 Ruta header-vanguard-real.html llamada');
   const publicWeb = path.join(__dirname, 'public', 'web', 'header-vanguard-real.html');
   const fileDiseños = path.join(__dirname, '..', 'docs', 'diseños', 'header-vanguard-real.html');
   const fileWeb = path.join(__dirname, '..', 'docs', 'web', 'header-vanguard-real.html');
@@ -125,13 +129,16 @@ app.get('/web-preview/header-vanguard-real.html', previewCors, setPreviewCSP, (r
           : null;
 
   if (!candidate) {
+    console.log('❌ Archivo no encontrado en ninguna ubicación');
     return res.status(404).send('Archivo de preview no encontrado');
   }
+  console.log('✅ Sirviendo archivo desde:', candidate);
   res.sendFile(candidate);
 });
 
 // Alias: acceder a /web-preview redirige al archivo principal
 app.get('/web-preview', (req, res) => {
+  console.log('🔄 Redirigiendo /web-preview a header-vanguard-real.html');
   res.redirect('/web-preview/header-vanguard-real.html');
 });
 
@@ -179,6 +186,7 @@ app.get('/api/health', (req, res) => {
 
 // Manejo de rutas no encontradas
 app.use('*', (req, res) => {
+  console.log('❌ Ruta no encontrada:', req.method, req.originalUrl);
   res.status(404).json({
     success: false,
     message: 'Ruta no encontrada'
