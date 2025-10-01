@@ -41,15 +41,17 @@ pool.on('error', (err) => {
 const testConnection = async () => {
   try {
     const client = await pool.connect();
+    console.log('✅ Conexión a BD exitosa');
     const result = await client.query('SELECT NOW()');
-    console.log('✅ Conexión a la base de datos exitosa:', result.rows[0].now);
+    console.log('✅ Query de prueba exitosa:', result.rows[0]);
     client.release();
-    return true;
   } catch (err) {
-    console.error('❌ Error conectando a la base de datos:', err.message);
-    return false;
+    console.error('❌ Error en conexión a BD:', err);
   }
 };
+
+// Probar conexión al iniciar
+testConnection();
 
 // Función para ejecutar consultas
 const query = async (text, params) => {
