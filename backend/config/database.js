@@ -1,16 +1,32 @@
 const { Pool } = require('pg');
 
 // Configuración de la base de datos
-const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME || 'sistema_educativo_multicolegio',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'waltito10',
-  max: 20, // máximo de conexiones en el pool
-  idleTimeoutMillis: 30000, // tiempo de inactividad antes de cerrar conexión
-  connectionTimeoutMillis: 2000, // tiempo de espera para conectar
-});
+let poolConfig;
+
+if (process.env.DATABASE_URL) {
+  // Railway y otros servicios en la nube usan DATABASE_URL
+  poolConfig = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  };
+} else {
+  // Configuración local
+  poolConfig = {
+    host: process.env.DB_HOST || 'localhost',
+    port: process.env.DB_PORT || 5432,
+    database: process.env.DB_NAME || 'sistema_educativo_multicolegio',
+    user: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || 'waltito10',
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  };
+}
+
+const pool = new Pool(poolConfig);
 
 // Eventos del pool
 pool.on('connect', () => {
