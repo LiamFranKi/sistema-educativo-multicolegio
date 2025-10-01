@@ -91,6 +91,8 @@ app.get('/web-preview', (req, res) => {
 
 // b) Servir assets estáticos (CSS/JS/IMG) desde la carpeta con "ñ"
 app.use('/web-preview', previewCors, setPreviewCSP, express.static(path.join(__dirname, '..', 'docs', 'diseños')));
+// Fallback: si por temas de encoding no encuentra en "diseños", servir desde la raíz de docs
+app.use('/web-preview', previewCors, setPreviewCSP, express.static(path.join(__dirname, '..', 'docs')));
 
 // Favicon vacío para evitar 404 en la preview
 app.get('/web-preview/favicon.ico', (req, res) => res.status(204).end());
