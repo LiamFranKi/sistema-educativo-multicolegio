@@ -79,6 +79,7 @@ function setPreviewCSP(req, res, next) {
   next();
 }
 
+// ===== RUTAS DE WEB PREVIEW (ANTES DE LAS RUTAS DE API) =====
 // Debug: verificar qué archivos están disponibles
 app.get('/web-preview/debug', (req, res) => {
   const baseDir = path.join(__dirname, '..');
@@ -140,6 +141,8 @@ app.use('/web-preview', previewCors, setPreviewCSP, express.static(path.join(__d
 
 // Favicon vacío para evitar 404 en la preview
 app.get('/web-preview/favicon.ico', (req, res) => res.status(204).end());
+
+// ===== RUTAS DE LA API =====
 
 // Rutas de la API
 app.use('/api/auth', require('./routes/auth'));
