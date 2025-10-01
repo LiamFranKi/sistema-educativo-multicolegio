@@ -48,6 +48,7 @@ router.get('/', authenticateToken, async (req, res) => {
 // GET /api/configuracion/colegio - Obtener configuraciones del colegio (PÚBLICO)
 router.get('/colegio', async (req, res) => {
   try {
+    console.log('🔍 Intentando obtener configuraciones del colegio...');
     const result = await query(
       `SELECT clave, valor, descripcion, tipo
        FROM configuracion
@@ -55,6 +56,8 @@ router.get('/colegio', async (req, res) => {
        ORDER BY clave`
     );
 
+    console.log('📊 Resultado de configuracion:', result.rows.length, 'filas');
+    
     const colegio = {};
     result.rows.forEach(row => {
       let valor = row.valor;
@@ -67,16 +70,19 @@ router.get('/colegio', async (req, res) => {
       colegio[row.clave.replace('colegio_', '')] = valor;
     });
 
+    console.log('✅ Configuraciones del colegio procesadas:', Object.keys(colegio));
+    
     res.json({
       success: true,
       colegio
     });
 
   } catch (error) {
-    console.error('Error obteniendo datos del colegio:', error);
+    console.error('❌ Error obteniendo configuraciones del colegio:', error);
     res.status(500).json({
       success: false,
-      message: 'Error interno del servidor'
+      message: 'Error interno del servidor',
+      error: error.message
     });
   }
 });
