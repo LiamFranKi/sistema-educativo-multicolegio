@@ -52,7 +52,7 @@ router.get('/colegio', async (req, res) => {
     const result = await query(
       `SELECT clave, valor, descripcion, tipo
        FROM configuracion
-       WHERE categoria = 'colegio'
+       WHERE activo = true
        ORDER BY clave`
     );
 
@@ -67,7 +67,9 @@ router.get('/colegio', async (req, res) => {
         valor = parseFloat(valor);
       }
 
-      colegio[row.clave.replace('colegio_', '')] = valor;
+      // Mapear las claves a nombres más simples
+      const claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
+      colegio[claveSimple] = valor;
     });
 
     console.log('✅ Configuraciones del colegio procesadas:', Object.keys(colegio));
