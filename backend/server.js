@@ -86,7 +86,7 @@ app.get('/web-preview/debug', (req, res) => {
   const docsDir = path.join(baseDir, 'docs');
   const diseñosDir = path.join(docsDir, 'diseños');
   const webDir = path.join(docsDir, 'web');
-  
+
   const debug = {
     baseDir,
     docsDir,
@@ -103,23 +103,26 @@ app.get('/web-preview/debug', (req, res) => {
       web: fs.existsSync(webDir) ? fs.readdirSync(webDir) : []
     }
   };
-  
+
   res.json(debug);
 });
 
 // a) Ruta explícita al HTML principal de preview
 app.get('/web-preview/header-vanguard-real.html', previewCors, setPreviewCSP, (req, res) => {
+  const publicWeb = path.join(__dirname, 'public', 'web', 'header-vanguard-real.html');
   const fileDiseños = path.join(__dirname, '..', 'docs', 'diseños', 'header-vanguard-real.html');
   const fileWeb = path.join(__dirname, '..', 'docs', 'web', 'header-vanguard-real.html');
   const fileDocsRoot = path.join(__dirname, '..', 'docs', 'header-vanguard-real.html');
 
-  const candidate = fs.existsSync(fileDiseños)
-    ? fileDiseños
-    : fs.existsSync(fileWeb)
-      ? fileWeb
-      : fs.existsSync(fileDocsRoot)
-        ? fileDocsRoot
-        : null;
+  const candidate = fs.existsSync(publicWeb)
+    ? publicWeb
+    : fs.existsSync(fileDiseños)
+      ? fileDiseños
+      : fs.existsSync(fileWeb)
+        ? fileWeb
+        : fs.existsSync(fileDocsRoot)
+          ? fileDocsRoot
+          : null;
 
   if (!candidate) {
     return res.status(404).send('Archivo de preview no encontrado');
@@ -132,11 +135,14 @@ app.get('/web-preview', (req, res) => {
   res.redirect('/web-preview/header-vanguard-real.html');
 });
 
-// b) Servir assets estáticos (CSS/JS/IMG) desde la carpeta con "ñ"
+// b) Servir assets estáticos (CSS/JS/IMG)
+// 1) Priorizar carpeta dentro de backend (siempre incluida en despliegue)
+app.use('/web-preview', previewCors, setPreviewCSP, express.static(path.join(__dirname, 'public', 'web')));
+// 2) Carpeta con "ñ" (puede fallar en algunos entornos)
 app.use('/web-preview', previewCors, setPreviewCSP, express.static(path.join(__dirname, '..', 'docs', 'diseños')));
-// Fallback: si por temas de encoding no encuentra en "diseños", servir desde la raíz de docs
+// 3) Raíz de docs
 app.use('/web-preview', previewCors, setPreviewCSP, express.static(path.join(__dirname, '..', 'docs')));
-// Fallback adicional: carpeta ascii 'web'
+// 4) Carpeta ascii 'web'
 app.use('/web-preview', previewCors, setPreviewCSP, express.static(path.join(__dirname, '..', 'docs', 'web')));
 
 // Favicon vacío para evitar 404 en la preview
