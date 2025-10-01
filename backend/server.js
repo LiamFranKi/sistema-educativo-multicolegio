@@ -82,6 +82,27 @@ function setPreviewCSP(req, res, next) {
 // ===== RUTAS DE WEB PREVIEW (ANTES DE LAS RUTAS DE API) =====
 console.log('🔧 Registrando rutas de web-preview...');
 
+// Diagnóstico simple: verificar rutas y existencia de archivos (texto plano)
+app.get('/wpd', (req, res) => {
+  try {
+    const publicWeb = path.join(__dirname, 'public', 'web', 'header-vanguard-real.html');
+    const fileDiseños = path.join(__dirname, '..', 'docs', 'diseños', 'header-vanguard-real.html');
+    const fileWeb = path.join(__dirname, '..', 'docs', 'web', 'header-vanguard-real.html');
+    const fileDocsRoot = path.join(__dirname, '..', 'docs', 'header-vanguard-real.html');
+
+    const lines = [];
+    lines.push('cwd=' + process.cwd());
+    lines.push('__dirname=' + __dirname);
+    lines.push('publicWeb=' + publicWeb + ' exists=' + fs.existsSync(publicWeb));
+    lines.push('fileDiseños=' + fileDiseños + ' exists=' + fs.existsSync(fileDiseños));
+    lines.push('fileWeb=' + fileWeb + ' exists=' + fs.existsSync(fileWeb));
+    lines.push('fileDocsRoot=' + fileDocsRoot + ' exists=' + fs.existsSync(fileDocsRoot));
+    res.set('Content-Type', 'text/plain').send(lines.join('\n'));
+  } catch (e) {
+    res.status(500).send('error:' + (e && e.message));
+  }
+});
+
 // Debug: verificar qué archivos están disponibles
 app.get('/web-preview/debug', (req, res) => {
   console.log('🔍 Debug endpoint llamado');
@@ -89,7 +110,7 @@ app.get('/web-preview/debug', (req, res) => {
   const docsDir = path.join(baseDir, 'docs');
   const diseñosDir = path.join(docsDir, 'diseños');
   const webDir = path.join(docsDir, 'web');
-  
+
   const debug = {
     baseDir,
     docsDir,
@@ -106,7 +127,7 @@ app.get('/web-preview/debug', (req, res) => {
       web: fs.existsSync(webDir) ? fs.readdirSync(webDir) : []
     }
   };
-  
+
   res.json(debug);
 });
 
