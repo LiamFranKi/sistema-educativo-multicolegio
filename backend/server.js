@@ -58,6 +58,7 @@ app.use('/uploads', cors({
 // - Para evitar 404 por encoding, exponemos:
 //   a) Una ruta explícita para `header-vanguard-real.html`
 //   b) Una carpeta estática a `docs/diseños` para el resto de assets
+const fs = require('fs');
 const previewCors = cors({
   origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true
@@ -80,8 +81,22 @@ function setPreviewCSP(req, res, next) {
 
 // a) Ruta explícita al HTML principal de preview
 app.get('/web-preview/header-vanguard-real.html', previewCors, setPreviewCSP, (req, res) => {
-  const filePath = path.join(__dirname, '..', 'docs', 'diseños', 'header-vanguard-real.html');
-  res.sendFile(filePath);
+  const fileDiseños = path.join(__dirname, '..', 'docs', 'diseños', 'header-vanguard-real.html');
+  const fileWeb = path.join(__dirname, '..', 'docs', 'web', 'header-vanguard-real.html');
+  const fileDocsRoot = path.join(__dirname, '..', 'docs', 'header-vanguard-real.html');
+
+  const candidate = fs.existsSync(fileDiseños)
+    ? fileDiseños
+    : fs.existsSync(fileWeb)
+      ? fileWeb
+      : fs.existsSync(fileDocsRoot)
+        ? fileDocsRoot
+        : null;
+
+  if (!candidate) {
+    return res.status(404).send('Archivo de preview no encontrado');
+  }
+  res.sendFile(candidate);
 });
 
 // Alias: acceder a /web-preview redirige al archivo principal
@@ -93,6 +108,8 @@ app.get('/web-preview', (req, res) => {
 app.use('/web-preview', previewCors, setPreviewCSP, express.static(path.join(__dirname, '..', 'docs', 'diseños')));
 // Fallback: si por temas de encoding no encuentra en "diseños", servir desde la raíz de docs
 app.use('/web-preview', previewCors, setPreviewCSP, express.static(path.join(__dirname, '..', 'docs')));
+// Fallback adicional: carpeta ascii 'web'
+app.use('/web-preview', previewCors, setPreviewCSP, express.static(path.join(__dirname, '..', 'docs', 'web')));
 
 // Favicon vacío para evitar 404 en la preview
 app.get('/web-preview/favicon.ico', (req, res) => res.status(204).end());
