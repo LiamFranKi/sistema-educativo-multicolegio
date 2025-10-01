@@ -79,6 +79,33 @@ function setPreviewCSP(req, res, next) {
   next();
 }
 
+// Debug: verificar qué archivos están disponibles
+app.get('/web-preview/debug', (req, res) => {
+  const baseDir = path.join(__dirname, '..');
+  const docsDir = path.join(baseDir, 'docs');
+  const diseñosDir = path.join(docsDir, 'diseños');
+  const webDir = path.join(docsDir, 'web');
+  
+  const debug = {
+    baseDir,
+    docsDir,
+    diseñosDir,
+    webDir,
+    exists: {
+      docs: fs.existsSync(docsDir),
+      diseños: fs.existsSync(diseñosDir),
+      web: fs.existsSync(webDir)
+    },
+    files: {
+      docs: fs.existsSync(docsDir) ? fs.readdirSync(docsDir) : [],
+      diseños: fs.existsSync(diseñosDir) ? fs.readdirSync(diseñosDir) : [],
+      web: fs.existsSync(webDir) ? fs.readdirSync(webDir) : []
+    }
+  };
+  
+  res.json(debug);
+});
+
 // a) Ruta explícita al HTML principal de preview
 app.get('/web-preview/header-vanguard-real.html', previewCors, setPreviewCSP, (req, res) => {
   const fileDiseños = path.join(__dirname, '..', 'docs', 'diseños', 'header-vanguard-real.html');
