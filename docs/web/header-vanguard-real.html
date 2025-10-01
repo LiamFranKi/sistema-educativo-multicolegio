@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Vanguard Schools - Diseño Real</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap&v=2" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', 'Helvetica Neue', 'Arial', sans-serif;
+            background: #f5f5f5;
+        }
+
+        /* Header de ancho completo */
+        .header-container {
+            width: 100%;
+            background: white;
+            position: relative;
+            z-index: 1000;
+        }
+
+        /* Barra Superior Azul Oscuro */
+        .header-top-bar {
+            background: #1A4060;
+            color: white;
+            padding: 14px 0;
+            font-size: 14px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .top-bar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr; /* Redes | Contacto | VanguardNet */
+            align-items: center;
+            justify-items: center;
+            gap: 16px;
+        }
+
+        .top-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            justify-content: center;
+            justify-self: center;
+        }
+
+        /* Redes Sociales */
+        .social-icons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .social-icon {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-1px) scale(1.05);
+            opacity: 0.8;
+        }
+
+        /* Información de Contacto */
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            justify-content: center; /* Centrado en la franja */
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .contact-item + .contact-item {
+            padding-left: 18px;
+            border-left: 1px solid rgba(255,255,255,0.3); /* Separador sutil */
+        }
+
+        .contact-icon {
+            width: 24px;
+            height: 24px;
+            background: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #ffffff;
+            filter: brightness(0) invert(1);
+        }
+
+        /* Botón VanguardNet llamativo */
+        .vanguardnet-btn {
+            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
+            color: white;
+            padding: 6px 14px;
+            border: 2px solid #ffffff;
+            border-radius: 999px; /* píldora */
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.25s ease-in-out;
+            box-shadow: 0 6px 18px rgba(26,64,96,0.35);
+            position: relative;
+            justify-self: end;
+            overflow: hidden;
+        }
+
+        .vanguardnet-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -120%;
+            height: 100%;
+            width: 120%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+            transform: skewX(-25deg);
+            transition: left 0.5s ease;
+        }
+
+        .vanguardnet-btn:hover {
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: 0 10px 26px rgba(26,64,96,0.5);
+            filter: brightness(1.06);
+        }
+
+        .vanguardnet-btn:hover::after {
+            left: 120%;
+        }
+
+        /* Barra Principal Blanca */
+        .header-main {
+            background: white;
+            padding: 16px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            height: 75px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 14px; /* separación horizontal sutil entre items */
+            align-items: center;
+        }
+
+        .nav-item { position: relative; }
+
+        .nav-link {
+            display: block;
+            padding: 12px 20px;
+            color: #1A4060;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            transition: all 0.2s ease-in-out;
+            border-radius: 0;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: #1A4060;
+        }
+        .nav-link.active {
+            background: #1A4060;
+            color: white;
+        }
+
+        /* Dropdown Menu Styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle::after {
+            content: ' ▼';
+            font-size: 10px;
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown:hover .dropdown-toggle::after {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 200px;
+            width: auto;
+            white-space: nowrap;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            border-radius: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border: 1px solid #e0e0e0;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 20px;
+            color: #1A4060;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            letter-spacing: 0.2px;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            border-radius: 0;
+        }
+
+        /* Icono de submenú a color */
+        .menu-icon {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
+            display: inline-block;
+        }
+
+        .dropdown-link:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-link:hover {
+            background: #1A4060;
+            color: white;
+        }
+
+        .dropdown-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
+            transition: width 0.3s ease;
+        }
+
+        .dropdown-link:hover::before {
+            width: 3px;
+        }
+
+        /* Banner/Hero Section */
+        .hero-banner {
+            width: 100%;
+            height: 320px;
+            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border-top: 2px solid #1A4060;
+        }
+
+        .hero-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 1; z-index: 1; }
+
+        /* Sección Principal del HOME */
+        .main-home-section {
+            background: #f8f9fa;
+            padding: 60px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .home-content {
+            text-align: center;
+            color: #333;
+        }
+
+        .home-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1A4060;
+            margin-bottom: 20px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            position: relative;
+        }
+
+        .home-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border-radius: 2px;
+        }
+
+        .home-description {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .home-quote {
+            font-size: 16px;
+            color: #1A4060;
+            font-style: italic;
+            margin-bottom: 40px;
+            line-height: 1.5;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        /* Botón Saber Más */
+        .saber-mas-btn {
+            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            box-shadow: 0 4px 15px rgba(26, 64, 96, 0.3);
+        }
+
+        .saber-mas-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 64, 96, 0.4);
+        }
+
+        .arrow {
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .saber-mas-btn.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        /* Contenido desplegable */
+        .saber-mas-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 30px;
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .saber-mas-content.active {
+            max-height: 3000px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Secciones del contenido */
+        .nosotros-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1A4060;
+            text-align: center;
+            margin-bottom: 40px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border-radius: 2px;
+        }
+
+        /* Grids para diferentes secciones */
+        .identity-grid, .niveles-grid, .programas-grid, .instalaciones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        /* Cards generales */
+        .identity-card, .nivel-card, .programa-card, .instalacion-card {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .saber-mas-content.active .identity-card,
+        .saber-mas-content.active .nivel-card,
+        .saber-mas-content.active .programa-card,
+        .saber-mas-content.active .instalacion-card {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Transiciones escalonadas para efecto elegante */
+        .saber-mas-content.active .identity-card:nth-child(1) { transition-delay: 0.1s; }
+        .saber-mas-content.active .identity-card:nth-child(2) { transition-delay: 0.2s; }
+        .saber-mas-content.active .identity-card:nth-child(3) { transition-delay: 0.3s; }
+        .saber-mas-content.active .nivel-card:nth-child(1) { transition-delay: 0.1s; }
+        .saber-mas-content.active .nivel-card:nth-child(2) { transition-delay: 0.2s; }
+        .saber-mas-content.active .nivel-card:nth-child(3) { transition-delay: 0.3s; }
+        .saber-mas-content.active .programa-card:nth-child(1) { transition-delay: 0.1s; }
+        .saber-mas-content.active .programa-card:nth-child(2) { transition-delay: 0.2s; }
+        .saber-mas-content.active .programa-card:nth-child(3) { transition-delay: 0.3s; }
+        .saber-mas-content.active .programa-card:nth-child(4) { transition-delay: 0.4s; }
+        .saber-mas-content.active .programa-card:nth-child(5) { transition-delay: 0.5s; }
+        .saber-mas-content.active .programa-card:nth-child(6) { transition-delay: 0.6s; }
+        .saber-mas-content.active .instalacion-card:nth-child(1) { transition-delay: 0.1s; }
+        .saber-mas-content.active .instalacion-card:nth-child(2) { transition-delay: 0.2s; }
+        .saber-mas-content.active .instalacion-card:nth-child(3) { transition-delay: 0.3s; }
+        .saber-mas-content.active .instalacion-card:nth-child(4) { transition-delay: 0.4s; }
+        .saber-mas-content.active .instalacion-card:nth-child(5) { transition-delay: 0.5s; }
+        .saber-mas-content.active .instalacion-card:nth-child(6) { transition-delay: 0.6s; }
+
+        .identity-card:hover, .nivel-card:hover, .programa-card:hover, .instalacion-card:hover {
+            transform: translateY(-8px) !important;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15) !important;
+            transition: all 0.3s ease !important;
+        }
+
+        /* Iconos de las cards */
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* Títulos de las cards */
+        .identity-card h3, .nivel-card h3, .programa-card h3, .instalacion-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1A4060;
+            margin-bottom: 15px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        /* Línea amarilla debajo de cada título */
+        .title-line {
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            margin: 0 auto 20px auto;
+            border-radius: 1px;
+        }
+
+        /* Texto de las cards */
+        .identity-card p, .nivel-card p, .programa-card p, .instalacion-card p {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.7;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        /* Sección Proceso de Admisión */
+        .admission-section {
+            background: white;
+            padding: 80px 0;
+        }
+
+        .admission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin: 50px 0;
+        }
+
+        .admission-step {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .admission-step:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 auto 20px auto;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .admission-step h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1A4060;
+            margin-bottom: 15px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .admission-step p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .admission-cta {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .agenda-btn {
+            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
+            color: white;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            box-shadow: 0 6px 20px rgba(26, 64, 96, 0.3);
+        }
+
+        .agenda-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(26, 64, 96, 0.4);
+        }
+
+        /* Sección Testimonios */
+        .testimonials-section {
+            background: #f8f9fa;
+            padding: 80px 0;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 60px;
+            color: #1A4060;
+            font-family: serif;
+            opacity: 0.3;
+        }
+
+        .testimonial-text {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            border-top: 2px solid #1A4060;
+            padding-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-photo {
+            flex-shrink: 0;
+        }
+
+        .profile-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #1A4060;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover .profile-img {
+            transform: scale(1.05);
+            border-color: #3470B3;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1A4060;
+            margin-bottom: 5px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .author-role {
+            font-size: 14px;
+            color: #666;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        /* Sección Video */
+        .video-section {
+            background: white;
+            padding: 80px 0;
+        }
+
+        .video-container {
+            max-width: 800px;
+            margin: 50px auto;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+        }
+
+        .video-description {
+            text-align: center;
+            font-size: 16px;
+            color: #666;
+            margin-top: 30px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        /* Sección Ubicación */
+        .location-section {
+            background: #f8f9fa;
+            padding: 80px 0;
+        }
+
+        .location-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-top: 50px;
+            align-items: stretch;
+        }
+
+        .location-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .location-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .location-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+            text-align: center;
+        }
+
+        .location-card h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1A4060;
+            margin-bottom: 20px;
+            text-align: center;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .location-card p {
+            font-size: 15px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .map-container {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            height: 85%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .map-actions {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .map-btn {
+            background: linear-gradient(135deg, #1A4060 0%, #3470B3 100%);
+            color: white;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            box-shadow: 0 6px 20px rgba(26, 64, 96, 0.3);
+        }
+
+        .map-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(26, 64, 96, 0.4);
+        }
+
+        /* Footer Styles */
+        .main-footer {
+            background: linear-gradient(135deg, #1A4060 0%, #2c5282 100%);
+            color: white;
+            padding: 60px 0 20px 0;
+            margin-top: 80px;
+        }
+
+
+        .footer-main {
+            margin-bottom: 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            align-items: start;
+        }
+
+        .footer-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            height: fit-content;
+            min-width: 0;
+        }
+
+        .footer-section:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .footer-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #FFD700;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            text-align: center;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .footer-title::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border-radius: 1px;
+        }
+
+        .footer-content {
+            color: #f0f0f0;
+        }
+
+        .main-footer .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .main-footer .contact-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(2px);
+        }
+
+        .main-footer .contact-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .main-footer .contact-info {
+            font-size: 12px;
+            line-height: 1.4;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .main-footer .contact-info strong {
+            color: #FFD700;
+            font-weight: 600;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .footer-link {
+            color: #f0f0f0;
+            text-decoration: none;
+            font-size: 12px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            padding: 6px 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .footer-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFD700;
+            transform: translateX(2px);
+        }
+
+        .footer-bottom {
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+            padding-top: 30px;
+        }
+
+        .footer-bottom-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .footer-logo {
+            flex-shrink: 0;
+        }
+
+        .logo-footer {
+            height: 60px;
+            width: auto;
+            filter: brightness(0) invert(1);
+            transition: all 0.3s ease;
+        }
+
+        .logo-footer:hover {
+            transform: scale(1.05);
+            filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(45deg);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            color: #f0f0f0;
+            text-decoration: none;
+            font-size: 14px;
+            font-family: 'Poppins', 'Arial', sans-serif;
+            padding: 10px 15px;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #FFD700;
+            transform: translateY(-3px);
+        }
+
+        /* HOVER de iconos de redes igual que el logo del footer */
+        /* Iconos de redes: volver a logos blancos con hover suave */
+        .footer-social img { transition: all 0.3s ease; filter: brightness(0) invert(1); }
+        .footer-social a:hover img { transform: scale(1.05); opacity: 0.9; }
+
+        .footer-copyright {
+            text-align: center;
+            color: #f0f0f0;
+            font-family: 'Poppins', 'Arial', sans-serif;
+        }
+
+        .footer-copyright p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .footer-subtitle {
+            color: #FFD700 !important;
+            font-weight: 600;
+            font-size: 16px !important;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .top-bar-content { grid-template-columns: 1fr; gap: 10px; padding: 0 20px; }
+            .top-left { justify-content: center; }
+            .contact-info { justify-content: center; gap: 16px; }
+            .main-content { flex-direction: column; gap: 18px; padding: 0 20px; }
+            .nav-menu { flex-wrap: wrap; justify-content: center; }
+            .nav-link { padding: 10px 14px; font-size: 14px; }
+
+            /* Dropdown responsive styles */
+            .dropdown-menu {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                border: none;
+                background: #f8f9fa;
+                margin-left: 0;
+                border-radius: 0;
+                width: 100%;
+                min-width: auto;
+                white-space: normal;
+            }
+
+            .dropdown-link {
+                padding: 12px 20px;
+                font-size: 13px;
+                border-bottom: 1px solid #e9ecef;
+                border-radius: 0;
+            }
+
+            .dropdown-link:hover {
+                background: #e9ecef;
+            }
+
+            .dropdown-toggle::after {
+                content: ' ▶';
+                transform: none;
+            }
+
+            .dropdown:hover .dropdown-toggle::after {
+                transform: rotate(90deg);
+            }
+
+            .hero-banner { height: 240px; }
+
+            /* Responsive para sección HOME */
+            .main-home-section { padding: 40px 0; }
+            .home-title { font-size: 28px; }
+            .home-description { font-size: 16px; }
+            .home-quote { font-size: 14px; }
+            .saber-mas-btn { padding: 12px 25px; font-size: 14px; }
+
+            /* Responsive para contenido desplegable */
+            .section-title { font-size: 24px; margin-bottom: 30px; }
+            .identity-grid, .niveles-grid, .programas-grid, .instalaciones-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .identity-card, .nivel-card, .programa-card, .instalacion-card {
+                padding: 25px;
+            }
+            .card-icon { font-size: 40px; }
+            .identity-card h3, .nivel-card h3, .programa-card h3, .instalacion-card h3 {
+                font-size: 20px;
+            }
+            .identity-card p, .nivel-card p, .programa-card p, .instalacion-card p {
+                font-size: 14px;
+            }
+
+            /* Responsive para nuevas secciones */
+            .admission-grid { grid-template-columns: 1fr; gap: 25px; }
+            .admission-step { padding: 25px; }
+            .step-number { width: 50px; height: 50px; font-size: 20px; }
+            .admission-step h3 { font-size: 18px; }
+            .admission-step p { font-size: 13px; }
+            .agenda-btn { padding: 15px 30px; font-size: 16px; }
+
+            .testimonials-grid { grid-template-columns: 1fr; gap: 20px; }
+            .testimonial-card { padding: 30px; }
+            .testimonial-text { font-size: 15px; }
+            .testimonial-author { gap: 12px; }
+            .profile-img { width: 50px; height: 50px; }
+            .author-name { font-size: 16px; }
+            .author-role { font-size: 13px; }
+
+            .video-container { margin: 30px auto; }
+            .video-description { font-size: 14px; }
+
+            .location-grid { grid-template-columns: 1fr; gap: 30px; }
+            .location-card { padding: 30px; }
+            .location-card h3 { font-size: 20px; }
+            .location-card p { font-size: 14px; }
+            .map-btn { padding: 12px 25px; font-size: 14px; }
+
+            /* Footer Responsive */
+            .main-footer { padding: 40px 0 15px 0; margin-top: 60px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 25px; }
+            .footer-section { padding: 25px; }
+            .footer-title { font-size: 18px; margin-bottom: 20px; }
+            .contact-item { padding: 12px; margin-bottom: 15px; }
+            .contact-icon { font-size: 20px; }
+            .contact-info { font-size: 13px; }
+            .footer-link { padding: 8px 12px; font-size: 13px; }
+            .footer-bottom-content { flex-direction: column; text-align: center; gap: 20px; }
+            .footer-brand { flex-direction: column; gap: 20px; }
+            .logo-footer { height: 50px; }
+            .footer-social { justify-content: center; flex-wrap: wrap; }
+            .social-link { padding: 8px 12px; font-size: 13px; }
+            .footer-copyright p { font-size: 13px; }
+            .footer-subtitle { font-size: 14px !important; }
+        }
+
+        /* Demo Content */
+        .demo-content { padding: 40px; text-align: center; color: #666; max-width: 1200px; margin: 0 auto; }
+        .demo-section { margin-bottom: 30px; }
+        .demo-title { font-size: 24px; font-family: 'Museo', 'Arial', sans-serif; color: #1A4060; margin-bottom: 15px; }
+        .demo-text { line-height: 1.6; max-width: 600px; margin: 0 auto; font-family: 'Museo', 'Arial', sans-serif; }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <!-- Barra Superior Azul Oscuro -->
+        <div class="header-top-bar">
+            <div class="top-bar-content">
+                <div class="top-left">
+                    <!-- Redes Sociales -->
+                    <div class="social-icons">
+                        <a href="#" class="social-icon" title="Facebook">
+                            <img src="icons/facebook-white.png" alt="Facebook" style="width: 28px; height: 28px;">
+                        </a>
+                        <a href="#" class="social-icon" title="Instagram">
+                            <img src="icons/instagram-white.png" alt="Instagram" style="width: 28px; height: 28px;">
+                        </a>
+                        <a href="#" class="social-icon" title="TikTok">
+                            <img src="icons/tiktok-white.png" alt="TikTok" style="width: 28px; height: 28px;">
+                        </a>
+                        <a href="#" class="social-icon" title="YouTube">
+                            <img src="icons/youtube-white.png" alt="YouTube" style="width: 28px; height: 28px;">
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Información de Contacto -->
+                <div class="contact-info">
+                        <div class="contact-item">
+                            <div class="contact-icon">🏫</div>
+                            <span>Jr Toribio de Luzuriaga Mz F lote 18 y 19 - SMP</span>
+                        </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">📞</div>
+                        <span>946 592 100 / 922 084 833</span>
+                    </div>
+                </div>
+
+                <!-- Botón VanguardNet -->
+                <button class="vanguardnet-btn" title="Acceder a Intranet">
+                    <span style="font-size:16px;">👨‍💻</span>
+                    Intranet
+                </button>
+            </div>
+        </div>
+
+        <!-- Barra Principal Blanca -->
+        <div class="header-main">
+            <div class="main-content">
+                <!-- Logo -->
+                <div class="logo-section">
+                    <img src="logo-vanguard.png" alt="Vanguard Schools" class="logo">
+                </div>
+
+                <!-- Navegación -->
+                <ul class="nav-menu">
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle active">Inicio</a>
+                        <ul class="dropdown-menu">
+            <li><a href="#" class="dropdown-link">Visita Guiada</a></li>
+            <li><a href="#" class="dropdown-link">Lista de Útiles</a></li>
+            <li><a href="#" class="dropdown-link">Documentos de Interés</a></li>
+            <li><a href="#" class="dropdown-link">Trabaja con Nosotros</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle">Niveles</a>
+                        <ul class="dropdown-menu">
+            <li><a href="#" class="dropdown-link">Nivel Inicial</a></li>
+            <li><a href="#" class="dropdown-link">Nivel Primaria</a></li>
+            <li><a href="#" class="dropdown-link">Nivel Secundaria</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a href="#" class="nav-link">Tour Virtual</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Preguntas Frecuentes</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banner/Hero Section - PERTENECE AL BODY -->
+    <div class="hero-banner">
+        <img src="banner-images/bannerhome.jpg" alt="Colegio Vanguard Schools" class="hero-image">
+    </div>
+
+    <!-- Sección Principal del HOME -->
+    <div class="main-home-section">
+        <div class="container">
+            <div class="home-content">
+                <h2 class="home-title">¿Por qué estudiar en Vanguard Schools?</h2>
+                <p class="home-description">
+                    En Vanguard Schools ofrecemos una educación moderna, segura e integral, desde inicial hasta secundaria. Contamos con infraestructura antisísmica, aulas amplias e interactivas, piscinas temperadas y libros digitales gratuitos.
+                    Nuestro programa incluye inglés intensivo, talleres artísticos y deportivos, sin costo adicional acompañamiento psicopedagógico y una sólida formación en valores.
+                    Formamos líderes creativos y responsables, preparados para un futuro global.
+                </p>
+                <p class="home-quote">
+                    "En Vanguard Schools, tu hijo no solo estudia: vive una experiencia que transforma su presente y asegura su futuro."
+                </p>
+
+                <!-- Botón Saber Más con contenido desplegable -->
+                <button class="saber-mas-btn" onclick="toggleSaberMas()">
+                    Saber Más <span class="arrow">▼</span>
+                </button>
+
+                <!-- Contenido desplegable -->
+                <div class="saber-mas-content" id="saberMasContent">
+                    <!-- Sección Misión, Visión y Valores -->
+                    <div class="nosotros-section">
+                        <h2 class="section-title">Nuestra Identidad</h2>
+                        <div class="identity-grid">
+                            <div class="identity-card">
+                                <div class="card-icon">🎯</div>
+                                <h3>Misión</h3>
+                                <div class="title-line"></div>
+                                <p>Formar estudiantes autónomos, bilingües y con sólidos valores, preparados para enfrentar los retos del futuro a través de una educación integral que desarrolla habilidades académicas, sociales y emocionales.</p>
+                            </div>
+                            <div class="identity-card">
+                                <div class="card-icon">👁️</div>
+                                <h3>Visión</h3>
+                                <div class="title-line"></div>
+                                <p>Ser reconocidos como la institución educativa líder en formación integral, innovación tecnológica y excelencia académica, formando ciudadanos del mundo comprometidos con el desarrollo sostenible.</p>
+                            </div>
+                            <div class="identity-card">
+                                <div class="card-icon">💎</div>
+                                <h3>Valores</h3>
+                                <div class="title-line"></div>
+                                <p>Respeto, responsabilidad, honestidad, solidaridad y excelencia. Formamos estudiantes con principios sólidos que contribuyen positivamente a la sociedad.</p>
+                            </div>
+        </div>
+        </div>
+
+                    <!-- Sección Niveles Educativos -->
+                    <div class="nosotros-section">
+                        <h2 class="section-title">Niveles Educativos</h2>
+                        <div class="niveles-grid">
+                            <div class="nivel-card">
+                                <div class="card-icon">👶</div>
+                                <h3>Educación Inicial</h3>
+                                <div class="title-line"></div>
+                                <p>Desarrollo integral de niños de 3 a 5 años a través del juego, exploración y descubrimiento. Estimulamos la creatividad y el aprendizaje significativo con Metodología STEAM.</p>
+                            </div>
+                            <div class="nivel-card">
+                                <div class="card-icon">🎒</div>
+                                <h3>Educación Primaria</h3>
+                                <div class="title-line"></div>
+                                <p>Formación académica sólida de 6 a 11 años con enfoque en competencias básicas, pensamiento crítico y desarrollo de habilidades sociales.</p>
+                            </div>
+                            <div class="nivel-card">
+                                <div class="card-icon">🎓</div>
+                                <h3>Educación Secundaria</h3>
+                                <div class="title-line"></div>
+                                <p>Preparación integral de 12 a 16 años para la vida universitaria y profesional, desarrollando liderazgo, investigación y pensamiento crítico.</p>
+                            </div>
+                        </div>
+        </div>
+
+                    <!-- Sección Programas Especiales -->
+                    <div class="nosotros-section">
+                        <h2 class="section-title">Programas Especiales</h2>
+                        <div class="programas-grid">
+                            <div class="programa-card">
+                                <div class="card-icon">🌍</div>
+                                <h3>Programa Bilingüe</h3>
+                                <div class="title-line"></div>
+                                <p>Inmersión total en inglés desde inicial hasta secundaria y preparación para estudios en el extranjero.</p>
+                            </div>
+                            <div class="programa-card">
+                                <div class="card-icon">💻</div>
+                                <h3>Tecnología Educativa</h3>
+                                <div class="title-line"></div>
+                                <p>Integración de tecnología de vanguardia en el proceso de aprendizaje. Programación y herramientas digitales innovadoras.</p>
+                            </div>
+                            <div class="programa-card">
+                                <div class="card-icon">🎨</div>
+                                <h3>Arte y Cultura</h3>
+                                <div class="title-line"></div>
+                                <p>Desarrollo de habilidades artísticas y culturales. Danza y artes plásticas para una formación integral.</p>
+                            </div>
+                            <div class="programa-card">
+                                <div class="card-icon">⚽</div>
+                                <h3>Deportes</h3>
+                                <div class="title-line"></div>
+                                <p>Programa deportivo integral que promueve la salud física, trabajo en equipo y valores deportivos. Fútbol, balonmano, natación y más.</p>
+                            </div>
+                            <div class="programa-card">
+                                <div class="card-icon">📱</div>
+                                <h3>Libros Digitales Interactivos</h3>
+                                <div class="title-line"></div>
+                                <p>Plataforma digital con libros interactivos, recursos multimedia y herramientas de aprendizaje personalizado para una educación moderna.</p>
+                            </div>
+                            <div class="programa-card">
+                                <div class="card-icon">👨‍🏫</div>
+                                <h3>Club con Trainers Extranjeros</h3>
+                                <div class="title-line"></div>
+                                <p>Clubes especializados con instructores nativos de inglés para inmersión total en el idioma y cultura anglosajona.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección Instalaciones -->
+                    <div class="nosotros-section">
+                        <h2 class="section-title">Nuestras Instalaciones</h2>
+                        <div class="instalaciones-grid">
+                            <div class="instalacion-card">
+                                <div class="card-icon">🏫</div>
+                                <h3>Aulas Modernas</h3>
+                                <div class="title-line"></div>
+                                <p>Aulas equipadas con tecnología de punta, pizarras interactivas y espacios diseñados para el aprendizaje colaborativo.</p>
+                            </div>
+                            <div class="instalacion-card">
+                                <div class="card-icon">🔬</div>
+                                <h3>Laboratorios</h3>
+                                <div class="title-line"></div>
+                                <p>Laboratorios de ciencias y computación completamente equipados para experimentación y aprendizaje práctico.</p>
+                            </div>
+                            <div class="instalacion-card">
+                                <div class="card-icon">📚</div>
+                                <h3>Biblioteca</h3>
+                                <div class="title-line"></div>
+                                <p>Biblioteca moderna con recursos digitales y espacios de estudio individual y grupal.</p>
+                            </div>
+                            <div class="instalacion-card">
+                                <div class="card-icon">🏃</div>
+                                <h3>Áreas Deportivas</h3>
+                                <div class="title-line"></div>
+                                <p>Canchas deportivas, piscina y áreas verdes para actividades físicas y recreativas.</p>
+                            </div>
+                            <div class="instalacion-card">
+                                <div class="card-icon">🏊</div>
+                                <h3>Natación</h3>
+                                <div class="title-line"></div>
+                                <p>Piscinas temperadas para clases de natación y actividades acuáticas durante todo el año.</p>
+                            </div>
+                            <div class="instalacion-card">
+                                <div class="card-icon">🏟️</div>
+                                <h3>02 Canchas Sintéticas Polideportivos</h3>
+                                <div class="title-line"></div>
+                                <p>Dos canchas sintéticas de última generación para fútbol, balonmano y múltiples deportes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección Proceso de Admisión -->
+    <div class="admission-section">
+        <div class="container">
+            <div class="admission-content">
+                <h2 class="section-title">Proceso de Admisión Simple y Transparente</h2>
+                <div class="admission-grid">
+                    <div class="admission-step">
+                        <div class="step-number">1</div>
+                        <h3>Solicita Información</h3>
+                        <div class="title-line"></div>
+                        <p>Comunícate con nosotros para recibir información detallada sobre nuestros programas educativos y proceso de admisión.</p>
+                    </div>
+                    <div class="admission-step">
+                        <div class="step-number">2</div>
+                        <h3>Visita Guiada</h3>
+                        <div class="title-line"></div>
+                        <p>Agenda una visita guiada para conocer nuestras instalaciones, metodología y ambiente educativo.</p>
+                    </div>
+                    <div class="admission-step">
+                        <div class="step-number">3</div>
+                        <h3>Evaluación</h3>
+                        <div class="title-line"></div>
+                        <p>Realizamos una evaluación integral para conocer las necesidades y potencial de cada estudiante.</p>
+                    </div>
+                    <div class="admission-step">
+                        <div class="step-number">4</div>
+                        <h3>Matrícula</h3>
+                        <div class="title-line"></div>
+                        <p>Completa el proceso de matrícula y forma parte de la familia Vanguard Schools.</p>
+                    </div>
+                </div>
+                <div class="admission-cta">
+                    <a href="/agendar-visita" class="agenda-btn">
+                        🎯 Agenda tu Visita
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección Testimonios -->
+    <div class="testimonials-section">
+        <div class="container">
+            <div class="testimonials-content">
+                <h2 class="section-title">Lo que dicen nuestras familias</h2>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">
+                            "Vanguard Schools ha transformado completamente la educación de mi hijo. El programa bilingüe y la tecnología integrada son excepcionales."
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-photo">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=150&auto=format&fit=crop" alt="María González" class="profile-img" onerror="this.src='https://i.pravatar.cc/150?img=47'">
+                            </div>
+                            <div class="author-info">
+                                <div class="author-name">María González</div>
+                                <div class="author-role">Madre de familia - Primaria</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">
+                            "La metodología STEAM y el enfoque en valores hacen que nuestros hijos no solo aprendan, sino que se desarrollen integralmente."
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-photo">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=150&auto=format&fit=crop" alt="Ana Rodríguez" class="profile-img" onerror="this.src='https://i.pravatar.cc/150?img=12'">
+                            </div>
+                            <div class="author-info">
+                                <div class="author-name">Ana Rodríguez</div>
+                                <div class="author-role">Madre de familia - Inicial</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">
+                            "Las instalaciones son modernas y los profesores están muy comprometidos. Mi hija está feliz y motivada todos los días."
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-photo">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150&auto=format&fit=crop" alt="Carlos Mendoza" class="profile-img" onerror="this.src='https://i.pravatar.cc/150?img=3'">
+                            </div>
+                            <div class="author-info">
+                                <div class="author-name">Carlos Mendoza</div>
+                                <div class="author-role">Padre de familia - Secundaria</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección Video Institucional -->
+    <div class="video-section">
+        <div class="container">
+            <div class="video-content">
+                <h2 class="section-title">Video Institucional Vanguard Schools</h2>
+                <div class="video-container">
+                    <div class="video-wrapper">
+                        <iframe
+                            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                            title="Video Institucional Vanguard Schools"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+                <p class="video-description">
+                    Conoce más sobre nuestra propuesta educativa, instalaciones y la experiencia única que ofrecemos a nuestros estudiantes.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección Ubicación -->
+    <div class="location-section">
+        <div class="container">
+            <div class="location-content">
+                <h2 class="section-title">¿Ya sabes cómo llegar a Vanguard Schools?</h2>
+                <div class="location-grid">
+                    <div class="location-info">
+                        <div class="location-card">
+                            <div class="location-icon">📍</div>
+                            <h3>Nuestra Ubicación</h3>
+                            <div class="title-line"></div>
+                            <p><strong>Dirección:</strong><br>Jr. Toribio de Luzuriaga Mz F<br>lote 18 y 19 - SMP</p>
+                            <p><strong>Teléfonos:</strong><br>946 592 100 / 922 084 833</p>
+                            <p><strong>Email:</strong><br>admin@vanguardschools.edu.pe</p>
+                        </div>
+                    </div>
+                    <div class="location-map">
+                        <div class="map-container">
+                            <iframe
+                                src="https://www.google.com/maps?q=Jr.%20Toribio%20de%20Luzuriaga%20Mz%20F%20lote%2018%20y%2019%20-%20SMP&output=embed"
+                                width="100%"
+                                height="100%"
+                                style="border:0; flex: 1;"
+                                allowfullscreen=""
+                                loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade">
+                            </iframe>
+                        </div>
+                        <div class="map-actions">
+                            <a href="https://maps.google.com/?q=Jr.+Toribio+de+Luzuriaga+Mz+F+lote+18+y+19+-+SMP" class="map-btn" target="_blank">
+                                🗺️ Ver en Google Maps
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <!-- Sección Principal del Footer -->
+            <div class="footer-main">
+                <div class="footer-grid">
+                    <!-- Menú de Navegación -->
+                    <div class="footer-section">
+                        <h3 class="footer-title">🧭 MENÚ</h3>
+                        <div class="footer-content">
+                            <div class="footer-links">
+                                <a href="/inicio" class="footer-link">🏠 Inicio</a>
+                                <a href="/visita-guiada" class="footer-link">👥 Visita Guiada</a>
+                                <a href="/lista-utiles" class="footer-link">📋 Lista de Útiles</a>
+                                <a href="/documentos" class="footer-link">📄 Documentos de Interés</a>
+                                <a href="/trabaja-nosotros" class="footer-link">💼 Trabaja con Nosotros</a>
+                                <a href="/contacto" class="footer-link">📞 Contacto</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Niveles Educativos -->
+                    <div class="footer-section">
+                        <h3 class="footer-title">🎓 NIVELES</h3>
+                        <div class="footer-content">
+                            <div class="footer-links">
+                                <a href="/inicial" class="footer-link">👶 Educación Inicial</a>
+                                <a href="/primaria" class="footer-link">🎒 Educación Primaria</a>
+                                <a href="/secundaria" class="footer-link">🎓 Educación Secundaria</a>
+                                <a href="/tour-virtual" class="footer-link">🌐 Tour Virtual</a>
+                                <a href="/preguntas-frecuentes" class="footer-link">❓ Preguntas Frecuentes</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información Legal -->
+                    <div class="footer-section">
+                        <h3 class="footer-title">⚖️ SOBRE ESTE SITIO</h3>
+                        <div class="footer-content">
+                            <div class="footer-links">
+                                <a href="/politicas-privacidad" class="footer-link">🔒 Políticas de Privacidad</a>
+                                <a href="/libro-reclamaciones" class="footer-link">📝 Libro de Reclamaciones</a>
+                                <a href="/terminos-condiciones" class="footer-link">📋 Términos y Condiciones</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección Inferior del Footer -->
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <!-- Logo y Redes Sociales -->
+                    <div class="footer-brand">
+                        <div class="footer-logo">
+                            <img src="logo-vanguard.png" alt="Vanguard Schools" class="logo-footer">
+                        </div>
+                        <div class="footer-social">
+                            <a href="#" class="social-link facebook" title="Facebook">
+                                <img src="icons/facebook-white.png" alt="Facebook" style="width: 24px; height: 24px;">
+                            </a>
+                            <a href="#" class="social-link instagram" title="Instagram">
+                                <img src="icons/instagram-white.png" alt="Instagram" style="width: 24px; height: 24px;">
+                            </a>
+                            <a href="#" class="social-link tiktok" title="TikTok">
+                                <img src="icons/tiktok-white.png" alt="TikTok" style="width: 24px; height: 24px;">
+                            </a>
+                            <a href="#" class="social-link youtube" title="YouTube">
+                                <img src="icons/youtube-white.png" alt="YouTube" style="width: 24px; height: 24px;">
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Copyright -->
+                    <div class="footer-copyright">
+                        <p>&copy; 2026 - Todos los derechos Reservados</p>
+                        <p class="footer-subtitle">Vanguard Schools - A la Vanguardia de la Tecnología</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        document.querySelector('.vanguardnet-btn').addEventListener('click', function() {
+            alert('VanguardNet - Acceso al sistema educativo');
+        });
+
+        // Función para el botón Saber Más
+        function toggleSaberMas() {
+            const content = document.getElementById('saberMasContent');
+            const button = document.querySelector('.saber-mas-btn');
+
+            if (content.classList.contains('active')) {
+                // Ocultar contenido
+                content.classList.remove('active');
+                button.classList.remove('active');
+            } else {
+                // Mostrar contenido
+                content.classList.add('active');
+                button.classList.add('active');
+            }
+        }
+
+                // --- Preview dinámica solo cuando se sirve desde /web-preview o con ?v=preview ---
+        (function habilitarPreviewDinamica() {
+            try {
+                const url = new URL(window.location.href);
+                const esPreviewRuta = window.location.pathname.startsWith('/web-preview');
+                const esPreviewQuery = url.searchParams.get('v') === 'preview';
+                if (!esPreviewRuta && !esPreviewQuery) return;
+
+                // Cargar Axios dinámicamente
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js';
+                script.onload = async () => {
+                    try {
+                        const [menusRes, bannerRes, principalRes, pageRes] = await Promise.all([
+                            axios.get('/api/web/menus'),
+                            axios.get('/api/web/home/banner'),
+                            axios.get('/api/web/home/principal'),
+                            axios.get('/api/web/pages/home')
+                        ]);
+
+                        if (menusRes?.data?.success) actualizarMenus(menusRes.data.data || []);
+                        if (bannerRes?.data?.success && bannerRes.data.data) actualizarBanner(bannerRes.data.data);
+                        if (principalRes?.data?.success && principalRes.data.data) actualizarContenidoPrincipal(principalRes.data.data);
+                        if (pageRes?.data?.success && pageRes.data.data?.sections) actualizarSaberMas(pageRes.data.data.sections);
+                    } catch (e) {
+                        console.error('Error cargando preview dinámica:', e);
+                    }
+                };
+                document.body.appendChild(script);
+
+                function actualizarMenus(menus) {
+                    const navMenu = document.querySelector('.nav-menu');
+                    if (!navMenu || !Array.isArray(menus)) return;
+                    navMenu.innerHTML = '';
+                    menus.forEach(menu => {
+                        const li = document.createElement('li');
+                        li.className = 'nav-item';
+                        if (menu.submenus && menu.submenus.length > 0) {
+                            li.classList.add('dropdown');
+                            li.innerHTML = `
+                                <a href="${menu.url || '#'}" class="nav-link dropdown-toggle">${menu.nombre}</a>
+                                <ul class="dropdown-menu">
+                                    ${(menu.submenus || []).map(sub => `<li><a href="${sub.url || '#'}" class="dropdown-link">${sub.nombre}</a></li>`).join('')}
+                                </ul>
+                            `;
+                        } else {
+                            li.innerHTML = `<a href="${menu.url || '#'}" class="nav-link">${menu.nombre}</a>`;
+                        }
+                        navMenu.appendChild(li);
+                    });
+                }
+
+                function actualizarBanner(banner) {
+                    const bannerImg = document.querySelector('.banner-image img');
+                    const bannerContainer = document.querySelector('.banner-image');
+                    if (bannerImg && banner?.imagen_url) bannerImg.src = banner.imagen_url;
+                    if (bannerContainer && banner?.altura_px) bannerContainer.style.height = `${banner.altura_px}px`;
+                }
+
+                function actualizarContenidoPrincipal(principal) {
+                    const titulo = document.querySelector('.home-title');
+                    const descripcion = document.querySelector('.home-description');
+                    const cita = document.querySelector('.home-quote');
+                    if (titulo && principal?.titulo) titulo.textContent = principal.titulo;
+                    if (descripcion && principal?.descripcion_larga) descripcion.textContent = principal.descripcion_larga;
+                    if (cita && principal?.cita) cita.textContent = `"${principal.cita}"`;
+                }
+
+                function actualizarSaberMas(sections) {
+                    const saberMasSection = sections.find(s => s.key === 'saber-mas');
+                    if (!saberMasSection || !saberMasSection.blocks) return;
+
+                    const container = document.getElementById('saberMasContent');
+                    if (!container) return;
+
+                    container.innerHTML = ''; // Limpiar contenido estático
+
+                    saberMasSection.blocks.forEach(block => {
+                        if (block.tipo !== 'subsection') return;
+                        const data = block.contenido_json;
+
+                        const section = document.createElement('div');
+                        section.className = 'nosotros-section';
+
+                        const title = document.createElement('h2');
+                        title.className = 'section-title';
+                        title.textContent = data.titulo;
+                        section.appendChild(title);
+
+                        const grid = document.createElement('div');
+                        // Determinar clase de grid según el título
+                        if (data.titulo.includes('Identidad')) {
+                            grid.className = 'identity-grid';
+                        } else if (data.titulo.includes('Instalaciones')) {
+                            grid.className = 'instalaciones-grid';
+                        } else if (data.titulo.includes('Programas')) {
+                            grid.className = 'programas-grid';
+                        } else if (data.titulo.includes('Niveles')) {
+                            grid.className = 'niveles-grid';
+                        } else {
+                            grid.className = 'identity-grid'; // por defecto
+                        }
+
+                        (data.items || []).forEach(item => {
+                            const card = document.createElement('div');
+                            // Determinar clase de card
+                            if (data.titulo.includes('Identidad')) {
+                                card.className = 'identity-card';
+                            } else if (data.titulo.includes('Instalaciones')) {
+                                card.className = 'instalacion-card';
+                            } else if (data.titulo.includes('Programas')) {
+                                card.className = 'programa-card';
+                            } else if (data.titulo.includes('Niveles')) {
+                                card.className = 'nivel-card';
+                            } else {
+                                card.className = 'identity-card';
+                            }
+
+                            card.innerHTML = `
+                                <div class="card-icon">${item.icono}</div>
+                                <h3>${item.titulo}</h3>
+                                <div class="title-line"></div>
+                                <p>${item.descripcion}</p>
+                            `;
+                            grid.appendChild(card);
+                        });
+
+                        section.appendChild(grid);
+                        container.appendChild(section);
+                    });
+                }
+            } catch (e) {
+                console.error('Preview dinámica no disponible:', e);
+            }
+        })();
+    </script>
+</body>
+</html>
