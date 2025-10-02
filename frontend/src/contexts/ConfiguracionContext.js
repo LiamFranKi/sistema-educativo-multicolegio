@@ -38,9 +38,22 @@ export const ConfiguracionProvider = ({ children }) => {
 
       if (response.success && response.colegio) {
         console.log('Cargando datos del colegio:', response.colegio);
-        const backgroundImageUrl = getColegioLogoUrl(response.colegio.background_imagen);
-        console.log('Background image filename:', response.colegio.background_imagen);
-        console.log('Background image URL construida:', backgroundImageUrl);
+        
+        // Construir URL de imagen de fondo con mejor manejo de errores
+        let backgroundImageUrl = null;
+        if (response.colegio.background_imagen) {
+          backgroundImageUrl = getColegioLogoUrl(response.colegio.background_imagen);
+          console.log('Background image filename:', response.colegio.background_imagen);
+          console.log('Background image URL construida:', backgroundImageUrl);
+          
+          // Verificar si la imagen existe
+          if (backgroundImageUrl) {
+            const img = new Image();
+            img.onload = () => console.log('✅ Imagen de fondo cargada correctamente');
+            img.onerror = () => console.error('❌ Error cargando imagen de fondo:', backgroundImageUrl);
+            img.src = backgroundImageUrl;
+          }
+        }
 
         setColegio({
           nombre: response.colegio.nombre || 'Sistema Educativo',
