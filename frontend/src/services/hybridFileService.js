@@ -13,7 +13,7 @@ export const hybridFileService = {
    */
   async uploadFile(file, folder = 'sistema-educativo') {
     const fileType = this.getFileType(file);
-    
+
     if (fileType === 'image') {
       return this.uploadImageToCloudinary(file, folder);
     } else if (fileType === 'document') {
@@ -30,17 +30,17 @@ export const hybridFileService = {
    */
   getFileType(file) {
     const mimeType = file.type.toLowerCase();
-    
+
     // Imágenes
     if (mimeType.startsWith('image/')) {
       return 'image';
     }
-    
+
     // Videos
     if (mimeType.startsWith('video/')) {
       return 'video';
     }
-    
+
     // Documentos
     const documentTypes = [
       'application/pdf',
@@ -56,11 +56,11 @@ export const hybridFileService = {
       'application/zip',
       'application/x-rar-compressed'
     ];
-    
+
     if (documentTypes.includes(mimeType)) {
       return 'document';
     }
-    
+
     return 'other';
   },
 
@@ -73,7 +73,7 @@ export const hybridFileService = {
   async uploadImageToCloudinary(file, folder) {
     try {
       const response = await cloudinaryApi.uploadFile(file);
-      
+
       if (response.data.success) {
         return {
           success: true,
@@ -104,7 +104,7 @@ export const hybridFileService = {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('folder', folder);
-      
+
       const response = await fetch('/api/files/upload-document', {
         method: 'POST',
         body: formData,
@@ -112,9 +112,9 @@ export const hybridFileService = {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
-      
+
       const result = await response.json();
-      
+
       if (result.success) {
         return {
           success: true,

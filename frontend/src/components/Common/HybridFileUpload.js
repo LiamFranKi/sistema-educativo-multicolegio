@@ -25,10 +25,10 @@ import {
 } from '@mui/icons-material';
 import { hybridFileService } from '../../services/hybridFileService';
 
-const HybridFileUpload = ({ 
-  onUploadSuccess, 
-  onDeleteSuccess, 
-  currentFileUrl, 
+const HybridFileUpload = ({
+  onUploadSuccess,
+  onDeleteSuccess,
+  currentFileUrl,
   currentPublicId,
   folder = 'sistema-educativo',
   accept = '*/*',
@@ -55,7 +55,7 @@ const HybridFileUpload = ({
 
     // Detectar tipo de archivo
     const fileType = hybridFileService.getFileType(file);
-    
+
     // Validar tipo permitido
     if (!allowedTypes.includes(fileType)) {
       setError(`Tipo de archivo no permitido. Tipos permitidos: ${allowedTypes.join(', ')}`);
@@ -76,7 +76,7 @@ const HybridFileUpload = ({
     } else {
       setPreview(null); // No preview para documentos
     }
-    
+
     setShowPreview(true);
   };
 
@@ -100,10 +100,10 @@ const HybridFileUpload = ({
       }, 200);
 
       const result = await hybridFileService.uploadFile(fileInfo, folder);
-      
+
       clearInterval(progressInterval);
       setUploadProgress(100);
-      
+
       if (result.success) {
         onUploadSuccess?.(result);
         setShowPreview(false);
@@ -129,7 +129,7 @@ const HybridFileUpload = ({
 
     try {
       const result = await hybridFileService.deleteFile(currentFileUrl, currentPublicId);
-      
+
       if (result.success) {
         onDeleteSuccess?.();
         setError('');
@@ -199,9 +199,9 @@ const HybridFileUpload = ({
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
             Archivo actual:
           </Typography>
-          <Box sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
+          <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
             gap: 1,
             p: 1,
             border: '1px solid #e0e0e0',
@@ -212,9 +212,9 @@ const HybridFileUpload = ({
             <Typography variant="body2" sx={{ flex: 1 }}>
               {currentFileUrl.split('/').pop()}
             </Typography>
-            <Chip 
-              label={providerInfo?.provider || 'Railway'} 
-              size="small" 
+            <Chip
+              label={providerInfo?.provider || 'Railway'}
+              size="small"
               color={providerInfo?.type === 'cloudinary' ? 'primary' : 'default'}
             />
             <IconButton
@@ -262,9 +262,9 @@ const HybridFileUpload = ({
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                 {getFileIcon(fileInfo.type)}
                 <Typography variant="subtitle2">{fileInfo.name}</Typography>
-                <Chip 
-                  label={fileInfo.type} 
-                  size="small" 
+                <Chip
+                  label={fileInfo.type}
+                  size="small"
                   color={fileInfo.type === 'image' ? 'primary' : 'default'}
                 />
               </Box>
@@ -276,7 +276,7 @@ const HybridFileUpload = ({
               </Typography>
             </Box>
           )}
-          
+
           {preview && (
             <img
               src={preview}

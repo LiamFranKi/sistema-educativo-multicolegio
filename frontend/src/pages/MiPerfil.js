@@ -289,20 +289,30 @@ const MiPerfil = () => {
     try {
       const response = await cloudinaryApi.uploadFile(file);
       if (response.data.success) {
-        const updatedUser = { ...user, foto: response.data.data.url };
-        updateUser(updatedUser); // Actualizar el contexto global
-        setFormData(prev => ({
-          ...prev,
-          foto: response.data.data.url
-        }));
-        toast.success('Foto subida correctamente a Cloudinary');
+        const newPhotoUrl = response.data.data.url;
+        
+        // Actualizar en la base de datos
+        const updateResponse = await userService.updateUser(user.id, { foto: newPhotoUrl });
+        
+        if (updateResponse.success) {
+          const updatedUser = { ...user, foto: newPhotoUrl };
+          updateUser(updatedUser); // Actualizar el contexto global
+          setFormData(prev => ({
+            ...prev,
+            foto: newPhotoUrl
+          }));
+          toast.success('Foto subida correctamente a Cloudinary');
+        } else {
+          toast.error('Error actualizando foto en la base de datos');
+          setPreviewImage('');
+        }
       } else {
-        toast.error('Error al subir la foto');
+        toast.error(response.data.message || 'Error al subir la foto');
         setPreviewImage('');
       }
     } catch (err) {
       console.error('Error subiendo foto:', err);
-      toast.error('Error al subir la foto');
+      toast.error('Error al subir la foto. Intenta nuevamente.');
       setPreviewImage('');
     } finally {
       setSaving(false);

@@ -109,7 +109,7 @@ router.post('/upload-document', authenticateToken, upload.single('file'), async 
 
   } catch (error) {
     console.error('Error en upload-document:', error);
-    
+
     // Limpiar archivo temporal si existe
     if (req.file && req.file.path) {
       try {

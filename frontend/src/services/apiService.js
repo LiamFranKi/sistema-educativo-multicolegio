@@ -529,7 +529,7 @@ export const documentApi = {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('folder', folder);
-    
+
     return api.post('/files/upload-document', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
