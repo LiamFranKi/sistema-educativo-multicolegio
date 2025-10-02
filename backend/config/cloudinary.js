@@ -16,7 +16,7 @@ const uploadImage = async (file, folder = 'sistema-educativo') => {
       unique_filename: true,
       resource_type: 'auto'
     });
-    
+
     return {
       success: true,
       url: result.secure_url,

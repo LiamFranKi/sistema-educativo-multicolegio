@@ -19,10 +19,10 @@ import {
 } from '@mui/icons-material';
 import { cloudinaryApi } from '../../services/apiService';
 
-const CloudinaryUpload = ({ 
-  onUploadSuccess, 
-  onDeleteSuccess, 
-  currentImageUrl, 
+const CloudinaryUpload = ({
+  onUploadSuccess,
+  onDeleteSuccess,
+  currentImageUrl,
   currentPublicId,
   folder = 'sistema-educativo',
   accept = 'image/*',
@@ -68,7 +68,7 @@ const CloudinaryUpload = ({
       const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
 
       const result = await cloudinaryApi.uploadFile(file);
-      
+
       if (result.data.success) {
         onUploadSuccess?.(result.data.data);
         setShowPreview(false);
@@ -92,7 +92,7 @@ const CloudinaryUpload = ({
 
     try {
       const result = await cloudinaryApi.deleteFile(currentPublicId);
-      
+
       if (result.data.success) {
         onDeleteSuccess?.();
         setError('');

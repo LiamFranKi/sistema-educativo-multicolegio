@@ -16,18 +16,16 @@ import {
   Switch,
   CircularProgress,
   Grid,
-  Avatar,
-  IconButton,
   Alert
 } from '@mui/material';
 import {
   Add as AddIcon,
-  Edit as EditIcon,
-  PhotoCamera as PhotoCameraIcon
+  Edit as EditIcon
 } from '@mui/icons-material';
 // DatePicker removido temporalmente por problemas de compatibilidad
 import { toast } from 'react-hot-toast';
-import { fileService } from '../../../services/apiService';
+import { cloudinaryApi } from '../../../services/apiService';
+import CloudinaryUpload from '../../../components/Common/CloudinaryUpload';
 
 const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
   // Estados del formulario
@@ -49,6 +47,7 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [previewImage, setPreviewImage] = useState('');
+  const [cloudinaryPublicId, setCloudinaryPublicId] = useState('');
 
 
   // Opciones para género
@@ -89,6 +88,13 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
         (usuario.foto.startsWith('http') ? usuario.foto :
          `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${usuario.foto}`) : '';
       setPreviewImage(existingImageUrl);
+      
+      // Si es una URL de Cloudinary, extraer el public_id
+      if (usuario.foto && usuario.foto.includes('cloudinary.com')) {
+        const urlParts = usuario.foto.split('/');
+        const publicId = urlParts[urlParts.length - 1].split('.')[0];
+        setCloudinaryPublicId(publicId);
+      }
     } else if (open && mode === 'create') {
       // Resetear formulario para modo crear
       setFormData({
@@ -106,6 +112,7 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
         activo: true
       });
       setPreviewImage('');
+      setCloudinaryPublicId('');
     }
     setErrors({});
   }, [open, mode, usuario]);
@@ -142,52 +149,26 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
     }
   };
 
-  // Función para manejar subida de imagen
-  const handleImageUpload = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      // Validar tipo de archivo
-      if (!file.type.startsWith('image/')) {
-        toast.error('Por favor selecciona un archivo de imagen válido');
-        return;
-      }
+  // Función para manejar subida exitosa a Cloudinary
+  const handleCloudinaryUploadSuccess = (data) => {
+    setFormData(prev => ({
+      ...prev,
+      foto: data.url
+    }));
+    setPreviewImage(data.url);
+    setCloudinaryPublicId(data.public_id);
+    toast.success('Foto subida correctamente a Cloudinary');
+  };
 
-      // Validar tamaño (máximo 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        toast.error('La imagen debe ser menor a 2MB');
-        return;
-      }
-
-      // Crear preview inmediato
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPreviewImage(e.target.result);
-      };
-      reader.readAsDataURL(file);
-
-      // Subir archivo al servidor
-      try {
-        setLoading(true);
-        const response = await fileService.uploadFile(file, 'profile');
-
-        if (response.success) {
-          setFormData(prev => ({
-            ...prev,
-            foto: response.filename // Guardar el nombre del archivo subido
-          }));
-          toast.success('Foto subida correctamente');
-        } else {
-          toast.error('Error al subir la foto');
-          setPreviewImage(''); // Limpiar preview si falla
-        }
-      } catch (error) {
-        console.error('Error uploading file:', error);
-        toast.error('Error al subir la foto');
-        setPreviewImage(''); // Limpiar preview si falla
-      } finally {
-        setLoading(false);
-      }
-    }
+  // Función para manejar eliminación exitosa de Cloudinary
+  const handleCloudinaryDeleteSuccess = () => {
+    setFormData(prev => ({
+      ...prev,
+      foto: ''
+    }));
+    setPreviewImage('');
+    setCloudinaryPublicId('');
+    toast.success('Foto eliminada correctamente');
   };
 
   // Función para validar el formulario
@@ -324,35 +305,21 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
         <DialogContent sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
 
-            {/* Sección de foto */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-              <Avatar
-                src={previewImage}
-                sx={{ width: 80, height: 80 }}
-              >
-                {formData.nombres.charAt(0).toUpperCase()}
-              </Avatar>
-              <Box>
-                <Typography variant="subtitle2" gutterBottom>
-                  Foto del usuario
-                </Typography>
-                <input
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  id="photo-upload"
-                  type="file"
-                  onChange={handleImageUpload}
-                />
-                <label htmlFor="photo-upload">
-                  <IconButton
-                    color="primary"
-                    component="span"
-                    size="small"
-                  >
-                    <PhotoCameraIcon />
-                  </IconButton>
-                </label>
-              </Box>
+            {/* Sección de foto con Cloudinary */}
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="subtitle2" gutterBottom>
+                Foto del usuario
+              </Typography>
+              <CloudinaryUpload
+                onUploadSuccess={handleCloudinaryUploadSuccess}
+                onDeleteSuccess={handleCloudinaryDeleteSuccess}
+                currentImageUrl={previewImage}
+                currentPublicId={cloudinaryPublicId}
+                folder="usuarios"
+                accept="image/*"
+                maxSize={5 * 1024 * 1024} // 5MB
+                disabled={loading}
+              />
             </Box>
 
             {/* Grid de campos */}

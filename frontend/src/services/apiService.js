@@ -510,7 +510,7 @@ export const cloudinaryApi = {
   uploadFile: (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    
+
     return api.post('/files/upload-cloudinary', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',

@@ -101,7 +101,7 @@ router.post('/upload-cloudinary', authenticateToken, upload.single('file'), asyn
 
   } catch (error) {
     console.error('Error en upload-cloudinary:', error);
-    
+
     // Limpiar archivo temporal si existe
     if (req.file && req.file.path) {
       try {
