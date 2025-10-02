@@ -91,9 +91,28 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
 
       // Si es una URL de Cloudinary, extraer el public_id
       if (usuario.foto && usuario.foto.includes('cloudinary.com')) {
+        // Extraer public_id de URL de Cloudinary
+        // Formato: https://res.cloudinary.com/cloud_name/image/upload/v1234567890/folder/filename.jpg
         const urlParts = usuario.foto.split('/');
-        const publicId = urlParts[urlParts.length - 1].split('.')[0];
-        setCloudinaryPublicId(publicId);
+        const uploadIndex = urlParts.findIndex(part => part === 'upload');
+        if (uploadIndex !== -1 && uploadIndex + 2 < urlParts.length) {
+          // Tomar todo después de 'upload' y antes del último elemento (que es el filename)
+          const publicIdParts = urlParts.slice(uploadIndex + 2, -1);
+          const filename = urlParts[urlParts.length - 1];
+          const filenameWithoutExt = filename.split('.')[0];
+          
+          let publicId;
+          if (publicIdParts.length > 0) {
+            publicId = publicIdParts.join('/') + '/' + filenameWithoutExt;
+          } else {
+            publicId = filenameWithoutExt;
+          }
+          
+          console.log('🔍 Extrayendo public_id de Cloudinary:');
+          console.log('URL:', usuario.foto);
+          console.log('Public ID extraído:', publicId);
+          setCloudinaryPublicId(publicId);
+        }
       }
     } else if (open && mode === 'create') {
       // Resetear formulario para modo crear
@@ -162,6 +181,9 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
 
   // Función para manejar eliminación exitosa de Cloudinary
   const handleCloudinaryDeleteSuccess = () => {
+    console.log('🗑️ Eliminando foto de Cloudinary...');
+    console.log('Public ID actual:', cloudinaryPublicId);
+    
     setFormData(prev => ({
       ...prev,
       foto: ''

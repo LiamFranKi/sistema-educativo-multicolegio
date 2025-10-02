@@ -290,10 +290,10 @@ const MiPerfil = () => {
       const response = await cloudinaryApi.uploadFile(file);
       if (response.data.success) {
         const newPhotoUrl = response.data.data.url;
-        
+
         // Actualizar en la base de datos
         const updateResponse = await userService.updateUser(user.id, { foto: newPhotoUrl });
-        
+
         if (updateResponse.success) {
           const updatedUser = { ...user, foto: newPhotoUrl };
           updateUser(updatedUser); // Actualizar el contexto global
