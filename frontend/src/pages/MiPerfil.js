@@ -36,7 +36,7 @@ import {
   Badge
 } from '@mui/icons-material';
 import { getUserId } from '../services/authService';
-import { userService, fileService } from '../services/apiService';
+import { userService, cloudinaryApi } from '../services/apiService';
 import { getImageUrl } from '../utils/imageUtils';
 import { useUser } from '../contexts/UserContext';
 import toast from 'react-hot-toast';
@@ -287,15 +287,15 @@ const MiPerfil = () => {
 
     setSaving(true);
     try {
-      const response = await fileService.uploadFile(file, 'profile');
-      if (response.success) {
-        const updatedUser = { ...user, foto: response.filename };
+      const response = await cloudinaryApi.uploadFile(file);
+      if (response.data.success) {
+        const updatedUser = { ...user, foto: response.data.data.url };
         updateUser(updatedUser); // Actualizar el contexto global
         setFormData(prev => ({
           ...prev,
-          foto: response.filename
+          foto: response.data.data.url
         }));
-        toast.success('Foto subida correctamente');
+        toast.success('Foto subida correctamente a Cloudinary');
       } else {
         toast.error('Error al subir la foto');
         setPreviewImage('');
