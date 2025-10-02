@@ -9,7 +9,7 @@ const router = express.Router();
 // GET /api/usuarios - Obtener usuarios (solo administradores)
 router.get('/', authenticateToken, requireAdmin, async (req, res) => {
   try {
-    const { page = 1, limit = 10, rol, activo, search } = req.query;
+    const { page = 1, limit = 10, rol, activo, search, orderBy = 'created_at', orderDirection = 'DESC' } = req.query;
     const offset = (page - 1) * limit;
 
     let whereClause = 'WHERE 1=1';
@@ -37,11 +37,16 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
       params.push(`%${search}%`);
     }
 
+    // Validar campos de ordenamiento
+    const allowedOrderFields = ['nombres', 'apellidos', 'dni', 'email', 'created_at', 'updated_at'];
+    const validOrderBy = allowedOrderFields.includes(orderBy) ? orderBy : 'created_at';
+    const validOrderDirection = ['ASC', 'DESC'].includes(orderDirection.toUpperCase()) ? orderDirection.toUpperCase() : 'DESC';
+
     // Consulta principal
     const result = await query(
       `SELECT id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, activo, qr_code, created_at, updated_at
        FROM usuarios ${whereClause}
-       ORDER BY created_at DESC
+       ORDER BY ${validOrderBy} ${validOrderDirection}
        LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`,
       [...params, limit, offset]
     );

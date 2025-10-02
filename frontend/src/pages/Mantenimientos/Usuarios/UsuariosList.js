@@ -101,7 +101,9 @@ const UsuariosList = () => {
         page: pagination.page + 1,
         limit: pagination.rowsPerPage,
         search: searchTerm,
-        rol: roleFilter
+        rol: roleFilter,
+        orderBy: 'apellidos',
+        orderDirection: 'ASC'
       });
 
       console.log('Respuesta de la API:', response);

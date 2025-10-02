@@ -100,14 +100,14 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
           const publicIdParts = urlParts.slice(uploadIndex + 2, -1);
           const filename = urlParts[urlParts.length - 1];
           const filenameWithoutExt = filename.split('.')[0];
-          
+
           let publicId;
           if (publicIdParts.length > 0) {
             publicId = publicIdParts.join('/') + '/' + filenameWithoutExt;
           } else {
             publicId = filenameWithoutExt;
           }
-          
+
           console.log('🔍 Extrayendo public_id de Cloudinary:');
           console.log('URL:', usuario.foto);
           console.log('Public ID extraído:', publicId);
@@ -183,7 +183,7 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
   const handleCloudinaryDeleteSuccess = () => {
     console.log('🗑️ Eliminando foto de Cloudinary...');
     console.log('Public ID actual:', cloudinaryPublicId);
-    
+
     setFormData(prev => ({
       ...prev,
       foto: ''
