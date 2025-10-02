@@ -1,24 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const { Pool } = require('pg');
 const { authenticateToken } = require('../middleware/auth');
-
-// Configuración de la base de datos
-const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'sistema_educativo_multicolegio',
-  password: 'waltito10',
-  port: 5432,
-});
+const { queryString } = require('../config/database');
 
 // GET /api/turnos - Obtener todos los turnos
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const { search, activo, page = 1, limit = 10 } = req.query;
+    const { search, activo, page = 1, limit = 10 } = req.queryString;
     const offset = (page - 1) * limit;
 
-    let query = `
+    let queryStringString = `
       SELECT id, nombre, abreviatura, activo, created_at, updated_at
       FROM turnos
       WHERE 1=1
@@ -29,22 +20,22 @@ router.get('/', authenticateToken, async (req, res) => {
     // Filtro de búsqueda
     if (search) {
       paramCount++;
-      query += ` AND (nombre ILIKE $${paramCount} OR abreviatura ILIKE $${paramCount})`;
+      queryString += ` AND (nombre ILIKE $${paramCount} OR abreviatura ILIKE $${paramCount})`;
       params.push(`%${search}%`);
     }
 
     // Filtro por estado
     if (activo !== undefined) {
       paramCount++;
-      query += ` AND activo = $${paramCount}`;
+      queryString += ` AND activo = $${paramCount}`;
       params.push(activo === 'true');
     }
 
     // Ordenamiento y paginación
-    query += ` ORDER BY nombre ASC LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
+    queryString += ` ORDER BY nombre ASC LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`;
     params.push(parseInt(limit), parseInt(offset));
 
-    const result = await pool.query(query, params);
+    const result = await query(queryString, params);
 
     // Contar total de registros para paginación
     let countQuery = `
@@ -67,7 +58,7 @@ router.get('/', authenticateToken, async (req, res) => {
       countParams.push(activo === 'true');
     }
 
-    const countResult = await pool.query(countQuery, countParams);
+    const countResult = await queryString(countQuery, countParams);
     const total = parseInt(countResult.rows[0].total);
 
     res.json({
@@ -94,13 +85,13 @@ router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
 
-    const query = `
+    const queryString = `
       SELECT id, nombre, abreviatura, activo, created_at, updated_at
       FROM turnos
       WHERE id = $1
     `;
 
-    const result = await pool.query(query, [id]);
+    const result = await query(queryString, [id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({
@@ -136,7 +127,7 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el nombre no exista
-    const existingNombre = await pool.query(
+    const existingNombre = await queryString(
       'SELECT id FROM turnos WHERE nombre = $1',
       [nombre]
     );
@@ -149,7 +140,7 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     // Verificar que la abreviatura no exista
-    const existingAbreviatura = await pool.query(
+    const existingAbreviatura = await queryString(
       'SELECT id FROM turnos WHERE abreviatura = $1',
       [abreviatura]
     );
@@ -161,13 +152,13 @@ router.post('/', authenticateToken, async (req, res) => {
       });
     }
 
-    const query = `
+    const queryString = `
       INSERT INTO turnos (nombre, abreviatura, activo)
       VALUES ($1, $2, true)
       RETURNING id, nombre, abreviatura, activo, created_at, updated_at
     `;
 
-    const result = await pool.query(query, [nombre, abreviatura]);
+    const result = await queryString(queryString, [nombre, abreviatura]);
 
     res.status(201).json({
       success: true,
@@ -198,7 +189,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el turno existe
-    const existingTurno = await pool.query(
+    const existingTurno = await queryString(
       'SELECT id FROM turnos WHERE id = $1',
       [id]
     );
@@ -211,7 +202,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el nombre no exista en otro turno
-    const existingNombre = await pool.query(
+    const existingNombre = await queryString(
       'SELECT id FROM turnos WHERE nombre = $1 AND id != $2',
       [nombre, id]
     );
@@ -224,7 +215,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Verificar que la abreviatura no exista en otro turno
-    const existingAbreviatura = await pool.query(
+    const existingAbreviatura = await queryString(
       'SELECT id FROM turnos WHERE abreviatura = $1 AND id != $2',
       [abreviatura, id]
     );
@@ -236,14 +227,14 @@ router.put('/:id', authenticateToken, async (req, res) => {
       });
     }
 
-    const query = `
+    const queryString = `
       UPDATE turnos
       SET nombre = $1, abreviatura = $2, activo = $3, updated_at = CURRENT_TIMESTAMP
       WHERE id = $4
       RETURNING id, nombre, abreviatura, activo, created_at, updated_at
     `;
 
-    const result = await pool.query(query, [nombre, abreviatura, activo !== false, id]);
+    const result = await queryString(queryString, [nombre, abreviatura, activo !== false, id]);
 
     res.json({
       success: true,
@@ -265,7 +256,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
 
     // Verificar que el turno existe
-    const existingTurno = await pool.query(
+    const existingTurno = await queryString(
       'SELECT id, nombre FROM turnos WHERE id = $1',
       [id]
     );
@@ -280,7 +271,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     const turno = existingTurno.rows[0];
 
     // Eliminar el turno
-    await pool.query('DELETE FROM turnos WHERE id = $1', [id]);
+    await queryString('DELETE FROM turnos WHERE id = $1', [id]);
 
     res.json({
       success: true,

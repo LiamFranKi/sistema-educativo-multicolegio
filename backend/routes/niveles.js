@@ -1,21 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { Pool } = require('pg');
 const { authenticateToken } = require('../middleware/auth');
-
-// Configuración de la base de datos
-const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'sistema_educativo_multicolegio',
-  password: 'waltito10',
-  port: 5432,
-});
+const { query } = require('../config/database');
 
 // GET /api/niveles - Obtener todos los niveles
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const query = `
+    const queryString = `
       SELECT id, nombre, descripcion, codigo, orden, activo,
              tipo_grados, grado_minimo, grado_maximo, tipo_calificacion,
              calificacion_final, nota_minima, nota_maxima, nota_aprobatoria,
@@ -24,7 +15,7 @@ router.get('/', authenticateToken, async (req, res) => {
       ORDER BY orden ASC
     `;
 
-    const result = await pool.query(query);
+    const result = await query(queryString);
 
     res.json({
       success: true,
@@ -53,7 +44,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
       WHERE id = $1
     `;
 
-    const result = await pool.query(query, [id]);
+    const result = await query(query, [id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({
@@ -94,7 +85,7 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el código no exista
-    const existingCode = await pool.query(
+    const existingCode = await query(
       'SELECT id FROM niveles WHERE codigo = $1',
       [codigo]
     );
@@ -107,7 +98,7 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el nombre no exista
-    const existingName = await pool.query(
+    const existingName = await query(
       'SELECT id FROM niveles WHERE nombre = $1',
       [nombre]
     );
@@ -130,7 +121,7 @@ router.post('/', authenticateToken, async (req, res) => {
                 created_at, updated_at
     `;
 
-    const result = await pool.query(query, [
+    const result = await query(query, [
       nombre, descripcion, codigo, orden || 0,
       tipo_grados || 'Grados', grado_minimo || 1, grado_maximo || 10,
       tipo_calificacion || 'Cuantitativa', calificacion_final || 'Promedio',
@@ -171,7 +162,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el nivel existe
-    const existingNivel = await pool.query(
+    const existingNivel = await query(
       'SELECT id FROM niveles WHERE id = $1',
       [id]
     );
@@ -184,7 +175,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el código no exista en otro nivel
-    const existingCode = await pool.query(
+    const existingCode = await query(
       'SELECT id FROM niveles WHERE codigo = $1 AND id != $2',
       [codigo, id]
     );
@@ -197,7 +188,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el nombre no exista en otro nivel
-    const existingName = await pool.query(
+    const existingName = await query(
       'SELECT id FROM niveles WHERE nombre = $1 AND id != $2',
       [nombre, id]
     );
@@ -222,7 +213,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
                 created_at, updated_at
     `;
 
-    const result = await pool.query(query, [
+    const result = await query(query, [
       nombre, descripcion, codigo, orden || 0, activo !== false,
       tipo_grados, grado_minimo, grado_maximo, tipo_calificacion,
       calificacion_final, nota_minima, nota_maxima, nota_aprobatoria,
@@ -249,7 +240,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
 
     // Verificar que el nivel existe
-    const existingNivel = await pool.query(
+    const existingNivel = await query(
       'SELECT id FROM niveles WHERE id = $1',
       [id]
     );
@@ -265,7 +256,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     // Por ahora solo eliminamos el nivel
 
     const query = 'DELETE FROM niveles WHERE id = $1';
-    await pool.query(query, [id]);
+    await query(query, [id]);
 
     res.json({
       success: true,
