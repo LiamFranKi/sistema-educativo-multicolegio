@@ -53,7 +53,8 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
       });
       // Construir URL de imagen existente
       const existingImageUrl = grado.foto && grado.foto !== 'default-grado.png' ?
-        `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${grado.foto}` : '';
+        (grado.foto.startsWith('http') ? grado.foto :
+         `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${grado.foto}`) : '';
       setPreviewImage(existingImageUrl);
     }
   }, [grado]);
@@ -353,7 +354,8 @@ const GradosForm = ({ grado, niveles, onClose, onSuccess }) => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                 <Avatar
                   src={previewImage || (formData.foto && formData.foto !== 'default-grado.png' ?
-                    `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${formData.foto}` :
+                    (formData.foto.startsWith('http') ? formData.foto :
+                     `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${formData.foto}`) :
                     null)}
                   sx={{ width: 80, height: 80, fontSize: '2rem' }}
                 >

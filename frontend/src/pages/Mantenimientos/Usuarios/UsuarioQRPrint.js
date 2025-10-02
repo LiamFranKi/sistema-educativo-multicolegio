@@ -56,7 +56,9 @@ const UsuarioQRPrint = ({ open, onClose, usuario }) => {
   // Función para construir URL de imagen
   const getImageUrl = (filename) => {
     if (!filename) return null;
+    // Si ya es una URL completa (Cloudinary o cualquier otra), devolverla tal como está
     if (filename.startsWith('http')) return filename;
+    // Construir URL del servidor local (fallback para imágenes antiguas)
     return `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${filename}`;
   };
 

@@ -389,7 +389,8 @@ const GradosList = () => {
                   <TableCell align="center">
                     <Avatar
                       src={grado.foto && grado.foto !== 'default-grado.png' ?
-                        `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${grado.foto}` :
+                        (grado.foto.startsWith('http') ? grado.foto :
+                         `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${grado.foto}`) :
                         null
                       }
                       sx={{ width: 50, height: 50, mx: 'auto', fontSize: '1.2rem' }}

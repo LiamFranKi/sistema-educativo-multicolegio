@@ -42,7 +42,8 @@ const GradosView = ({ grado, nivelNombre, onClose }) => {
         <Box display="flex" alignItems="center" gap={2}>
           <Avatar
             src={grado.foto && grado.foto !== 'default-grado.png' ?
-              `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${grado.foto}` :
+              (grado.foto.startsWith('http') ? grado.foto :
+               `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${grado.foto}`) :
               null
             }
             sx={{ width: 60, height: 60, fontSize: '1.8rem' }}

@@ -306,6 +306,9 @@ const GradosFormNew = ({ grado, onClose, onSuccess }) => {
   const getImageSrc = () => {
     if (previewImage) return previewImage;
     if (formData.foto && formData.foto !== 'default-grado.png') {
+      // Si ya es una URL completa (Cloudinary), devolverla tal como está
+      if (formData.foto.startsWith('http')) return formData.foto;
+      // Construir URL del servidor local (fallback para imágenes antiguas)
       return `${process.env.REACT_APP_API_URL}/uploads/${formData.foto}`;
     }
     return null;

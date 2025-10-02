@@ -88,7 +88,7 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
         (usuario.foto.startsWith('http') ? usuario.foto :
          `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${usuario.foto}`) : '';
       setPreviewImage(existingImageUrl);
-      
+
       // Si es una URL de Cloudinary, extraer el public_id
       if (usuario.foto && usuario.foto.includes('cloudinary.com')) {
         const urlParts = usuario.foto.split('/');
