@@ -39,14 +39,28 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
 
     // Validar campos de ordenamiento
     const allowedOrderFields = ['nombres', 'apellidos', 'dni', 'email', 'created_at', 'updated_at'];
-    const validOrderBy = allowedOrderFields.includes(orderBy) ? orderBy : 'created_at';
     const validOrderDirection = ['ASC', 'DESC'].includes(orderDirection.toUpperCase()) ? orderDirection.toUpperCase() : 'DESC';
+    
+    // Manejar múltiples campos de ordenamiento
+    let orderClause = 'ORDER BY ';
+    if (orderBy.includes(',')) {
+      const orderFields = orderBy.split(',').map(field => field.trim());
+      const validFields = orderFields.filter(field => allowedOrderFields.includes(field));
+      if (validFields.length > 0) {
+        orderClause += validFields.map(field => `${field} ${validOrderDirection}`).join(', ');
+      } else {
+        orderClause += 'apellidos ASC, nombres ASC';
+      }
+    } else {
+      const validOrderBy = allowedOrderFields.includes(orderBy) ? orderBy : 'apellidos';
+      orderClause += `${validOrderBy} ${validOrderDirection}`;
+    }
 
     // Consulta principal
     const result = await query(
       `SELECT id, nombres, apellidos, dni, email, telefono, fecha_nacimiento, direccion, genero, estado_civil, profesion, foto, rol, activo, qr_code, created_at, updated_at
        FROM usuarios ${whereClause}
-       ORDER BY ${validOrderBy} ${validOrderDirection}
+       ${orderClause}
        LIMIT $${paramCount + 1} OFFSET $${paramCount + 2}`,
       [...params, limit, offset]
     );

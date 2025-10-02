@@ -102,7 +102,7 @@ const UsuariosList = () => {
         limit: pagination.rowsPerPage,
         search: searchTerm,
         rol: roleFilter,
-        orderBy: 'apellidos',
+        orderBy: 'apellidos,nombres',
         orderDirection: 'ASC'
       });
 

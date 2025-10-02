@@ -645,11 +645,12 @@ const ConfiguracionList = () => {
 
       console.log('Datos que se van a enviar:', formData);
 
-      // Preparar datos para envío (convertir URLs completas a filenames)
+      // Preparar datos para envío
       const dataToSend = {
         ...formData,
-        logo: formData.logo ? formData.logo.split('/').pop() : formData.logo,
-        background_imagen: formData.background_imagen ? formData.background_imagen.split('/').pop() : formData.background_imagen
+        // Si es una URL de Cloudinary, guardarla completa; si es local, solo el filename
+        logo: formData.logo ? (formData.logo.includes('cloudinary.com') ? formData.logo : formData.logo.split('/').pop()) : formData.logo,
+        background_imagen: formData.background_imagen ? (formData.background_imagen.includes('cloudinary.com') ? formData.background_imagen : formData.background_imagen.split('/').pop()) : formData.background_imagen
       };
 
       console.log('Datos procesados para envío:', dataToSend);
