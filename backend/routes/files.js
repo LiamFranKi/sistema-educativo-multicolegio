@@ -63,6 +63,107 @@ const upload = multer({
   }
 });
 
+// POST /api/files/upload-document - Subir documento a Railway
+router.post('/upload-document', authenticateToken, upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No se proporcionó ningún archivo'
+      });
+    }
+
+    const folder = req.body.folder || 'documentos';
+    const uploadPath = path.join(process.env.UPLOAD_PATH || './uploads', folder);
+
+    // Crear directorio si no existe
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+
+    // Generar nombre único para el archivo
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const extension = path.extname(req.file.originalname);
+    const filename = req.file.fieldname + '-' + uniqueSuffix + extension;
+    const filePath = path.join(uploadPath, filename);
+
+    // Mover archivo al destino final
+    fs.renameSync(req.file.path, filePath);
+
+    // Construir URL pública
+    const baseUrl = process.env.API_BASE_URL || 'http://localhost:5000';
+    const publicUrl = `${baseUrl}/uploads/${folder}/${filename}`;
+
+    res.json({
+      success: true,
+      message: 'Documento subido exitosamente',
+      data: {
+        filename: filename,
+        originalName: req.file.originalname,
+        url: publicUrl,
+        size: req.file.size,
+        type: req.file.mimetype,
+        folder: folder
+      }
+    });
+
+  } catch (error) {
+    console.error('Error en upload-document:', error);
+    
+    // Limpiar archivo temporal si existe
+    if (req.file && req.file.path) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (cleanupError) {
+        console.error('Error limpiando archivo temporal:', cleanupError);
+      }
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message
+    });
+  }
+});
+
+// DELETE /api/files/delete-document/:filename - Eliminar documento de Railway
+router.delete('/delete-document/:filename', authenticateToken, async (req, res) => {
+  try {
+    const { filename } = req.params;
+    const folder = req.query.folder || 'documentos';
+    const filePath = path.join(process.env.UPLOAD_PATH || './uploads', folder, filename);
+
+    // Verificar si el archivo existe
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({
+        success: false,
+        message: 'Archivo no encontrado'
+      });
+    }
+
+    // Eliminar archivo
+    fs.unlinkSync(filePath);
+
+    res.json({
+      success: true,
+      message: 'Documento eliminado exitosamente',
+      data: {
+        filename: filename,
+        folder: folder
+      }
+    });
+
+  } catch (error) {
+    console.error('Error en delete-document:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message
+    });
+  }
+});
+
 // POST /api/files/upload-cloudinary - Subir archivo a Cloudinary
 router.post('/upload-cloudinary', authenticateToken, upload.single('file'), async (req, res) => {
   try {

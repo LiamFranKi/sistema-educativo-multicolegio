@@ -52,6 +52,11 @@ app.use('/uploads', cors({
   next();
 }, express.static('uploads'));
 
+// Servir documentos específicos
+app.use('/uploads/documentos', express.static(path.join(__dirname, 'uploads/documentos')));
+app.use('/uploads/boletas', express.static(path.join(__dirname, 'uploads/boletas')));
+app.use('/uploads/reportes', express.static(path.join(__dirname, 'uploads/reportes')));
+
 // Servir previsualización de la web pública
 // Notas:
 // - Algunos entornos tienen problemas para resolver rutas con caracteres no ASCII ("ñ") en nombres de carpeta.

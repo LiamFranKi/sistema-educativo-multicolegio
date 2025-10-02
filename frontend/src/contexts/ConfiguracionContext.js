@@ -38,14 +38,14 @@ export const ConfiguracionProvider = ({ children }) => {
 
       if (response.success && response.colegio) {
         console.log('Cargando datos del colegio:', response.colegio);
-        
+
         // Construir URL de imagen de fondo con mejor manejo de errores
         let backgroundImageUrl = null;
         if (response.colegio.background_imagen) {
           backgroundImageUrl = getColegioLogoUrl(response.colegio.background_imagen);
           console.log('Background image filename:', response.colegio.background_imagen);
           console.log('Background image URL construida:', backgroundImageUrl);
-          
+
           // Verificar si la imagen existe
           if (backgroundImageUrl) {
             const img = new Image();

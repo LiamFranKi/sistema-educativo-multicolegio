@@ -521,3 +521,22 @@ export const cloudinaryApi = {
   // Eliminar archivo de Cloudinary
   deleteFile: (publicId) => api.delete(`/files/delete-cloudinary/${publicId}`),
 };
+
+// Document API (Railway)
+export const documentApi = {
+  // Subir documento a Railway
+  uploadDocument: (file, folder = 'documentos') => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', folder);
+    
+    return api.post('/files/upload-document', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+
+  // Eliminar documento de Railway
+  deleteDocument: (filename, folder = 'documentos') => api.delete(`/files/delete-document/${filename}?folder=${folder}`),
+};

@@ -584,7 +584,7 @@ const ConfiguracionList = () => {
       if (response.data.success) {
         const imageUrl = response.data.data.url;
         console.log('Logo subido a Cloudinary - URL:', imageUrl);
-        
+
         setFormData(prev => ({
           ...prev,
           logo: imageUrl
@@ -623,12 +623,12 @@ const ConfiguracionList = () => {
       if (response.data.success) {
         const imageUrl = response.data.data.url;
         console.log('Imagen subida a Cloudinary - URL:', imageUrl);
-        
+
         setFormData(prev => ({
           ...prev,
           background_imagen: imageUrl
         }));
-        
+
         toast.success('Imagen de fondo subida correctamente a Cloudinary');
       } else {
         toast.error('Error al subir la imagen de fondo');
