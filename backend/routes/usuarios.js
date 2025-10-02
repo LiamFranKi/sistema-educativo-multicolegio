@@ -40,7 +40,7 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
     // Validar campos de ordenamiento
     const allowedOrderFields = ['nombres', 'apellidos', 'dni', 'email', 'created_at', 'updated_at'];
     const validOrderDirection = ['ASC', 'DESC'].includes(orderDirection.toUpperCase()) ? orderDirection.toUpperCase() : 'DESC';
-    
+
     // Manejar múltiples campos de ordenamiento
     let orderClause = 'ORDER BY ';
     if (orderBy.includes(',')) {

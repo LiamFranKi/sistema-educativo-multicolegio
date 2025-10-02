@@ -20,9 +20,17 @@ export const getImageUrl = (filename) => {
 
 /**
  * Construye la URL completa para el logo del colegio
- * @param {string} logo - Nombre del archivo del logo
+ * @param {string} logo - Nombre del archivo del logo o URL de Cloudinary
  * @returns {string|null} - URL completa del logo o null si no hay logo
  */
 export const getColegioLogoUrl = (logo) => {
-  return getImageUrl(logo);
+  if (!logo) return null;
+
+  // Si ya es una URL completa (Cloudinary o cualquier otra), devolverla tal como está
+  if (logo.startsWith('http')) {
+    return logo;
+  }
+
+  // Construir URL completa para archivos locales
+  return `${API_BASE_URL}/uploads/${logo}`;
 };
