@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { authenticateToken } = require('../middleware/auth');
+const { uploadImage, deleteImage } = require('../config/cloudinary');
 
 const router = express.Router();
 
@@ -62,7 +63,94 @@ const upload = multer({
   }
 });
 
-// POST /api/files/upload - Subir archivo
+// POST /api/files/upload-cloudinary - Subir archivo a Cloudinary
+router.post('/upload-cloudinary', authenticateToken, upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'No se proporcionó ningún archivo'
+      });
+    }
+
+    // Subir a Cloudinary
+    const result = await uploadImage(req.file, 'sistema-educativo');
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error subiendo archivo a Cloudinary',
+        error: result.error
+      });
+    }
+
+    // Eliminar archivo temporal
+    fs.unlinkSync(req.file.path);
+
+    res.json({
+      success: true,
+      message: 'Archivo subido exitosamente a Cloudinary',
+      data: {
+        filename: req.file.originalname,
+        url: result.url,
+        public_id: result.public_id,
+        size: req.file.size,
+        type: req.file.mimetype
+      }
+    });
+
+  } catch (error) {
+    console.error('Error en upload-cloudinary:', error);
+    
+    // Limpiar archivo temporal si existe
+    if (req.file && req.file.path) {
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (cleanupError) {
+        console.error('Error limpiando archivo temporal:', cleanupError);
+      }
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message
+    });
+  }
+});
+
+// DELETE /api/files/delete-cloudinary/:publicId - Eliminar archivo de Cloudinary
+router.delete('/delete-cloudinary/:publicId', authenticateToken, async (req, res) => {
+  try {
+    const { publicId } = req.params;
+
+    const result = await deleteImage(publicId);
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error eliminando archivo de Cloudinary',
+        error: result.error
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Archivo eliminado exitosamente de Cloudinary',
+      data: result.result
+    });
+
+  } catch (error) {
+    console.error('Error en delete-cloudinary:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message
+    });
+  }
+});
+
+// POST /api/files/upload - Subir archivo (local)
 router.post('/upload', authenticateToken, upload.single('file'), (req, res) => {
   try {
     if (!req.file) {

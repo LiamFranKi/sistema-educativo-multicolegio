@@ -57,7 +57,7 @@ router.get('/colegio', async (req, res) => {
     );
 
     console.log('📊 Resultado de configuracion:', result.rows.length, 'filas');
-    
+
     const colegio = {};
     result.rows.forEach(row => {
       let valor = row.valor;
@@ -73,7 +73,7 @@ router.get('/colegio', async (req, res) => {
     });
 
     console.log('✅ Configuraciones del colegio procesadas:', Object.keys(colegio));
-    
+
     res.json({
       success: true,
       colegio

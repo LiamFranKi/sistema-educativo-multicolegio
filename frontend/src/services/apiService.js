@@ -503,3 +503,21 @@ export const webAdminApi = {
   getHomePrincipal: () => api.get('/web-admin/home/principal'),
   updateHomePrincipal: (data) => api.put('/web-admin/home/principal', data),
 };
+
+// Cloudinary API
+export const cloudinaryApi = {
+  // Subir archivo a Cloudinary
+  uploadFile: (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    return api.post('/files/upload-cloudinary', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+
+  // Eliminar archivo de Cloudinary
+  deleteFile: (publicId) => api.delete(`/files/delete-cloudinary/${publicId}`),
+};
