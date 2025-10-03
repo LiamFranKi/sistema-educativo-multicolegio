@@ -49,8 +49,13 @@ router.get('/', authenticateToken, async (req, res) => {
 router.get('/colegio', async (req, res) => {
   try {
     console.log('🔍 Obteniendo datos del colegio desde tabla configuracion...');
-
+    console.log('🔧 Variables de entorno:', {
+      NODE_ENV: process.env.NODE_ENV,
+      DATABASE_URL: process.env.DATABASE_URL ? 'Configurada' : 'No configurada'
+    });
+    
     // Consultar SOLO la tabla configuracion (como está en Railway)
+    console.log('📝 Ejecutando query SQL...');
     const result = await query(
       `SELECT clave, valor, descripcion, tipo
        FROM configuracion
@@ -123,10 +128,13 @@ router.get('/colegio', async (req, res) => {
 
   } catch (error) {
     console.error('❌ Error obteniendo datos del colegio:', error);
+    console.error('❌ Stack trace:', error.stack);
+    console.error('❌ Error completo:', JSON.stringify(error, null, 2));
     res.status(500).json({
       success: false,
       message: 'Error interno del servidor',
-      error: error.message
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 });
