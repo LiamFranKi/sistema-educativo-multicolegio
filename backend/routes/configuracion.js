@@ -49,7 +49,7 @@ router.get('/', authenticateToken, async (req, res) => {
 router.get('/colegio', async (req, res) => {
   try {
     console.log('🔍 Obteniendo datos del colegio desde tabla configuracion...');
-    
+
     // Consultar SOLO la tabla configuracion (como está en Railway)
     const result = await query(
       `SELECT clave, valor, descripcion, tipo
@@ -62,10 +62,10 @@ router.get('/colegio', async (req, res) => {
     console.log('📄 Datos crudos de configuracion:', result.rows);
 
     const colegio = {};
-    
+
     result.rows.forEach(row => {
       console.log(`🔧 Procesando: ${row.clave} = ${row.valor} (tipo: ${row.tipo})`);
-      
+
       let valor = row.valor;
       if (row.tipo === 'boolean') {
         valor = valor === 'true';
@@ -75,7 +75,7 @@ router.get('/colegio', async (req, res) => {
 
       // Mapear las claves a nombres más simples
       let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
-      
+
       // Mapeos específicos para mantener consistencia
       if (row.clave === 'colegio_logo') {
         claveSimple = 'logo';
@@ -102,17 +102,17 @@ router.get('/colegio', async (req, res) => {
       } else if (row.clave === 'anio_escolar_actual') {
         claveSimple = 'anio_escolar_actual';
       }
-      
+
       console.log(`✅ Mapeado: ${row.clave} → ${claveSimple} = ${valor}`);
       colegio[claveSimple] = valor;
     });
-    
+
     // Agregar valores por defecto si no existen
     if (!colegio.background_tipo) colegio.background_tipo = 'color';
     if (!colegio.background_color) colegio.background_color = '#f5f5f5';
     if (!colegio.anio_escolar_actual) colegio.anio_escolar_actual = 2025;
     if (!colegio.nombre) colegio.nombre = 'Sistema Educativo';
-    
+
     console.log('✅ Configuraciones del colegio procesadas:', Object.keys(colegio));
     console.log('📦 Objeto final colegio:', colegio);
 
