@@ -58,7 +58,7 @@ router.get('/', authenticateToken, async (req, res) => {
       countParams.push(activo === 'true');
     }
 
-    const countResult = await queryString(countQuery, countParams);
+    const countResult = await query(countQuery, countParams);
     const total = parseInt(countResult.rows[0].total);
 
     res.json({
@@ -127,7 +127,7 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el nombre no exista
-    const existingNombre = await queryString(
+    const existingNombre = await query(
       'SELECT id FROM turnos WHERE nombre = $1',
       [nombre]
     );
@@ -140,7 +140,7 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     // Verificar que la abreviatura no exista
-    const existingAbreviatura = await queryString(
+    const existingAbreviatura = await query(
       'SELECT id FROM turnos WHERE abreviatura = $1',
       [abreviatura]
     );
@@ -158,7 +158,7 @@ router.post('/', authenticateToken, async (req, res) => {
       RETURNING id, nombre, abreviatura, activo, created_at, updated_at
     `;
 
-    const result = await queryString(queryString, [nombre, abreviatura]);
+    const result = await query(queryString, [nombre, abreviatura]);
 
     res.status(201).json({
       success: true,
@@ -189,7 +189,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el turno existe
-    const existingTurno = await queryString(
+    const existingTurno = await query(
       'SELECT id FROM turnos WHERE id = $1',
       [id]
     );
@@ -202,7 +202,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el nombre no exista en otro turno
-    const existingNombre = await queryString(
+    const existingNombre = await query(
       'SELECT id FROM turnos WHERE nombre = $1 AND id != $2',
       [nombre, id]
     );
@@ -215,7 +215,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Verificar que la abreviatura no exista en otro turno
-    const existingAbreviatura = await queryString(
+    const existingAbreviatura = await query(
       'SELECT id FROM turnos WHERE abreviatura = $1 AND id != $2',
       [abreviatura, id]
     );
@@ -234,7 +234,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
       RETURNING id, nombre, abreviatura, activo, created_at, updated_at
     `;
 
-    const result = await queryString(queryString, [nombre, abreviatura, activo !== false, id]);
+    const result = await query(queryString, [nombre, abreviatura, activo !== false, id]);
 
     res.json({
       success: true,
@@ -256,7 +256,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
 
     // Verificar que el turno existe
-    const existingTurno = await queryString(
+    const existingTurno = await query(
       'SELECT id, nombre FROM turnos WHERE id = $1',
       [id]
     );
@@ -271,7 +271,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     const turno = existingTurno.rows[0];
 
     // Eliminar el turno
-    await queryString('DELETE FROM turnos WHERE id = $1', [id]);
+    await query('DELETE FROM turnos WHERE id = $1', [id]);
 
     res.json({
       success: true,

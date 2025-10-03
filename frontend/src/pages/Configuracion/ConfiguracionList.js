@@ -669,7 +669,7 @@ const ConfiguracionList = () => {
         // Salir del modo edición
         setEditMode(false);
         toast.success('Configuración guardada exitosamente');
-        
+
         console.log('✅ Configuración guardada y contexto actualizado:', {
           logo: dataToSend.logo,
           background_imagen: dataToSend.background_imagen
@@ -689,14 +689,14 @@ const ConfiguracionList = () => {
       ...colegio
     });
     setEditMode(false);
-    
+
     // Actualizar preview con los datos actuales del contexto
     if (colegio.logo) {
       setPreviewImage(colegio.logo);
     } else {
       setPreviewImage('');
     }
-    
+
     console.log('🔄 Datos cancelados y recargados desde contexto:', {
       logo: colegio.logo,
       background_imagen: colegio.background_imagen

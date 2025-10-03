@@ -35,7 +35,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
 
-    const query = `
+    const queryString = `
       SELECT id, nombre, descripcion, codigo, orden, activo,
              tipo_grados, grado_minimo, grado_maximo, tipo_calificacion,
              calificacion_final, nota_minima, nota_maxima, nota_aprobatoria,
@@ -44,7 +44,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
       WHERE id = $1
     `;
 
-    const result = await query(query, [id]);
+    const result = await queryString(queryString, [id]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({
@@ -85,7 +85,7 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el código no exista
-    const existingCode = await query(
+    const existingCode = await queryString(
       'SELECT id FROM niveles WHERE codigo = $1',
       [codigo]
     );
@@ -98,7 +98,7 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el nombre no exista
-    const existingName = await query(
+    const existingName = await queryString(
       'SELECT id FROM niveles WHERE nombre = $1',
       [nombre]
     );
@@ -110,7 +110,7 @@ router.post('/', authenticateToken, async (req, res) => {
       });
     }
 
-    const query = `
+    const queryString = `
       INSERT INTO niveles (nombre, descripcion, codigo, orden, activo,
                           tipo_grados, grado_minimo, grado_maximo, tipo_calificacion,
                           calificacion_final, nota_minima, nota_maxima, nota_aprobatoria)
@@ -121,7 +121,7 @@ router.post('/', authenticateToken, async (req, res) => {
                 created_at, updated_at
     `;
 
-    const result = await query(query, [
+    const result = await queryString(queryString, [
       nombre, descripcion, codigo, orden || 0,
       tipo_grados || 'Grados', grado_minimo || 1, grado_maximo || 10,
       tipo_calificacion || 'Cuantitativa', calificacion_final || 'Promedio',
@@ -162,7 +162,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el nivel existe
-    const existingNivel = await query(
+    const existingNivel = await queryString(
       'SELECT id FROM niveles WHERE id = $1',
       [id]
     );
@@ -175,7 +175,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el código no exista en otro nivel
-    const existingCode = await query(
+    const existingCode = await queryString(
       'SELECT id FROM niveles WHERE codigo = $1 AND id != $2',
       [codigo, id]
     );
@@ -188,7 +188,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Verificar que el nombre no exista en otro nivel
-    const existingName = await query(
+    const existingName = await queryString(
       'SELECT id FROM niveles WHERE nombre = $1 AND id != $2',
       [nombre, id]
     );
@@ -200,7 +200,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
       });
     }
 
-    const query = `
+    const queryString = `
       UPDATE niveles
       SET nombre = $1, descripcion = $2, codigo = $3, orden = $4, activo = $5,
           tipo_grados = $6, grado_minimo = $7, grado_maximo = $8, tipo_calificacion = $9,
@@ -213,7 +213,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
                 created_at, updated_at
     `;
 
-    const result = await query(query, [
+    const result = await queryString(queryString, [
       nombre, descripcion, codigo, orden || 0, activo !== false,
       tipo_grados, grado_minimo, grado_maximo, tipo_calificacion,
       calificacion_final, nota_minima, nota_maxima, nota_aprobatoria,
@@ -240,7 +240,7 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
 
     // Verificar que el nivel existe
-    const existingNivel = await query(
+    const existingNivel = await queryString(
       'SELECT id FROM niveles WHERE id = $1',
       [id]
     );
@@ -255,8 +255,8 @@ router.delete('/:id', authenticateToken, async (req, res) => {
     // Verificar si hay grados asociados (esto lo implementaremos cuando creemos la tabla grados)
     // Por ahora solo eliminamos el nivel
 
-    const query = 'DELETE FROM niveles WHERE id = $1';
-    await query(query, [id]);
+    const queryString = 'DELETE FROM niveles WHERE id = $1';
+    await queryString(queryString, [id]);
 
     res.json({
       success: true,
