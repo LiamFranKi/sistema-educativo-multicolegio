@@ -49,7 +49,7 @@ import {
 import { configuracionService, nivelesService, turnosService } from '../../services/apiService';
 import { fileService } from '../../services/apiService';
 import { useConfiguracion } from '../../contexts/ConfiguracionContext';
-import { getColegioLogoUrl } from '../../utils/imageUtils';
+// import { getColegioLogoUrl } from '../../utils/imageUtils'; // No se usa actualmente
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 
@@ -574,21 +574,17 @@ const ConfiguracionList = () => {
 
     try {
       // Subir a Railway local
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', 'logo');
+      const response = await fileService.uploadFile(file, 'logo');
 
-      const response = await fileService.uploadFile(formData);
-
-      if (response.data.success) {
-        const imagePath = response.data.path;
+      if (response.success) {
+        const imagePath = response.path;
         console.log('Logo subido a Railway - Path:', imagePath);
 
         setFormData(prev => ({
           ...prev,
           logo: imagePath
         }));
-        setPreviewImage(response.data.url);
+        setPreviewImage(response.url);
         toast.success('Logo subido correctamente a Railway');
       } else {
         toast.error('Error al subir el logo');
@@ -617,14 +613,10 @@ const ConfiguracionList = () => {
 
     try {
       // Subir a Railway local
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', 'fondo');
+      const response = await fileService.uploadFile(file, 'fondo');
 
-      const response = await fileService.uploadFile(formData);
-
-      if (response.data.success) {
-        const imagePath = response.data.path;
+      if (response.success) {
+        const imagePath = response.path;
         console.log('Imagen subida a Railway - Path:', imagePath);
 
         setFormData(prev => ({
