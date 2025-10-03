@@ -31,21 +31,21 @@ const storage = multer.diskStorage({
 // Filtro de archivos
 const fileFilter = (req, file, cb) => {
   const allowedTypes = {
-    'image/jpeg': '.jpg',
-    'image/jpg': '.jpg',
-    'image/png': '.png',
-    'image/gif': '.gif',
-    'image/webp': '.webp',
-    'application/pdf': '.pdf',
-    'application/msword': '.doc',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
-    'application/vnd.ms-excel': '.xls',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
-    'text/plain': '.txt',
-    'video/mp4': '.mp4',
-    'video/avi': '.avi',
-    'video/mov': '.mov',
-    'video/wmv': '.wmv'
+    'image/jpeg': true,
+    'image/jpg': true,
+    'image/png': true,
+    'image/gif': true,
+    'image/webp': true,
+    'application/pdf': true,
+    'application/msword': true,
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': true,
+    'application/vnd.ms-excel': true,
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': true,
+    'text/plain': true,
+    'video/mp4': true,
+    'video/avi': true,
+    'video/mov': true,
+    'video/wmv': true
   };
 
   if (allowedTypes[file.mimetype]) {

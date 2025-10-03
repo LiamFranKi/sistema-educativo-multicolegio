@@ -130,7 +130,7 @@ router.get('/colegio/publico', async (req, res) => {
     result.rows.forEach(row => {
       // Mapear las claves a nombres más simples
       let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
-      
+
       // Mapeos específicos para mantener consistencia
       if (row.clave === 'colegio_nombre' || row.clave === 'nombre_colegio') {
         claveSimple = 'nombre';
@@ -141,7 +141,7 @@ router.get('/colegio/publico', async (req, res) => {
       } else if (row.clave === 'colegio_color_secundario' || row.clave === 'color_secundario') {
         claveSimple = 'color_secundario';
       }
-      
+
       colegio[claveSimple] = row.valor;
     });
 
