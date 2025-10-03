@@ -8,8 +8,74 @@ const { uploadImage, deleteImage } = require('../config/cloudinary');
 const router = express.Router();
 
 // Configuración de multer para subida de archivos
-// Configuración para Railway (almacenamiento temporal)
-const storage = multer.memoryStorage();
+// Configuración de multer para subida de archivos
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const basePath = process.env.UPLOAD_PATH || './uploads';
+    
+    console.log('🔍 Upload Debug Info:');
+    console.log('req.body:', req.body);
+    console.log('file.fieldname:', file.fieldname);
+    console.log('file.originalname:', file.originalname);
+    console.log('basePath:', basePath);
+    
+    // Determinar carpeta según el tipo de archivo
+    let folder = 'general';
+    if (req.body.type === 'logo' || file.fieldname === 'logo') {
+      folder = 'configuracion/logo';
+    } else if (req.body.type === 'fondo' || file.fieldname === 'background_imagen') {
+      folder = 'configuracion/fondo';
+    } else if (req.body.type === 'usuario' || req.body.type === 'avatar' || file.fieldname === 'foto') {
+      folder = 'usuarios';
+    } else if (req.body.type === 'curso' || file.fieldname === 'imagen') {
+      folder = 'cursos';
+    } else if (req.body.type === 'documento' || file.fieldname === 'documento') {
+      folder = 'documentos';
+    } else if (req.body.type === 'boleta' || file.fieldname === 'boleta') {
+      folder = 'boletas';
+    } else if (req.body.type === 'reporte' || file.fieldname === 'reporte') {
+      folder = 'reportes';
+    }
+    
+    console.log('📁 Carpeta determinada:', folder);
+    
+    const uploadPath = path.join(basePath, folder);
+    console.log('📂 Upload path:', uploadPath);
+
+    // Crear directorio si no existe
+    try {
+      if (!fs.existsSync(uploadPath)) {
+        fs.mkdirSync(uploadPath, { recursive: true });
+        console.log('📂 Directorio creado:', uploadPath);
+      }
+      
+      // Verificar permisos de escritura
+      fs.accessSync(uploadPath, fs.constants.W_OK);
+      console.log('✅ Permisos de escritura confirmados');
+      
+      cb(null, uploadPath);
+    } catch (error) {
+      console.error('❌ Error creando/accediendo directorio:', error);
+      cb(error);
+    }
+  },
+  filename: (req, file, cb) => {
+    // Para logo y fondo, usar nombre fijo
+    if (req.body.type === 'logo' || file.fieldname === 'logo') {
+      const extension = path.extname(file.originalname);
+      cb(null, 'logo-colegio' + extension);
+    } else if (req.body.type === 'fondo' || file.fieldname === 'background_imagen') {
+      const extension = path.extname(file.originalname);
+      cb(null, 'fondo-login' + extension);
+    } else {
+      // Generar nombre único para otros archivos
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const extension = path.extname(file.originalname);
+      const filename = file.fieldname + '-' + uniqueSuffix + extension;
+      cb(null, filename);
+    }
+  }
+});
 
 // Filtro de archivos
 const fileFilter = (req, file, cb) => {
@@ -234,8 +300,8 @@ router.delete('/delete-cloudinary/:publicId', authenticateToken, async (req, res
   }
 });
 
-// POST /api/files/upload - Subir archivo (Railway compatible)
-router.post('/upload', authenticateToken, upload.single('file'), async (req, res) => {
+// POST /api/files/upload - Subir archivo (local)
+router.post('/upload', authenticateToken, upload.single('file'), (req, res) => {
   try {
     console.log('📤 Upload endpoint called');
     console.log('req.file:', req.file);
@@ -252,15 +318,17 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     const file = req.file;
     
     console.log('📋 File info:', {
+      filename: file.filename,
       fieldname: file.fieldname,
-      originalname: file.originalname,
-      mimetype: file.mimetype,
-      size: file.size,
-      buffer: file.buffer ? 'present' : 'missing'
+      destination: file.destination,
+      path: file.path,
+      size: file.size
     });
 
     // Validar tipo de archivo según el tipo de subida
     if ((type === 'usuario' || type === 'logo' || type === 'fondo') && !file.mimetype.startsWith('image/')) {
+      // Eliminar archivo si no es imagen
+      fs.unlinkSync(file.path);
       return res.status(400).json({
         success: false,
         message: 'Para fotos de usuario, logo y fondo solo se permiten imágenes'
@@ -268,52 +336,30 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     }
 
     if (type === 'video' && !file.mimetype.startsWith('video/')) {
+      // Eliminar archivo si no es video
+      fs.unlinkSync(file.path);
       return res.status(400).json({
         success: false,
         message: 'Solo se permiten archivos de video'
       });
     }
 
-    // Generar nombre único para el archivo
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const extension = path.extname(file.originalname);
-    let filename;
-    
-    if (type === 'logo') {
-      filename = 'logo-colegio' + extension;
-    } else if (type === 'fondo') {
-      filename = 'fondo-login' + extension;
-    } else {
-      filename = file.fieldname + '-' + uniqueSuffix + extension;
-    }
+    // Determinar la ruta relativa según la carpeta
+    let relativePath = path.relative(path.join(process.cwd(), process.env.UPLOAD_PATH || './uploads'), file.path);
+    relativePath = relativePath.replace(/\\/g, '/'); // Usar barras diagonales para URLs
 
-    // Determinar carpeta según el tipo
-    let folder = 'general';
-    if (type === 'logo') {
-      folder = 'configuracion/logo';
-    } else if (type === 'fondo') {
-      folder = 'configuracion/fondo';
-    } else if (type === 'usuario') {
-      folder = 'usuarios';
-    } else if (type === 'curso') {
-      folder = 'cursos';
-    } else if (type === 'documento') {
-      folder = 'documentos';
-    } else if (type === 'boleta') {
-      folder = 'boletas';
-    } else if (type === 'reporte') {
-      folder = 'reportes';
-    }
-
-    const relativePath = `${folder}/${filename}`;
     const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${relativePath}`;
 
-    // En Railway, los archivos se almacenan en memoria y se sirven desde allí
-    // Por ahora, devolvemos la información del archivo
+    console.log('✅ Archivo subido exitosamente:', {
+      filename: file.filename,
+      path: relativePath,
+      url: fileUrl
+    });
+
     res.json({
       success: true,
       message: 'Archivo subido exitosamente',
-      filename: filename,
+      filename: file.filename,
       originalName: file.originalname,
       size: file.size,
       mimetype: file.mimetype,
@@ -323,10 +369,17 @@ router.post('/upload', authenticateToken, upload.single('file'), async (req, res
     });
 
   } catch (error) {
-    console.error('Error subiendo archivo:', error);
+    console.error('❌ Error subiendo archivo:', error);
+
+    // Eliminar archivo si hubo error
+    if (req.file && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
+
     res.status(500).json({
       success: false,
-      message: 'Error interno del servidor'
+      message: 'Error interno del servidor',
+      error: error.message
     });
   }
 });

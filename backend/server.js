@@ -41,6 +41,9 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Servir archivos estáticos con CORS
+// Configurar ruta de uploads (Railway compatible)
+const uploadsPath = process.env.UPLOAD_PATH || './uploads';
+
 app.use('/uploads', cors({
   origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true
@@ -50,12 +53,12 @@ app.use('/uploads', cors({
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Cross-Origin-Resource-Policy', 'cross-origin');
   next();
-}, express.static('uploads'));
+}, express.static(uploadsPath));
 
 // Servir documentos específicos
-app.use('/uploads/documentos', express.static(path.join(__dirname, 'uploads/documentos')));
-app.use('/uploads/boletas', express.static(path.join(__dirname, 'uploads/boletas')));
-app.use('/uploads/reportes', express.static(path.join(__dirname, 'uploads/reportes')));
+app.use('/uploads/documentos', express.static(path.join(uploadsPath, 'documentos')));
+app.use('/uploads/boletas', express.static(path.join(uploadsPath, 'boletas')));
+app.use('/uploads/reportes', express.static(path.join(uploadsPath, 'reportes')));
 
 // Servir previsualización de la web pública
 // Notas:
