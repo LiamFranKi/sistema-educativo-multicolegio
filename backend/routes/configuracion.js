@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/', authenticateToken, async (req, res) => {
   try {
     const result = await query(
-      'SELECT clave, valor, descripcion, tipo, categoria FROM configuracion ORDER BY categoria, clave'
+      'SELECT clave, valor, descripcion, tipo FROM configuracion WHERE activo = true ORDER BY clave'
     );
 
     // Convertir array a objeto para facilitar el uso
@@ -69,7 +69,7 @@ router.get('/colegio', async (req, res) => {
 
       // Mapear las claves a nombres más simples
       let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
-      
+
       // Mapeos específicos para mantener consistencia
       if (row.clave === 'colegio_logo' || row.clave === 'logo_colegio') {
         claveSimple = 'logo';
@@ -94,7 +94,7 @@ router.get('/colegio', async (req, res) => {
       } else if (row.clave === 'colegio_director' || row.clave === 'director_colegio') {
         claveSimple = 'director';
       }
-      
+
       colegio[claveSimple] = valor;
     });
 
@@ -121,14 +121,28 @@ router.get('/colegio/publico', async (req, res) => {
     const result = await query(
       `SELECT clave, valor
        FROM configuracion
-       WHERE categoria = 'colegio'
-       AND clave IN ('colegio_nombre', 'colegio_logo', 'colegio_color_primario', 'colegio_color_secundario')
+       WHERE activo = true
+       AND clave IN ('colegio_nombre', 'nombre_colegio', 'colegio_logo', 'logo_colegio', 'colegio_color_primario', 'color_primario', 'colegio_color_secundario', 'color_secundario')
        ORDER BY clave`
     );
 
     const colegio = {};
     result.rows.forEach(row => {
-      colegio[row.clave.replace('colegio_', '')] = row.valor;
+      // Mapear las claves a nombres más simples
+      let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
+      
+      // Mapeos específicos para mantener consistencia
+      if (row.clave === 'colegio_nombre' || row.clave === 'nombre_colegio') {
+        claveSimple = 'nombre';
+      } else if (row.clave === 'colegio_logo' || row.clave === 'logo_colegio') {
+        claveSimple = 'logo';
+      } else if (row.clave === 'colegio_color_primario' || row.clave === 'color_primario') {
+        claveSimple = 'color_primario';
+      } else if (row.clave === 'colegio_color_secundario' || row.clave === 'color_secundario') {
+        claveSimple = 'color_secundario';
+      }
+      
+      colegio[claveSimple] = row.valor;
     });
 
     res.json({
@@ -202,7 +216,7 @@ router.put('/colegio', authenticateToken, requireAdmin, [
     for (const config of configuraciones) {
       if (config.valor !== undefined && config.valor !== null) {
         console.log(`Actualizando ${config.clave}: ${config.valor}`);
-        
+
         // Intentar actualizar con la clave principal, si no existe usar la alternativa
         try {
           await query(
