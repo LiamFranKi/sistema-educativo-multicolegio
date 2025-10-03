@@ -45,64 +45,106 @@ router.get('/', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/configuracion/colegio - Obtener configuraciones del colegio (PÚBLICO)
+// GET /api/configuracion/colegio - Obtener datos del colegio (PÚBLICO)
 router.get('/colegio', async (req, res) => {
   try {
-    console.log('🔍 Intentando obtener configuraciones del colegio...');
-    const result = await query(
-      `SELECT clave, valor, descripcion, tipo
-       FROM configuracion
+    console.log('🔍 Intentando obtener datos del colegio...');
+    
+    // Primero intentar obtener de la tabla colegios
+    let result = await query(
+      `SELECT id, nombre, codigo, logo, color_primario, color_secundario, 
+              direccion, telefono, email, director_nombre, activo
+       FROM colegios
        WHERE activo = true
-       ORDER BY clave`
+       LIMIT 1`
     );
 
-    console.log('📊 Resultado de configuracion:', result.rows.length, 'filas');
-    console.log('📄 Datos crudos de configuracion:', result.rows);
+    console.log('📊 Resultado de colegios:', result.rows.length, 'filas');
+    
+    let colegio = {};
+    
+    if (result.rows.length > 0) {
+      // Si existe tabla colegios, usar esos datos
+      const row = result.rows[0];
+      colegio = {
+        id: row.id,
+        nombre: row.nombre,
+        codigo: row.codigo,
+        logo: row.logo,
+        color_primario: row.color_primario,
+        color_secundario: row.color_secundario,
+        direccion: row.direccion,
+        telefono: row.telefono,
+        email: row.email,
+        director: row.director_nombre,
+        background_tipo: 'color',
+        background_color: '#f5f5f5',
+        background_imagen: null,
+        anio_escolar_actual: 2025
+      };
+      console.log('✅ Datos obtenidos de tabla colegios:', colegio);
+    } else {
+      // Fallback: intentar obtener de tabla configuracion
+      console.log('⚠️ No hay datos en tabla colegios, intentando configuracion...');
+      result = await query(
+        `SELECT clave, valor, descripcion, tipo
+         FROM configuracion
+         WHERE activo = true
+         ORDER BY clave`
+      );
 
-    const colegio = {};
-    result.rows.forEach(row => {
-      console.log(`🔧 Procesando: ${row.clave} = ${row.valor} (tipo: ${row.tipo})`);
-      
-      let valor = row.valor;
-      if (row.tipo === 'boolean') {
-        valor = valor === 'true';
-      } else if (row.tipo === 'number') {
-        valor = parseFloat(valor);
-      }
+      console.log('📄 Datos crudos de configuracion:', result.rows);
 
-      // Mapear las claves a nombres más simples
-      let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
-      
-      // Mapeos específicos para mantener consistencia
-      if (row.clave === 'colegio_logo' || row.clave === 'logo_colegio') {
-        claveSimple = 'logo';
-      } else if (row.clave === 'colegio_background_imagen' || row.clave === 'background_imagen_colegio') {
-        claveSimple = 'background_imagen';
-      } else if (row.clave === 'colegio_color_primario' || row.clave === 'color_primario') {
-        claveSimple = 'color_primario';
-      } else if (row.clave === 'colegio_color_secundario' || row.clave === 'color_secundario') {
-        claveSimple = 'color_secundario';
-      } else if (row.clave === 'colegio_background_color' || row.clave === 'background_color_colegio') {
-        claveSimple = 'background_color';
-      } else if (row.clave === 'colegio_background_tipo' || row.clave === 'background_tipo_colegio') {
-        claveSimple = 'background_tipo';
-      } else if (row.clave === 'colegio_nombre' || row.clave === 'nombre_colegio') {
-        claveSimple = 'nombre';
-      } else if (row.clave === 'colegio_direccion' || row.clave === 'direccion_colegio') {
-        claveSimple = 'direccion';
-      } else if (row.clave === 'colegio_telefono' || row.clave === 'telefono_colegio') {
-        claveSimple = 'telefono';
-      } else if (row.clave === 'colegio_email' || row.clave === 'email_colegio') {
-        claveSimple = 'email';
-      } else if (row.clave === 'colegio_director' || row.clave === 'director_colegio') {
-        claveSimple = 'director';
-      }
-      
-      console.log(`✅ Mapeado: ${row.clave} → ${claveSimple} = ${valor}`);
-      colegio[claveSimple] = valor;
-    });
+      result.rows.forEach(row => {
+        console.log(`🔧 Procesando: ${row.clave} = ${row.valor} (tipo: ${row.tipo})`);
+        
+        let valor = row.valor;
+        if (row.tipo === 'boolean') {
+          valor = valor === 'true';
+        } else if (row.tipo === 'number') {
+          valor = parseFloat(valor);
+        }
 
-    console.log('✅ Configuraciones del colegio procesadas:', Object.keys(colegio));
+        // Mapear las claves a nombres más simples
+        let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
+        
+        // Mapeos específicos para mantener consistencia
+        if (row.clave === 'colegio_logo' || row.clave === 'logo_colegio') {
+          claveSimple = 'logo';
+        } else if (row.clave === 'colegio_background_imagen' || row.clave === 'background_imagen_colegio') {
+          claveSimple = 'background_imagen';
+        } else if (row.clave === 'colegio_color_primario' || row.clave === 'color_primario') {
+          claveSimple = 'color_primario';
+        } else if (row.clave === 'colegio_color_secundario' || row.clave === 'color_secundario') {
+          claveSimple = 'color_secundario';
+        } else if (row.clave === 'colegio_background_color' || row.clave === 'background_color_colegio') {
+          claveSimple = 'background_color';
+        } else if (row.clave === 'colegio_background_tipo' || row.clave === 'background_tipo_colegio') {
+          claveSimple = 'background_tipo';
+        } else if (row.clave === 'colegio_nombre' || row.clave === 'nombre_colegio') {
+          claveSimple = 'nombre';
+        } else if (row.clave === 'colegio_direccion' || row.clave === 'direccion_colegio') {
+          claveSimple = 'direccion';
+        } else if (row.clave === 'colegio_telefono' || row.clave === 'telefono_colegio') {
+          claveSimple = 'telefono';
+        } else if (row.clave === 'colegio_email' || row.clave === 'email_colegio') {
+          claveSimple = 'email';
+        } else if (row.clave === 'colegio_director' || row.clave === 'director_colegio') {
+          claveSimple = 'director';
+        }
+        
+        console.log(`✅ Mapeado: ${row.clave} → ${claveSimple} = ${valor}`);
+        colegio[claveSimple] = valor;
+      });
+      
+      // Agregar valores por defecto si no existen
+      if (!colegio.background_tipo) colegio.background_tipo = 'color';
+      if (!colegio.background_color) colegio.background_color = '#f5f5f5';
+      if (!colegio.anio_escolar_actual) colegio.anio_escolar_actual = 2025;
+      
+      console.log('✅ Configuraciones del colegio procesadas desde configuracion:', Object.keys(colegio));
+    }
+
     console.log('📦 Objeto final colegio:', colegio);
 
     res.json({
@@ -111,7 +153,7 @@ router.get('/colegio', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error obteniendo configuraciones del colegio:', error);
+    console.error('❌ Error obteniendo datos del colegio:', error);
     res.status(500).json({
       success: false,
       message: 'Error interno del servidor',
