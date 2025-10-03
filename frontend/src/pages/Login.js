@@ -25,6 +25,41 @@ const Login = ({ onLogin }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [loginBackground, setLoginBackground] = useState({
+    tipo: 'color',
+    color: '#f5f5f5',
+    imagen: null
+  });
+
+  // Cargar configuración del fondo directamente si el contexto falla
+  useEffect(() => {
+    const loadLoginBackground = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://sistema-educativo-multicolegio-production.up.railway.app/api'}/configuracion/colegio/publico`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.colegio) {
+            setLoginBackground({
+              tipo: data.colegio.background_tipo || 'color',
+              color: data.colegio.background_color || '#f5f5f5',
+              imagen: data.colegio.background_imagen || null
+            });
+            console.log('✅ Fondo del login cargado desde API pública:', data.colegio);
+          }
+        }
+      } catch (error) {
+        console.log('⚠️ Usando configuración por defecto para fondo del login');
+        // Usar valores por defecto si falla la API
+        setLoginBackground({
+          tipo: 'color',
+          color: '#f5f5f5',
+          imagen: null
+        });
+      }
+    };
+
+    loadLoginBackground();
+  }, []);
 
 
   const handleChange = (e) => {
@@ -63,14 +98,19 @@ const Login = ({ onLogin }) => {
     }
   };
 
-  const loginBackgroundSx = colegio.background_tipo === 'imagen' && colegio.background_imagen
+  // Usar configuración local como fallback si el contexto falla
+  const backgroundTipo = colegio.background_tipo || loginBackground.tipo;
+  const backgroundImagen = colegio.background_imagen || loginBackground.imagen;
+  const backgroundColor = colegio.background_color || loginBackground.color;
+
+  const loginBackgroundSx = backgroundTipo === 'imagen' && backgroundImagen
     ? {
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 2,
-        backgroundImage: `url(${colegio.background_imagen})`,
+        backgroundImage: `url(${backgroundImagen})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -82,7 +122,7 @@ const Login = ({ onLogin }) => {
         alignItems: 'center',
         justifyContent: 'center',
         padding: 2,
-        backgroundColor: colegio.background_color || '#f5f5f5',
+        backgroundColor: backgroundColor,
       };
 
   return (

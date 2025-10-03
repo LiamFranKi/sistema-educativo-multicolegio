@@ -53,7 +53,7 @@ router.get('/colegio', async (req, res) => {
       NODE_ENV: process.env.NODE_ENV,
       DATABASE_URL: process.env.DATABASE_URL ? 'Configurada' : 'No configurada'
     });
-    
+
     // Consultar SOLO la tabla configuracion (como está en Railway)
     console.log('📝 Ejecutando query SQL...');
     const result = await query(
@@ -146,7 +146,7 @@ router.get('/colegio/publico', async (req, res) => {
       `SELECT clave, valor
        FROM configuracion
        WHERE activo = true
-       AND clave IN ('colegio_nombre', 'nombre_colegio', 'colegio_logo', 'logo_colegio', 'colegio_color_primario', 'color_primario', 'colegio_color_secundario', 'color_secundario')
+       AND clave IN ('colegio_nombre', 'nombre_colegio', 'colegio_logo', 'logo_colegio', 'colegio_color_primario', 'color_primario', 'colegio_color_secundario', 'color_secundario', 'colegio_background_tipo', 'colegio_background_color', 'colegio_background_imagen')
        ORDER BY clave`
     );
 
@@ -164,6 +164,12 @@ router.get('/colegio/publico', async (req, res) => {
         claveSimple = 'color_primario';
       } else if (row.clave === 'colegio_color_secundario' || row.clave === 'color_secundario') {
         claveSimple = 'color_secundario';
+      } else if (row.clave === 'colegio_background_tipo') {
+        claveSimple = 'background_tipo';
+      } else if (row.clave === 'colegio_background_color') {
+        claveSimple = 'background_color';
+      } else if (row.clave === 'colegio_background_imagen') {
+        claveSimple = 'background_imagen';
       }
 
       colegio[claveSimple] = row.valor;
