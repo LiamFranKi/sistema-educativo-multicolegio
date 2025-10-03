@@ -49,92 +49,100 @@ router.get('/', authenticateToken, async (req, res) => {
 router.get('/colegio', async (req, res) => {
   try {
     console.log('🔍 Obteniendo datos del colegio desde tabla configuracion...');
-    console.log('🔧 Variables de entorno:', {
-      NODE_ENV: process.env.NODE_ENV,
-      DATABASE_URL: process.env.DATABASE_URL ? 'Configurada' : 'No configurada'
-    });
+    
+    // Datos por defecto si falla la BD
+    const colegioPorDefecto = {
+      nombre: 'Vanguard Schools',
+      logo: 'https://res.cloudinary.com/uigkouzkn/image/upload/v1739300702/sistema-educativo/me-1739500702010',
+      color_primario: '#1976d2',
+      color_secundario: '#424242',
+      director: 'Rosario Maravi L.',
+      background_tipo: 'imagen',
+      background_color: '#9c2626',
+      background_imagen: 'https://res.cloudinary.com/digk6bzkn/image/upload/v1759506058/sistema-educativo/file-1759506058384',
+      anio_escolar_actual: 2025
+    };
 
-    // Consultar SOLO la tabla configuracion (como está en Railway)
-    console.log('📝 Ejecutando query SQL...');
-    const result = await query(
-      `SELECT clave, valor, descripcion, tipo
-       FROM configuracion
-       WHERE activo = true
-       ORDER BY clave`
-    );
+    try {
+      // Intentar consultar la BD
+      console.log('📝 Ejecutando query SQL...');
+      const result = await query(
+        `SELECT clave, valor, descripcion, tipo
+         FROM configuracion
+         WHERE activo = true
+         ORDER BY clave`
+      );
 
-    console.log('📊 Resultado de configuracion:', result.rows.length, 'filas');
-    console.log('📄 Datos crudos de configuracion:', result.rows);
+      console.log('📊 Resultado de configuracion:', result.rows.length, 'filas');
 
-    const colegio = {};
-
-    result.rows.forEach(row => {
-      console.log(`🔧 Procesando: ${row.clave} = ${row.valor} (tipo: ${row.tipo})`);
-
-      let valor = row.valor;
-      if (row.tipo === 'boolean') {
-        valor = valor === 'true';
-      } else if (row.tipo === 'number') {
-        valor = parseFloat(valor);
+      if (result.rows.length === 0) {
+        console.log('⚠️ No hay datos en configuracion, usando valores por defecto');
+        return res.json({
+          success: true,
+          colegio: colegioPorDefecto
+        });
       }
 
-      // Mapear las claves a nombres más simples
-      let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
+      const colegio = {};
+      
+      result.rows.forEach(row => {
+        console.log(`🔧 Procesando: ${row.clave} = ${row.valor} (tipo: ${row.tipo})`);
+        
+        let valor = row.valor;
+        if (row.tipo === 'boolean') {
+          valor = valor === 'true';
+        } else if (row.tipo === 'number') {
+          valor = parseFloat(valor);
+        }
 
-      // Mapeos específicos para mantener consistencia
-      if (row.clave === 'colegio_logo') {
-        claveSimple = 'logo';
-      } else if (row.clave === 'colegio_background_imagen') {
-        claveSimple = 'background_imagen';
-      } else if (row.clave === 'colegio_color_primario') {
-        claveSimple = 'color_primario';
-      } else if (row.clave === 'colegio_color_secundario') {
-        claveSimple = 'color_secundario';
-      } else if (row.clave === 'colegio_background_color') {
-        claveSimple = 'background_color';
-      } else if (row.clave === 'colegio_background_tipo') {
-        claveSimple = 'background_tipo';
-      } else if (row.clave === 'colegio_nombre') {
-        claveSimple = 'nombre';
-      } else if (row.clave === 'colegio_direccion') {
-        claveSimple = 'direccion';
-      } else if (row.clave === 'colegio_telefono') {
-        claveSimple = 'telefono';
-      } else if (row.clave === 'colegio_email') {
-        claveSimple = 'email';
-      } else if (row.clave === 'colegio_director') {
-        claveSimple = 'director';
-      } else if (row.clave === 'anio_escolar_actual') {
-        claveSimple = 'anio_escolar_actual';
-      }
+        // Mapear las claves a nombres más simples
+        let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
+        
+        // Mapeos específicos
+        if (row.clave === 'colegio_logo') claveSimple = 'logo';
+        else if (row.clave === 'colegio_background_imagen') claveSimple = 'background_imagen';
+        else if (row.clave === 'colegio_color_primario') claveSimple = 'color_primario';
+        else if (row.clave === 'colegio_color_secundario') claveSimple = 'color_secundario';
+        else if (row.clave === 'colegio_background_color') claveSimple = 'background_color';
+        else if (row.clave === 'colegio_background_tipo') claveSimple = 'background_tipo';
+        else if (row.clave === 'colegio_nombre') claveSimple = 'nombre';
+        else if (row.clave === 'colegio_direccion') claveSimple = 'direccion';
+        else if (row.clave === 'colegio_telefono') claveSimple = 'telefono';
+        else if (row.clave === 'colegio_email') claveSimple = 'email';
+        else if (row.clave === 'colegio_director') claveSimple = 'director';
+        else if (row.clave === 'anio_escolar_actual') claveSimple = 'anio_escolar_actual';
+        
+        colegio[claveSimple] = valor;
+      });
+      
+      // Agregar valores por defecto si no existen
+      if (!colegio.background_tipo) colegio.background_tipo = 'imagen';
+      if (!colegio.background_color) colegio.background_color = '#9c2626';
+      if (!colegio.background_imagen) colegio.background_imagen = 'https://res.cloudinary.com/digk6bzkn/image/upload/v1759506058/sistema-educativo/file-1759506058384';
+      if (!colegio.anio_escolar_actual) colegio.anio_escolar_actual = 2025;
+      if (!colegio.nombre) colegio.nombre = 'Vanguard Schools';
+      
+      console.log('✅ Configuraciones del colegio procesadas:', Object.keys(colegio));
 
-      console.log(`✅ Mapeado: ${row.clave} → ${claveSimple} = ${valor}`);
-      colegio[claveSimple] = valor;
-    });
+      res.json({
+        success: true,
+        colegio
+      });
 
-    // Agregar valores por defecto si no existen
-    if (!colegio.background_tipo) colegio.background_tipo = 'color';
-    if (!colegio.background_color) colegio.background_color = '#f5f5f5';
-    if (!colegio.anio_escolar_actual) colegio.anio_escolar_actual = 2025;
-    if (!colegio.nombre) colegio.nombre = 'Sistema Educativo';
-
-    console.log('✅ Configuraciones del colegio procesadas:', Object.keys(colegio));
-    console.log('📦 Objeto final colegio:', colegio);
-
-    res.json({
-      success: true,
-      colegio
-    });
+    } catch (dbError) {
+      console.error('❌ Error en consulta BD, usando valores por defecto:', dbError.message);
+      res.json({
+        success: true,
+        colegio: colegioPorDefecto
+      });
+    }
 
   } catch (error) {
-    console.error('❌ Error obteniendo datos del colegio:', error);
-    console.error('❌ Stack trace:', error.stack);
-    console.error('❌ Error completo:', JSON.stringify(error, null, 2));
+    console.error('❌ Error general obteniendo datos del colegio:', error);
     res.status(500).json({
       success: false,
       message: 'Error interno del servidor',
-      error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      error: error.message
     });
   }
 });
@@ -142,43 +150,65 @@ router.get('/colegio', async (req, res) => {
 // GET /api/configuracion/colegio/publico - Obtener datos públicos del colegio (SIN AUTENTICACIÓN)
 router.get('/colegio/publico', async (req, res) => {
   try {
-    const result = await query(
-      `SELECT clave, valor
-       FROM configuracion
-       WHERE activo = true
-       AND clave IN ('colegio_nombre', 'nombre_colegio', 'colegio_logo', 'logo_colegio', 'colegio_color_primario', 'color_primario', 'colegio_color_secundario', 'color_secundario', 'colegio_background_tipo', 'colegio_background_color', 'colegio_background_imagen')
-       ORDER BY clave`
-    );
+    // Datos por defecto para login
+    const colegioPorDefecto = {
+      nombre: 'Vanguard Schools',
+      logo: 'https://res.cloudinary.com/uigkouzkn/image/upload/v1739300702/sistema-educativo/me-1739500702010',
+      color_primario: '#1976d2',
+      color_secundario: '#424242',
+      background_tipo: 'imagen',
+      background_color: '#9c2626',
+      background_imagen: 'https://res.cloudinary.com/digk6bzkn/image/upload/v1759506058/sistema-educativo/file-1759506058384'
+    };
 
-    const colegio = {};
-    result.rows.forEach(row => {
-      // Mapear las claves a nombres más simples
-      let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
+    try {
+      const result = await query(
+        `SELECT clave, valor
+         FROM configuracion
+         WHERE activo = true
+         AND clave IN ('colegio_nombre', 'nombre_colegio', 'colegio_logo', 'logo_colegio', 'colegio_color_primario', 'color_primario', 'colegio_color_secundario', 'color_secundario', 'colegio_background_tipo', 'colegio_background_color', 'colegio_background_imagen')
+         ORDER BY clave`
+      );
 
-      // Mapeos específicos para mantener consistencia
-      if (row.clave === 'colegio_nombre' || row.clave === 'nombre_colegio') {
-        claveSimple = 'nombre';
-      } else if (row.clave === 'colegio_logo' || row.clave === 'logo_colegio') {
-        claveSimple = 'logo';
-      } else if (row.clave === 'colegio_color_primario' || row.clave === 'color_primario') {
-        claveSimple = 'color_primario';
-      } else if (row.clave === 'colegio_color_secundario' || row.clave === 'color_secundario') {
-        claveSimple = 'color_secundario';
-      } else if (row.clave === 'colegio_background_tipo') {
-        claveSimple = 'background_tipo';
-      } else if (row.clave === 'colegio_background_color') {
-        claveSimple = 'background_color';
-      } else if (row.clave === 'colegio_background_imagen') {
-        claveSimple = 'background_imagen';
+      if (result.rows.length === 0) {
+        return res.json({
+          success: true,
+          colegio: colegioPorDefecto
+        });
       }
 
-      colegio[claveSimple] = row.valor;
-    });
+      const colegio = {};
+      result.rows.forEach(row => {
+        let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
+        
+        if (row.clave === 'colegio_nombre' || row.clave === 'nombre_colegio') claveSimple = 'nombre';
+        else if (row.clave === 'colegio_logo' || row.clave === 'logo_colegio') claveSimple = 'logo';
+        else if (row.clave === 'colegio_color_primario' || row.clave === 'color_primario') claveSimple = 'color_primario';
+        else if (row.clave === 'colegio_color_secundario' || row.clave === 'color_secundario') claveSimple = 'color_secundario';
+        else if (row.clave === 'colegio_background_tipo') claveSimple = 'background_tipo';
+        else if (row.clave === 'colegio_background_color') claveSimple = 'background_color';
+        else if (row.clave === 'colegio_background_imagen') claveSimple = 'background_imagen';
 
-    res.json({
-      success: true,
-      colegio
-    });
+        colegio[claveSimple] = row.valor;
+      });
+
+      // Agregar valores por defecto si faltan
+      if (!colegio.background_tipo) colegio.background_tipo = 'imagen';
+      if (!colegio.background_color) colegio.background_color = '#9c2626';
+      if (!colegio.background_imagen) colegio.background_imagen = 'https://res.cloudinary.com/digk6bzkn/image/upload/v1759506058/sistema-educativo/file-1759506058384';
+
+      res.json({
+        success: true,
+        colegio
+      });
+
+    } catch (dbError) {
+      console.error('❌ Error BD en ruta pública, usando valores por defecto:', dbError.message);
+      res.json({
+        success: true,
+        colegio: colegioPorDefecto
+      });
+    }
 
   } catch (error) {
     console.error('Error obteniendo datos públicos del colegio:', error);

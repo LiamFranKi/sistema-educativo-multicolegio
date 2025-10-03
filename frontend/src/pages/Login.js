@@ -25,41 +25,12 @@ const Login = ({ onLogin }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [loginBackground, setLoginBackground] = useState({
-    tipo: 'color',
+  // Configuración estática del fondo del login (temporal hasta arreglar BD)
+  const loginBackground = {
+    tipo: 'imagen',
     color: '#f5f5f5',
-    imagen: null
-  });
-
-  // Cargar configuración del fondo directamente si el contexto falla
-  useEffect(() => {
-    const loadLoginBackground = async () => {
-      try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://sistema-educativo-multicolegio-production.up.railway.app/api'}/configuracion/colegio/publico`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success && data.colegio) {
-            setLoginBackground({
-              tipo: data.colegio.background_tipo || 'color',
-              color: data.colegio.background_color || '#f5f5f5',
-              imagen: data.colegio.background_imagen || null
-            });
-            console.log('✅ Fondo del login cargado desde API pública:', data.colegio);
-          }
-        }
-      } catch (error) {
-        console.log('⚠️ Usando configuración por defecto para fondo del login');
-        // Usar valores por defecto si falla la API
-        setLoginBackground({
-          tipo: 'color',
-          color: '#f5f5f5',
-          imagen: null
-        });
-      }
-    };
-
-    loadLoginBackground();
-  }, []);
+    imagen: 'https://res.cloudinary.com/digk6bzkn/image/upload/v1759506058/sistema-educativo/file-1759506058384'
+  };
 
 
   const handleChange = (e) => {
