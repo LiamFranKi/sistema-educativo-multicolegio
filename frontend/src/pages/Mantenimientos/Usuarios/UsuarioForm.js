@@ -24,8 +24,8 @@ import {
 } from '@mui/icons-material';
 // DatePicker removido temporalmente por problemas de compatibilidad
 import { toast } from 'react-hot-toast';
-import { cloudinaryApi } from '../../../services/apiService';
-import CloudinaryUpload from '../../../components/Common/CloudinaryUpload';
+import { fileService } from '../../../services/apiService';
+import { getImageUrl } from '../../../utils/imageUtils';
 
 const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
   // Estados del formulario
@@ -47,7 +47,6 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [previewImage, setPreviewImage] = useState('');
-  const [cloudinaryPublicId, setCloudinaryPublicId] = useState('');
 
 
   // Opciones para género
@@ -83,37 +82,9 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
         foto: usuario.foto || '',
         activo: usuario.activo !== undefined ? usuario.activo : true
       });
-      // Construir URL de imagen existente
-      const existingImageUrl = usuario.foto ?
-        (usuario.foto.startsWith('http') ? usuario.foto :
-         `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/uploads/${usuario.foto}`) : '';
+      // Construir URL de imagen existente usando getImageUrl
+      const existingImageUrl = getImageUrl(usuario.foto);
       setPreviewImage(existingImageUrl);
-
-      // Si es una URL de Cloudinary, extraer el public_id
-      if (usuario.foto && usuario.foto.includes('cloudinary.com')) {
-        // Extraer public_id de URL de Cloudinary
-        // Formato: https://res.cloudinary.com/cloud_name/image/upload/v1234567890/folder/filename.jpg
-        const urlParts = usuario.foto.split('/');
-        const uploadIndex = urlParts.findIndex(part => part === 'upload');
-        if (uploadIndex !== -1 && uploadIndex + 2 < urlParts.length) {
-          // Tomar todo después de 'upload' y antes del último elemento (que es el filename)
-          const publicIdParts = urlParts.slice(uploadIndex + 2, -1);
-          const filename = urlParts[urlParts.length - 1];
-          const filenameWithoutExt = filename.split('.')[0];
-
-          let publicId;
-          if (publicIdParts.length > 0) {
-            publicId = publicIdParts.join('/') + '/' + filenameWithoutExt;
-          } else {
-            publicId = filenameWithoutExt;
-          }
-
-          console.log('🔍 Extrayendo public_id de Cloudinary:');
-          console.log('URL:', usuario.foto);
-          console.log('Public ID extraído:', publicId);
-          setCloudinaryPublicId(publicId);
-        }
-      }
     } else if (open && mode === 'create') {
       // Resetear formulario para modo crear
       setFormData({
@@ -168,28 +139,49 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
     }
   };
 
-  // Función para manejar subida exitosa a Cloudinary
-  const handleCloudinaryUploadSuccess = (data) => {
-    setFormData(prev => ({
-      ...prev,
-      foto: data.url
-    }));
-    setPreviewImage(data.url);
-    setCloudinaryPublicId(data.public_id);
-    toast.success('Foto subida correctamente a Cloudinary');
+  // Función para manejar subida de archivo local
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validar tamaño del archivo (5MB máximo)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('El archivo no puede ser mayor a 5MB');
+      return;
+    }
+
+    // Validar tipo de archivo
+    if (!file.type.startsWith('image/')) {
+      toast.error('Solo se permiten archivos de imagen');
+      return;
+    }
+
+    try {
+      const response = await fileService.uploadFile(file, 'avatar');
+
+      if (response.success) {
+        setFormData(prev => ({
+          ...prev,
+          foto: response.path
+        }));
+        setPreviewImage(response.url);
+        toast.success('Foto subida correctamente');
+      } else {
+        toast.error('Error al subir la foto');
+      }
+    } catch (error) {
+      console.error('Error subiendo foto:', error);
+      toast.error('Error al subir la foto');
+    }
   };
 
-  // Función para manejar eliminación exitosa de Cloudinary
-  const handleCloudinaryDeleteSuccess = () => {
-    console.log('🗑️ Eliminando foto de Cloudinary...');
-    console.log('Public ID actual:', cloudinaryPublicId);
-
+  // Función para eliminar foto
+  const handleDeletePhoto = () => {
     setFormData(prev => ({
       ...prev,
       foto: ''
     }));
     setPreviewImage('');
-    setCloudinaryPublicId('');
     toast.success('Foto eliminada correctamente');
   };
 
@@ -327,21 +319,54 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
         <DialogContent sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
 
-            {/* Sección de foto con Cloudinary */}
+            {/* Sección de foto */}
             <Box sx={{ mb: 2 }}>
               <Typography variant="subtitle2" gutterBottom>
                 Foto del usuario
               </Typography>
-              <CloudinaryUpload
-                onUploadSuccess={handleCloudinaryUploadSuccess}
-                onDeleteSuccess={handleCloudinaryDeleteSuccess}
-                currentImageUrl={previewImage}
-                currentPublicId={cloudinaryPublicId}
-                folder="usuarios"
-                accept="image/*"
-                maxSize={5 * 1024 * 1024} // 5MB
-                disabled={loading}
-              />
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {previewImage && (
+                  <Box sx={{ textAlign: 'center' }}>
+                    <img
+                      src={previewImage}
+                      alt="Preview"
+                      style={{
+                        width: 150,
+                        height: 150,
+                        objectFit: 'cover',
+                        borderRadius: '50%',
+                        border: '2px solid #ddd'
+                      }}
+                    />
+                  </Box>
+                )}
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    disabled={loading}
+                    startIcon={<AddIcon />}
+                  >
+                    Subir Foto
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                    />
+                  </Button>
+                  {previewImage && (
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={handleDeletePhoto}
+                      disabled={loading}
+                    >
+                      Eliminar
+                    </Button>
+                  )}
+                </Box>
+              </Box>
             </Box>
 
             {/* Grid de campos */}
