@@ -1421,12 +1421,14 @@ const ConfiguracionList = () => {
                 <Grid item xs={12} sm={6}>
                   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, pt: 1 }}>
                     <FormControl fullWidth size="small">
-                      <InputLabel>Tipo de Fondo</InputLabel>
+                      <InputLabel id="background-tipo-label">Tipo de Fondo</InputLabel>
                       <Select
+                        labelId="background-tipo-label"
                         value={editMode ? formData.background_tipo || 'color' : colegio.background_tipo || 'color'}
                         onChange={(e) => handleInputChange('background_tipo', e.target.value)}
                         disabled={!editMode}
                         variant={editMode ? 'outlined' : 'filled'}
+                        label="Tipo de Fondo"
                       >
                         <MenuItem value="color">Color</MenuItem>
                         <MenuItem value="imagen">Imagen</MenuItem>
@@ -1612,8 +1614,9 @@ const ConfiguracionList = () => {
 
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth size="small">
-                  <InputLabel>Tipo Grados</InputLabel>
+                  <InputLabel id="tipo-grados-label">Tipo Grados</InputLabel>
                   <Select
+                    labelId="tipo-grados-label"
                     value={nivelForm.tipo_grados}
                     onChange={(e) => handleNivelInputChange('tipo_grados', e.target.value)}
                     label="Tipo Grados"
@@ -1626,8 +1629,9 @@ const ConfiguracionList = () => {
 
               <Grid item xs={12} sm={3}>
                 <FormControl fullWidth size="small">
-                  <InputLabel>Grado Mínimo</InputLabel>
+                  <InputLabel id="grado-minimo-label">Grado Mínimo</InputLabel>
                   <Select
+                    labelId="grado-minimo-label"
                     value={nivelForm.grado_minimo}
                     onChange={(e) => handleNivelInputChange('grado_minimo', parseInt(e.target.value))}
                     label="Grado Mínimo"
@@ -1641,8 +1645,9 @@ const ConfiguracionList = () => {
 
               <Grid item xs={12} sm={3}>
                 <FormControl fullWidth size="small">
-                  <InputLabel>Grado Máximo</InputLabel>
+                  <InputLabel id="grado-maximo-label">Grado Máximo</InputLabel>
                   <Select
+                    labelId="grado-maximo-label"
                     value={nivelForm.grado_maximo}
                     onChange={(e) => handleNivelInputChange('grado_maximo', parseInt(e.target.value))}
                     label="Grado Máximo"
@@ -1665,8 +1670,9 @@ const ConfiguracionList = () => {
               {/* Todos los campos de calificaciones en la misma línea */}
               <Grid item xs={12} sm={2.4}>
                 <FormControl fullWidth size="small">
-                  <InputLabel>Tipo Calificación</InputLabel>
+                  <InputLabel id="tipo-calificacion-label">Tipo Calificación</InputLabel>
                   <Select
+                    labelId="tipo-calificacion-label"
                     value={nivelForm.tipo_calificacion}
                     onChange={(e) => {
                       const newType = e.target.value;
@@ -1693,8 +1699,9 @@ const ConfiguracionList = () => {
 
               <Grid item xs={12} sm={2.4}>
                 <FormControl fullWidth size="small">
-                  <InputLabel>Calificación Final</InputLabel>
+                  <InputLabel id="calificacion-final-label">Calificación Final</InputLabel>
                   <Select
+                    labelId="calificacion-final-label"
                     value={nivelForm.calificacion_final}
                     onChange={(e) => handleNivelInputChange('calificacion_final', e.target.value)}
                     label="Calificación Final"
@@ -1707,8 +1714,9 @@ const ConfiguracionList = () => {
 
               <Grid item xs={12} sm={2.4}>
                 <FormControl fullWidth size="small">
-                  <InputLabel>Nota Mínima</InputLabel>
+                  <InputLabel id="nota-minima-label">Nota Mínima</InputLabel>
                   <Select
+                    labelId="nota-minima-label"
                     value={nivelForm.nota_minima}
                     onChange={(e) => handleNivelInputChange('nota_minima', e.target.value)}
                     label="Nota Mínima"
@@ -1728,8 +1736,9 @@ const ConfiguracionList = () => {
 
               <Grid item xs={12} sm={2.4}>
                 <FormControl fullWidth size="small">
-                  <InputLabel>Nota Máxima</InputLabel>
+                  <InputLabel id="nota-maxima-label">Nota Máxima</InputLabel>
                   <Select
+                    labelId="nota-maxima-label"
                     value={nivelForm.nota_maxima}
                     onChange={(e) => handleNivelInputChange('nota_maxima', e.target.value)}
                     label="Nota Máxima"
@@ -1749,8 +1758,9 @@ const ConfiguracionList = () => {
 
               <Grid item xs={12} sm={2.4}>
                 <FormControl fullWidth size="small">
-                  <InputLabel>Nota Aprobatoria</InputLabel>
+                  <InputLabel id="nota-aprobatoria-label">Nota Aprobatoria</InputLabel>
                   <Select
+                    labelId="nota-aprobatoria-label"
                     value={nivelForm.nota_aprobatoria}
                     onChange={(e) => handleNivelInputChange('nota_aprobatoria', e.target.value)}
                     label="Nota Aprobatoria"
