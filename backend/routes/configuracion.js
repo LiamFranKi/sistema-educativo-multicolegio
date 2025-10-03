@@ -57,9 +57,12 @@ router.get('/colegio', async (req, res) => {
     );
 
     console.log('📊 Resultado de configuracion:', result.rows.length, 'filas');
+    console.log('📄 Datos crudos de configuracion:', result.rows);
 
     const colegio = {};
     result.rows.forEach(row => {
+      console.log(`🔧 Procesando: ${row.clave} = ${row.valor} (tipo: ${row.tipo})`);
+      
       let valor = row.valor;
       if (row.tipo === 'boolean') {
         valor = valor === 'true';
@@ -69,7 +72,7 @@ router.get('/colegio', async (req, res) => {
 
       // Mapear las claves a nombres más simples
       let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
-
+      
       // Mapeos específicos para mantener consistencia
       if (row.clave === 'colegio_logo' || row.clave === 'logo_colegio') {
         claveSimple = 'logo';
@@ -94,11 +97,13 @@ router.get('/colegio', async (req, res) => {
       } else if (row.clave === 'colegio_director' || row.clave === 'director_colegio') {
         claveSimple = 'director';
       }
-
+      
+      console.log(`✅ Mapeado: ${row.clave} → ${claveSimple} = ${valor}`);
       colegio[claveSimple] = valor;
     });
 
     console.log('✅ Configuraciones del colegio procesadas:', Object.keys(colegio));
+    console.log('📦 Objeto final colegio:', colegio);
 
     res.json({
       success: true,
