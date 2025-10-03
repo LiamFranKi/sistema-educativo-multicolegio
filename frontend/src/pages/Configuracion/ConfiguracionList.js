@@ -658,34 +658,37 @@ const ConfiguracionList = () => {
       const response = await configuracionService.updateColegio(dataToSend);
 
       if (response.success) {
-        // Actualizar el contexto con todos los datos guardados
+        // Actualizar el contexto con los datos que se acabaron de guardar
         updateColegio({
-          nombre: formData.nombre,
-          logo: formData.logo,
-          codigo: formData.codigo,
-          direccion: formData.direccion,
-          telefono: formData.telefono,
-          email: formData.email,
-          director: formData.director,
-          color_primario: formData.color_primario,
-          color_secundario: formData.color_secundario,
-          background_tipo: formData.background_tipo,
-          background_color: formData.background_color,
-          background_imagen: formData.background_imagen
+          nombre: dataToSend.nombre,
+          logo: dataToSend.logo,
+          codigo: dataToSend.codigo,
+          direccion: dataToSend.direccion,
+          telefono: dataToSend.telefono,
+          email: dataToSend.email,
+          director: dataToSend.director,
+          color_primario: dataToSend.color_primario,
+          color_secundario: dataToSend.color_secundario,
+          background_tipo: dataToSend.background_tipo,
+          background_color: dataToSend.background_color,
+          background_imagen: dataToSend.background_imagen
         });
 
-        // Forzar actualización del contexto para que el login se actualice inmediatamente
-        // Esto asegura que todos los componentes que usan el contexto se re-rendericen
-
-        // Sincronizar formData con los datos actualizados del contexto
-        // Usar los datos que se acaban de guardar, no mezclar con colegio
+        // Actualizar formData con los datos guardados para mantener sincronización
         setFormData({
-          ...formData
+          ...formData,
+          logo: dataToSend.logo,
+          background_imagen: dataToSend.background_imagen
         });
 
         // Salir del modo edición
         setEditMode(false);
         toast.success('Configuración guardada exitosamente');
+        
+        console.log('✅ Configuración guardada y contexto actualizado:', {
+          logo: dataToSend.logo,
+          background_imagen: dataToSend.background_imagen
+        });
       }
     } catch (error) {
       console.error('Error guardando configuración:', error);
@@ -696,19 +699,27 @@ const ConfiguracionList = () => {
   };
 
   const handleCancel = () => {
-    // Inicializar formData con URLs completas para imágenes
+    // Recargar datos del contexto para asegurar sincronización
     const formDataWithUrls = {
       ...colegio,
-      logo: colegio.logo ? getColegioLogoUrl(colegio.logo) : '',
-      background_imagen: colegio.background_imagen ? getColegioLogoUrl(colegio.background_imagen) : ''
+      logo: colegio.logo || '',
+      background_imagen: colegio.background_imagen || ''
     };
+    
     setFormData(formDataWithUrls);
     setEditMode(false);
+    
+    // Actualizar preview con los datos actuales del contexto
     if (colegio.logo) {
       setPreviewImage(colegio.logo);
     } else {
       setPreviewImage('');
     }
+    
+    console.log('🔄 Datos cancelados y recargados desde contexto:', {
+      logo: formDataWithUrls.logo,
+      background_imagen: formDataWithUrls.background_imagen
+    });
   };
 
   // Funciones para gestión de años escolares

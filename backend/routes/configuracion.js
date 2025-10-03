@@ -68,7 +68,23 @@ router.get('/colegio', async (req, res) => {
       }
 
       // Mapear las claves a nombres más simples
-      const claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
+      let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
+      
+      // Mapeos específicos para mantener consistencia
+      if (row.clave === 'colegio_logo') {
+        claveSimple = 'logo';
+      } else if (row.clave === 'colegio_background_imagen') {
+        claveSimple = 'background_imagen';
+      } else if (row.clave === 'colegio_color_primario') {
+        claveSimple = 'color_primario';
+      } else if (row.clave === 'colegio_color_secundario') {
+        claveSimple = 'color_secundario';
+      } else if (row.clave === 'colegio_background_color') {
+        claveSimple = 'background_color';
+      } else if (row.clave === 'colegio_background_tipo') {
+        claveSimple = 'background_tipo';
+      }
+      
       colegio[claveSimple] = valor;
     });
 
