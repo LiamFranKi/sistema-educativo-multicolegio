@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { configuracionService, anioEscolarService } from '../services/apiService';
-import { getColegioLogoUrl } from '../utils/imageUtils';
+import { getColegioLogoUrl, getFondoLoginUrl } from '../utils/imageUtils';
 
 const ConfiguracionContext = createContext();
 
@@ -42,7 +42,7 @@ export const ConfiguracionProvider = ({ children }) => {
         // Construir URL de imagen de fondo con mejor manejo de errores
         let backgroundImageUrl = null;
         if (response.colegio.background_imagen) {
-          backgroundImageUrl = getColegioLogoUrl(response.colegio.background_imagen);
+          backgroundImageUrl = getFondoLoginUrl(response.colegio.background_imagen);
           console.log('Background image filename:', response.colegio.background_imagen);
           console.log('Background image URL construida:', backgroundImageUrl);
 
