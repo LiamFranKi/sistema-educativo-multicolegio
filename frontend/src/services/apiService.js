@@ -504,23 +504,23 @@ export const webAdminApi = {
   updateHomePrincipal: (data) => api.put('/web-admin/home/principal', data),
 };
 
-// Cloudinary API
-export const cloudinaryApi = {
-  // Subir archivo a Cloudinary
-  uploadFile: (file) => {
-    const formData = new FormData();
-    formData.append('file', file);
+// Cloudinary API (DEPRECADO - usar fileService en su lugar)
+// export const cloudinaryApi = {
+//   // Subir archivo a Cloudinary
+//   uploadFile: (file) => {
+//     const formData = new FormData();
+//     formData.append('file', file);
 
-    return api.post('/files/upload-cloudinary', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-  },
+//     return api.post('/files/upload-cloudinary', formData, {
+//       headers: {
+//         'Content-Type': 'multipart/form-data',
+//       },
+//     });
+//   },
 
-  // Eliminar archivo de Cloudinary
-  deleteFile: (publicId) => api.delete(`/files/delete-cloudinary/${publicId}`),
-};
+//   // Eliminar archivo de Cloudinary
+//   deleteFile: (publicId) => api.delete(`/files/delete-cloudinary/${publicId}`),
+// };
 
 // Document API (Railway)
 export const documentApi = {

@@ -36,7 +36,7 @@ import {
   Badge
 } from '@mui/icons-material';
 import { getUserId } from '../services/authService';
-import { userService, cloudinaryApi } from '../services/apiService';
+import { userService, fileService } from '../services/apiService';
 import { getImageUrl } from '../utils/imageUtils';
 import { useUser } from '../contexts/UserContext';
 import toast from 'react-hot-toast';
@@ -287,27 +287,27 @@ const MiPerfil = () => {
 
     setSaving(true);
     try {
-      const response = await cloudinaryApi.uploadFile(file);
-      if (response.data.success) {
-        const newPhotoUrl = response.data.data.url;
+      const response = await fileService.uploadFile(file, 'usuario');
+      if (response.success) {
+        const newPhotoPath = response.path;
 
         // Actualizar en la base de datos
-        const updateResponse = await userService.updateUser(user.id, { foto: newPhotoUrl });
+        const updateResponse = await userService.updateUser(user.id, { foto: newPhotoPath });
 
         if (updateResponse.success) {
-          const updatedUser = { ...user, foto: newPhotoUrl };
+          const updatedUser = { ...user, foto: newPhotoPath };
           updateUser(updatedUser); // Actualizar el contexto global
           setFormData(prev => ({
             ...prev,
-            foto: newPhotoUrl
+            foto: newPhotoPath
           }));
-          toast.success('Foto subida correctamente a Cloudinary');
+          toast.success('Foto subida correctamente');
         } else {
           toast.error('Error actualizando foto en la base de datos');
           setPreviewImage('');
         }
       } else {
-        toast.error(response.data.message || 'Error al subir la foto');
+        toast.error('Error al subir la foto');
         setPreviewImage('');
       }
     } catch (err) {
