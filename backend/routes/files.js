@@ -580,4 +580,75 @@ router.get('/', authenticateToken, (req, res) => {
   }
 });
 
+// GET /api/files/cloudinary-test - Endpoint de prueba para Cloudinary (sin autenticación)
+router.get('/cloudinary-test', (req, res) => {
+  try {
+    console.log('🔍 Cloudinary Test - Verificando configuración...');
+    
+    const config = {
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    };
+
+    console.log('📋 Cloudinary Config:', {
+      cloud_name: config.cloud_name ? '✅ Configurado' : '❌ Faltante',
+      api_key: config.api_key ? '✅ Configurado' : '❌ Faltante',
+      api_secret: config.api_secret ? '✅ Configurado' : '❌ Faltante'
+    });
+
+    // Verificar si todas las variables están configuradas
+    const allConfigured = config.cloud_name && config.api_key && config.api_secret;
+
+    res.json({
+      success: true,
+      message: 'Diagnóstico de Cloudinary',
+      config_status: {
+        cloud_name: config.cloud_name ? '✅ Configurado' : '❌ Faltante',
+        api_key: config.api_key ? '✅ Configurado' : '❌ Faltante',
+        api_secret: config.api_secret ? '✅ Configurado' : '❌ Faltante',
+        all_configured: allConfigured
+      },
+      environment: process.env.NODE_ENV,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('❌ Error en cloudinary-test:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message
+    });
+  }
+});
+
+// GET /api/files/auth-test - Endpoint de prueba de autenticación
+router.get('/auth-test', authenticateToken, (req, res) => {
+  try {
+    console.log('🔐 Auth Test - Usuario autenticado:', req.user?.email);
+    
+    res.json({
+      success: true,
+      message: 'Autenticación exitosa',
+      user: {
+        id: req.user.id,
+        email: req.user.email,
+        nombres: req.user.nombres,
+        rol: req.user.rol,
+        activo: req.user.activo
+      },
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('❌ Error en auth-test:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
