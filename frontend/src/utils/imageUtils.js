@@ -25,13 +25,13 @@ export const getImageUrl = (filename) => {
 
 /**
  * Construye la URL completa para el logo del colegio
- * @param {string} logo - Nombre del archivo del logo o ruta relativa
+ * @param {string} logo - Nombre del archivo del logo, ruta relativa o URL de Cloudinary
  * @returns {string|null} - URL completa del logo o null si no hay logo
  */
 export const getColegioLogoUrl = (logo) => {
   if (!logo) return null;
 
-  // Si ya es una URL completa, devolverla tal como está
+  // Si ya es una URL completa (Cloudinary o local), devolverla tal como está
   if (logo.startsWith('http')) {
     return logo;
   }
@@ -47,13 +47,13 @@ export const getColegioLogoUrl = (logo) => {
 
 /**
  * Construye la URL completa para el fondo del login
- * @param {string} fondo - Nombre del archivo del fondo o ruta relativa
+ * @param {string} fondo - Nombre del archivo del fondo, ruta relativa o URL de Cloudinary
  * @returns {string|null} - URL completa del fondo o null si no hay fondo
  */
 export const getFondoLoginUrl = (fondo) => {
   if (!fondo) return null;
 
-  // Si ya es una URL completa, devolverla tal como está
+  // Si ya es una URL completa (Cloudinary o local), devolverla tal como está
   if (fondo.startsWith('http')) {
     return fondo;
   }

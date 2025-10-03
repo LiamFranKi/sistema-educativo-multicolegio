@@ -69,9 +69,9 @@ const Login = ({ onLogin }) => {
     }
   };
 
-  // Usar configuración local como fallback si el contexto falla
+  // Usar configuración del colegio (Cloudinary o local)
   const backgroundTipo = colegio.background_tipo || loginBackground.tipo;
-  const backgroundImagen = getFondoLoginUrl(colegio.background_imagen) || loginBackground.imagen;
+  const backgroundImagen = getFondoLoginUrl(colegio.background_imagen);
   const backgroundColor = colegio.background_color || loginBackground.color;
 
   const loginBackgroundSx = backgroundTipo === 'imagen' && backgroundImagen

@@ -12,13 +12,13 @@ const router = express.Router();
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const basePath = process.env.UPLOAD_PATH || './uploads';
-    
+
     console.log('🔍 Upload Debug Info:');
     console.log('req.body:', req.body);
     console.log('file.fieldname:', file.fieldname);
     console.log('file.originalname:', file.originalname);
     console.log('basePath:', basePath);
-    
+
     // Determinar carpeta según el tipo de archivo
     let folder = 'general';
     if (req.body.type === 'logo' || file.fieldname === 'logo') {
@@ -36,9 +36,9 @@ const storage = multer.diskStorage({
     } else if (req.body.type === 'reporte' || file.fieldname === 'reporte') {
       folder = 'reportes';
     }
-    
+
     console.log('📁 Carpeta determinada:', folder);
-    
+
     const uploadPath = path.join(basePath, folder);
     console.log('📂 Upload path:', uploadPath);
 
@@ -48,11 +48,11 @@ const storage = multer.diskStorage({
         fs.mkdirSync(uploadPath, { recursive: true });
         console.log('📂 Directorio creado:', uploadPath);
       }
-      
+
       // Verificar permisos de escritura
       fs.accessSync(uploadPath, fs.constants.W_OK);
       console.log('✅ Permisos de escritura confirmados');
-      
+
       cb(null, uploadPath);
     } catch (error) {
       console.error('❌ Error creando/accediendo directorio:', error);
@@ -306,7 +306,7 @@ router.post('/upload', authenticateToken, upload.single('file'), (req, res) => {
     console.log('📤 Upload endpoint called');
     console.log('req.file:', req.file);
     console.log('req.body:', req.body);
-    
+
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -316,7 +316,7 @@ router.post('/upload', authenticateToken, upload.single('file'), (req, res) => {
 
     const { type = 'general' } = req.body;
     const file = req.file;
-    
+
     console.log('📋 File info:', {
       filename: file.filename,
       fieldname: file.fieldname,
