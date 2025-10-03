@@ -46,7 +46,7 @@ import {
   Clear as ClearIcon,
   MoreVert as MoreVertIcon
 } from '@mui/icons-material';
-import { configuracionService, nivelesService, turnosService, cloudinaryApi } from '../../services/apiService';
+import { configuracionService, nivelesService, turnosService } from '../../services/apiService';
 import { fileService } from '../../services/apiService';
 import { useConfiguracion } from '../../contexts/ConfiguracionContext';
 import { getColegioLogoUrl } from '../../utils/imageUtils';
@@ -573,19 +573,23 @@ const ConfiguracionList = () => {
     }
 
     try {
-      // Subir a Cloudinary
-      const response = await cloudinaryApi.uploadFile(file);
+      // Subir a Railway local
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', 'logo');
+
+      const response = await fileService.uploadFile(formData);
 
       if (response.data.success) {
-        const imageUrl = response.data.data.url;
-        console.log('Logo subido a Cloudinary - URL:', imageUrl);
+        const imagePath = response.data.path;
+        console.log('Logo subido a Railway - Path:', imagePath);
 
         setFormData(prev => ({
           ...prev,
-          logo: imageUrl
+          logo: imagePath
         }));
-        setPreviewImage(imageUrl);
-        toast.success('Logo subido correctamente a Cloudinary');
+        setPreviewImage(response.data.url);
+        toast.success('Logo subido correctamente a Railway');
       } else {
         toast.error('Error al subir el logo');
       }
@@ -612,19 +616,23 @@ const ConfiguracionList = () => {
     }
 
     try {
-      // Subir a Cloudinary
-      const response = await cloudinaryApi.uploadFile(file);
+      // Subir a Railway local
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', 'fondo');
+
+      const response = await fileService.uploadFile(formData);
 
       if (response.data.success) {
-        const imageUrl = response.data.data.url;
-        console.log('Imagen subida a Cloudinary - URL:', imageUrl);
+        const imagePath = response.data.path;
+        console.log('Imagen subida a Railway - Path:', imagePath);
 
         setFormData(prev => ({
           ...prev,
-          background_imagen: imageUrl
+          background_imagen: imagePath
         }));
 
-        toast.success('Imagen de fondo subida correctamente a Cloudinary');
+        toast.success('Imagen de fondo subida correctamente a Railway');
       } else {
         toast.error('Error al subir la imagen de fondo');
       }

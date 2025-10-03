@@ -1,15 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
-const { queryString } = require('../config/database');
+const { query } = require('../config/database');
 
 // GET /api/turnos - Obtener todos los turnos
 router.get('/', authenticateToken, async (req, res) => {
   try {
-    const { search, activo, page = 1, limit = 10 } = req.queryString;
+    const { search, activo, page = 1, limit = 10 } = req.query;
     const offset = (page - 1) * limit;
 
-    let queryStringString = `
+    let queryString = `
       SELECT id, nombre, abreviatura, activo, created_at, updated_at
       FROM turnos
       WHERE 1=1

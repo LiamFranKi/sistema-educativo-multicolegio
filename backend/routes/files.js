@@ -11,7 +11,7 @@ const router = express.Router();
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const basePath = process.env.UPLOAD_PATH || './uploads';
-    
+
     // Determinar carpeta según el tipo de archivo
     let folder = 'general';
     if (req.body.type === 'logo' || file.fieldname === 'logo') {
@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
     } else if (req.body.type === 'avatar' || file.fieldname === 'foto') {
       folder = 'avatars';
     }
-    
+
     const uploadPath = path.join(basePath, folder);
 
     // Crear directorio si no existe
