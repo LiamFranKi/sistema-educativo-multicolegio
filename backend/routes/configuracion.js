@@ -49,17 +49,17 @@ router.get('/', authenticateToken, async (req, res) => {
 router.get('/colegio', async (req, res) => {
   try {
     console.log('🔍 Obteniendo datos del colegio desde tabla configuracion...');
-    
+
     // Datos por defecto si falla la BD
     const colegioPorDefecto = {
       nombre: 'Vanguard Schools',
-      logo: 'https://res.cloudinary.com/uigkouzkn/image/upload/v1739300702/sistema-educativo/me-1739500702010',
+      logo: null, // Sin logo por defecto
       color_primario: '#1976d2',
       color_secundario: '#424242',
       director: 'Rosario Maravi L.',
-      background_tipo: 'imagen',
+      background_tipo: 'color',
       background_color: '#9c2626',
-      background_imagen: 'https://res.cloudinary.com/digk6bzkn/image/upload/v1759506058/sistema-educativo/file-1759506058384',
+      background_imagen: null,
       anio_escolar_actual: 2025
     };
 
@@ -84,10 +84,10 @@ router.get('/colegio', async (req, res) => {
       }
 
       const colegio = {};
-      
+
       result.rows.forEach(row => {
         console.log(`🔧 Procesando: ${row.clave} = ${row.valor} (tipo: ${row.tipo})`);
-        
+
         let valor = row.valor;
         if (row.tipo === 'boolean') {
           valor = valor === 'true';
@@ -97,7 +97,7 @@ router.get('/colegio', async (req, res) => {
 
         // Mapear las claves a nombres más simples
         let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
-        
+
         // Mapeos específicos
         if (row.clave === 'colegio_logo') claveSimple = 'logo';
         else if (row.clave === 'colegio_background_imagen') claveSimple = 'background_imagen';
@@ -111,17 +111,17 @@ router.get('/colegio', async (req, res) => {
         else if (row.clave === 'colegio_email') claveSimple = 'email';
         else if (row.clave === 'colegio_director') claveSimple = 'director';
         else if (row.clave === 'anio_escolar_actual') claveSimple = 'anio_escolar_actual';
-        
+
         colegio[claveSimple] = valor;
       });
-      
+
       // Agregar valores por defecto si no existen
-      if (!colegio.background_tipo) colegio.background_tipo = 'imagen';
+      if (!colegio.background_tipo) colegio.background_tipo = 'color';
       if (!colegio.background_color) colegio.background_color = '#9c2626';
-      if (!colegio.background_imagen) colegio.background_imagen = 'https://res.cloudinary.com/digk6bzkn/image/upload/v1759506058/sistema-educativo/file-1759506058384';
+      if (!colegio.background_imagen) colegio.background_imagen = null;
       if (!colegio.anio_escolar_actual) colegio.anio_escolar_actual = 2025;
       if (!colegio.nombre) colegio.nombre = 'Vanguard Schools';
-      
+
       console.log('✅ Configuraciones del colegio procesadas:', Object.keys(colegio));
 
       res.json({
@@ -153,12 +153,12 @@ router.get('/colegio/publico', async (req, res) => {
     // Datos por defecto para login
     const colegioPorDefecto = {
       nombre: 'Vanguard Schools',
-      logo: 'https://res.cloudinary.com/uigkouzkn/image/upload/v1739300702/sistema-educativo/me-1739500702010',
+      logo: null, // Sin logo por defecto
       color_primario: '#1976d2',
       color_secundario: '#424242',
-      background_tipo: 'imagen',
+      background_tipo: 'color',
       background_color: '#9c2626',
-      background_imagen: 'https://res.cloudinary.com/digk6bzkn/image/upload/v1759506058/sistema-educativo/file-1759506058384'
+      background_imagen: null
     };
 
     try {
@@ -180,7 +180,7 @@ router.get('/colegio/publico', async (req, res) => {
       const colegio = {};
       result.rows.forEach(row => {
         let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
-        
+
         if (row.clave === 'colegio_nombre' || row.clave === 'nombre_colegio') claveSimple = 'nombre';
         else if (row.clave === 'colegio_logo' || row.clave === 'logo_colegio') claveSimple = 'logo';
         else if (row.clave === 'colegio_color_primario' || row.clave === 'color_primario') claveSimple = 'color_primario';
@@ -193,9 +193,9 @@ router.get('/colegio/publico', async (req, res) => {
       });
 
       // Agregar valores por defecto si faltan
-      if (!colegio.background_tipo) colegio.background_tipo = 'imagen';
+      if (!colegio.background_tipo) colegio.background_tipo = 'color';
       if (!colegio.background_color) colegio.background_color = '#9c2626';
-      if (!colegio.background_imagen) colegio.background_imagen = 'https://res.cloudinary.com/digk6bzkn/image/upload/v1759506058/sistema-educativo/file-1759506058384';
+      if (!colegio.background_imagen) colegio.background_imagen = null;
 
       res.json({
         success: true,

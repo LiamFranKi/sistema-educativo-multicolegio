@@ -27,9 +27,9 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState('');
   // Configuración estática del fondo del login (temporal hasta arreglar BD)
   const loginBackground = {
-    tipo: 'imagen',
-    color: '#f5f5f5',
-    imagen: 'https://res.cloudinary.com/digk6bzkn/image/upload/v1759506058/sistema-educativo/file-1759506058384'
+    tipo: 'color',
+    color: '#9c2626',
+    imagen: null
   };
 
 
