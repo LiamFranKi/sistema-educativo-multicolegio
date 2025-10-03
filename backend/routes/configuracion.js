@@ -69,22 +69,32 @@ router.get('/colegio', async (req, res) => {
 
       // Mapear las claves a nombres más simples
       let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
-
+      
       // Mapeos específicos para mantener consistencia
-      if (row.clave === 'colegio_logo') {
+      if (row.clave === 'colegio_logo' || row.clave === 'logo_colegio') {
         claveSimple = 'logo';
-      } else if (row.clave === 'colegio_background_imagen') {
+      } else if (row.clave === 'colegio_background_imagen' || row.clave === 'background_imagen_colegio') {
         claveSimple = 'background_imagen';
-      } else if (row.clave === 'colegio_color_primario') {
+      } else if (row.clave === 'colegio_color_primario' || row.clave === 'color_primario') {
         claveSimple = 'color_primario';
-      } else if (row.clave === 'colegio_color_secundario') {
+      } else if (row.clave === 'colegio_color_secundario' || row.clave === 'color_secundario') {
         claveSimple = 'color_secundario';
-      } else if (row.clave === 'colegio_background_color') {
+      } else if (row.clave === 'colegio_background_color' || row.clave === 'background_color_colegio') {
         claveSimple = 'background_color';
-      } else if (row.clave === 'colegio_background_tipo') {
+      } else if (row.clave === 'colegio_background_tipo' || row.clave === 'background_tipo_colegio') {
         claveSimple = 'background_tipo';
+      } else if (row.clave === 'colegio_nombre' || row.clave === 'nombre_colegio') {
+        claveSimple = 'nombre';
+      } else if (row.clave === 'colegio_direccion' || row.clave === 'direccion_colegio') {
+        claveSimple = 'direccion';
+      } else if (row.clave === 'colegio_telefono' || row.clave === 'telefono_colegio') {
+        claveSimple = 'telefono';
+      } else if (row.clave === 'colegio_email' || row.clave === 'email_colegio') {
+        claveSimple = 'email';
+      } else if (row.clave === 'colegio_director' || row.clave === 'director_colegio') {
+        claveSimple = 'director';
       }
-
+      
       colegio[claveSimple] = valor;
     });
 
@@ -175,27 +185,45 @@ router.put('/colegio', authenticateToken, requireAdmin, [
 
     // Actualizar cada configuración individualmente
     const configuraciones = [
-      { clave: 'colegio_nombre', valor: nombre },
-      { clave: 'colegio_codigo', valor: codigo },
-      { clave: 'colegio_direccion', valor: direccion },
-      { clave: 'colegio_telefono', valor: telefono },
-      { clave: 'colegio_email', valor: email },
-      { clave: 'colegio_logo', valor: logo },
-      { clave: 'colegio_color_primario', valor: color_primario },
-      { clave: 'colegio_color_secundario', valor: color_secundario },
-      { clave: 'colegio_director', valor: director },
-      { clave: 'colegio_background_tipo', valor: background_tipo },
-      { clave: 'colegio_background_color', valor: background_color },
-      { clave: 'colegio_background_imagen', valor: background_imagen }
+      { clave: 'colegio_nombre', claveAlt: 'nombre_colegio', valor: nombre },
+      { clave: 'colegio_codigo', claveAlt: 'codigo_colegio', valor: codigo },
+      { clave: 'colegio_direccion', claveAlt: 'direccion_colegio', valor: direccion },
+      { clave: 'colegio_telefono', claveAlt: 'telefono_colegio', valor: telefono },
+      { clave: 'colegio_email', claveAlt: 'email_colegio', valor: email },
+      { clave: 'colegio_logo', claveAlt: 'logo_colegio', valor: logo },
+      { clave: 'colegio_color_primario', claveAlt: 'color_primario', valor: color_primario },
+      { clave: 'colegio_color_secundario', claveAlt: 'color_secundario', valor: color_secundario },
+      { clave: 'colegio_director', claveAlt: 'director_colegio', valor: director },
+      { clave: 'colegio_background_tipo', claveAlt: 'background_tipo_colegio', valor: background_tipo },
+      { clave: 'colegio_background_color', claveAlt: 'background_color_colegio', valor: background_color },
+      { clave: 'colegio_background_imagen', claveAlt: 'background_imagen_colegio', valor: background_imagen }
     ];
 
     for (const config of configuraciones) {
       if (config.valor !== undefined && config.valor !== null) {
         console.log(`Actualizando ${config.clave}: ${config.valor}`);
-        await query(
-          'UPDATE configuracion SET valor = $1, updated_at = NOW() WHERE clave = $2',
-          [config.valor, config.clave]
-        );
+        
+        // Intentar actualizar con la clave principal, si no existe usar la alternativa
+        try {
+          await query(
+            'UPDATE configuracion SET valor = $1, updated_at = NOW() WHERE clave = $2',
+            [config.valor, config.clave]
+          );
+        } catch (error) {
+          // Si falla, intentar con la clave alternativa
+          try {
+            await query(
+              'UPDATE configuracion SET valor = $1, updated_at = NOW() WHERE clave = $2',
+              [config.valor, config.claveAlt]
+            );
+          } catch (altError) {
+            // Si tampoco existe, crear la entrada
+            await query(
+              'INSERT INTO configuracion (clave, valor, descripcion, tipo, activo) VALUES ($1, $2, $3, $4, true) ON CONFLICT (clave) DO UPDATE SET valor = $2, updated_at = NOW()',
+              [config.clave, config.valor, `Configuración de ${config.clave}`, 'text']
+            );
+          }
+        }
       }
     }
 
