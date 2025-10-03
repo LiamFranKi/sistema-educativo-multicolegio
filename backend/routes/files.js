@@ -10,7 +10,19 @@ const router = express.Router();
 // Configuración de multer para subida de archivos
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = process.env.UPLOAD_PATH || './uploads';
+    const basePath = process.env.UPLOAD_PATH || './uploads';
+    
+    // Determinar carpeta según el tipo de archivo
+    let folder = 'general';
+    if (req.body.type === 'logo' || file.fieldname === 'logo') {
+      folder = 'configuracion/logo';
+    } else if (req.body.type === 'fondo' || file.fieldname === 'background_imagen') {
+      folder = 'configuracion/fondo';
+    } else if (req.body.type === 'avatar' || file.fieldname === 'foto') {
+      folder = 'avatars';
+    }
+    
+    const uploadPath = path.join(basePath, folder);
 
     // Crear directorio si no existe
     if (!fs.existsSync(uploadPath)) {
@@ -20,11 +32,20 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
-    // Generar nombre único para el archivo
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const extension = path.extname(file.originalname);
-    const filename = file.fieldname + '-' + uniqueSuffix + extension;
-    cb(null, filename);
+    // Para logo y fondo, usar nombre fijo
+    if (req.body.type === 'logo' || file.fieldname === 'logo') {
+      const extension = path.extname(file.originalname);
+      cb(null, 'logo-colegio' + extension);
+    } else if (req.body.type === 'fondo' || file.fieldname === 'background_imagen') {
+      const extension = path.extname(file.originalname);
+      cb(null, 'fondo-login' + extension);
+    } else {
+      // Generar nombre único para otros archivos
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const extension = path.extname(file.originalname);
+      const filename = file.fieldname + '-' + uniqueSuffix + extension;
+      cb(null, filename);
+    }
   }
 });
 
@@ -265,12 +286,12 @@ router.post('/upload', authenticateToken, upload.single('file'), (req, res) => {
     const file = req.file;
 
     // Validar tipo de archivo según el tipo de subida
-    if (type === 'profile' && !file.mimetype.startsWith('image/')) {
+    if ((type === 'profile' || type === 'logo' || type === 'fondo') && !file.mimetype.startsWith('image/')) {
       // Eliminar archivo si no es imagen
       fs.unlinkSync(file.path);
       return res.status(400).json({
         success: false,
-        message: 'Para el perfil solo se permiten imágenes'
+        message: 'Para el perfil, logo y fondo solo se permiten imágenes'
       });
     }
 
@@ -283,6 +304,18 @@ router.post('/upload', authenticateToken, upload.single('file'), (req, res) => {
       });
     }
 
+    // Determinar la ruta relativa según la carpeta
+    let relativePath = file.filename;
+    if (file.destination.includes('configuracion/logo')) {
+      relativePath = `configuracion/logo/${file.filename}`;
+    } else if (file.destination.includes('configuracion/fondo')) {
+      relativePath = `configuracion/fondo/${file.filename}`;
+    } else if (file.destination.includes('avatars')) {
+      relativePath = `avatars/${file.filename}`;
+    }
+
+    const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${relativePath}`;
+
     res.json({
       success: true,
       message: 'Archivo subido exitosamente',
@@ -290,7 +323,9 @@ router.post('/upload', authenticateToken, upload.single('file'), (req, res) => {
       originalName: file.originalname,
       size: file.size,
       mimetype: file.mimetype,
-      type: type
+      type: type,
+      path: relativePath,
+      url: fileUrl
     });
 
   } catch (error) {

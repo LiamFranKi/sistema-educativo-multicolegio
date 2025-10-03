@@ -14,7 +14,7 @@ import {
 import { School as SchoolIcon } from '@mui/icons-material';
 import { authService } from '../services/apiService';
 import { setToken, setUser } from '../services/authService';
-import { getColegioLogoUrl } from '../utils/imageUtils';
+import { getColegioLogoUrl, getFondoLoginUrl } from '../utils/imageUtils';
 import { useConfiguracion } from '../contexts/ConfiguracionContext';
 
 const Login = ({ onLogin }) => {
@@ -71,7 +71,7 @@ const Login = ({ onLogin }) => {
 
   // Usar configuración local como fallback si el contexto falla
   const backgroundTipo = colegio.background_tipo || loginBackground.tipo;
-  const backgroundImagen = colegio.background_imagen || loginBackground.imagen;
+  const backgroundImagen = getFondoLoginUrl(colegio.background_imagen) || loginBackground.imagen;
   const backgroundColor = colegio.background_color || loginBackground.color;
 
   const loginBackgroundSx = backgroundTipo === 'imagen' && backgroundImagen
