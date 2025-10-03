@@ -216,17 +216,30 @@ router.delete('/delete-document/:filename', authenticateToken, async (req, res) 
 // POST /api/files/upload-cloudinary - Subir archivo a Cloudinary
 router.post('/upload-cloudinary', authenticateToken, upload.single('file'), async (req, res) => {
   try {
+    console.log('🔍 Upload Cloudinary - Usuario autenticado:', req.user?.email);
+    console.log('🔍 Upload Cloudinary - Archivo recibido:', req.file?.originalname);
+    
+    // Verificar configuración de Cloudinary
+    console.log('🔍 Cloudinary config:', {
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME ? '✅ Configurado' : '❌ Faltante',
+      api_key: process.env.CLOUDINARY_API_KEY ? '✅ Configurado' : '❌ Faltante',
+      api_secret: process.env.CLOUDINARY_API_SECRET ? '✅ Configurado' : '❌ Faltante'
+    });
+
     if (!req.file) {
+      console.log('❌ No se proporcionó archivo');
       return res.status(400).json({
         success: false,
         message: 'No se proporcionó ningún archivo'
       });
     }
 
+    console.log('📤 Subiendo a Cloudinary...');
     // Subir a Cloudinary
     const result = await uploadImage(req.file, 'sistema-educativo');
 
     if (!result.success) {
+      console.error('❌ Error subiendo a Cloudinary:', result.error);
       return res.status(500).json({
         success: false,
         message: 'Error subiendo archivo a Cloudinary',
@@ -234,8 +247,17 @@ router.post('/upload-cloudinary', authenticateToken, upload.single('file'), asyn
       });
     }
 
+    console.log('✅ Archivo subido exitosamente:', result.url);
+
     // Eliminar archivo temporal
-    fs.unlinkSync(req.file.path);
+    if (req.file && req.file.path) {
+      try {
+        fs.unlinkSync(req.file.path);
+        console.log('🗑️ Archivo temporal eliminado');
+      } catch (cleanupError) {
+        console.error('⚠️ Error eliminando archivo temporal:', cleanupError);
+      }
+    }
 
     res.json({
       success: true,
@@ -250,7 +272,7 @@ router.post('/upload-cloudinary', authenticateToken, upload.single('file'), asyn
     });
 
   } catch (error) {
-    console.error('Error en upload-cloudinary:', error);
+    console.error('❌ Error en upload-cloudinary:', error);
 
     // Limpiar archivo temporal si existe
     if (req.file && req.file.path) {
