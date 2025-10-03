@@ -69,7 +69,7 @@ router.get('/colegio', async (req, res) => {
 
       // Mapear las claves a nombres más simples
       let claveSimple = row.clave.replace('_colegio', '').replace('colegio_', '');
-      
+
       // Mapeos específicos para mantener consistencia
       if (row.clave === 'colegio_logo') {
         claveSimple = 'logo';
@@ -84,7 +84,7 @@ router.get('/colegio', async (req, res) => {
       } else if (row.clave === 'colegio_background_tipo') {
         claveSimple = 'background_tipo';
       }
-      
+
       colegio[claveSimple] = valor;
     });
 

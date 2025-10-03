@@ -129,17 +129,12 @@ const ConfiguracionList = () => {
       if (response.success) {
         updateColegio(response.colegio);
 
-        // Inicializar formData con URLs completas para imágenes
-        const formDataWithUrls = {
-          ...response.colegio,
-          logo: response.colegio.logo ? getColegioLogoUrl(response.colegio.logo) : '',
-          background_imagen: response.colegio.background_imagen ? getColegioLogoUrl(response.colegio.background_imagen) : ''
-        };
-        setFormData(formDataWithUrls);
+        // Inicializar formData tal como están los datos (como en usuarios)
+        setFormData(response.colegio);
 
         // Cargar imagen de preview si existe logo
         if (response.colegio.logo) {
-          setPreviewImage(getColegioLogoUrl(response.colegio.logo));
+          setPreviewImage(response.colegio.logo);
         }
       }
     } catch (error) {
@@ -645,12 +640,9 @@ const ConfiguracionList = () => {
 
       console.log('Datos que se van a enviar:', formData);
 
-      // Preparar datos para envío
+      // Preparar datos para envío - guardar tal como están (como en usuarios)
       const dataToSend = {
-        ...formData,
-        // Si es una URL de Cloudinary, guardarla completa; si es local, solo el filename
-        logo: formData.logo ? (formData.logo.includes('cloudinary.com') ? formData.logo : formData.logo.split('/').pop()) : formData.logo,
-        background_imagen: formData.background_imagen ? (formData.background_imagen.includes('cloudinary.com') ? formData.background_imagen : formData.background_imagen.split('/').pop()) : formData.background_imagen
+        ...formData
       };
 
       console.log('Datos procesados para envío:', dataToSend);
@@ -674,13 +666,6 @@ const ConfiguracionList = () => {
           background_imagen: dataToSend.background_imagen
         });
 
-        // Actualizar formData con los datos guardados para mantener sincronización
-        setFormData({
-          ...formData,
-          logo: dataToSend.logo,
-          background_imagen: dataToSend.background_imagen
-        });
-
         // Salir del modo edición
         setEditMode(false);
         toast.success('Configuración guardada exitosamente');
@@ -700,13 +685,9 @@ const ConfiguracionList = () => {
 
   const handleCancel = () => {
     // Recargar datos del contexto para asegurar sincronización
-    const formDataWithUrls = {
-      ...colegio,
-      logo: colegio.logo || '',
-      background_imagen: colegio.background_imagen || ''
-    };
-    
-    setFormData(formDataWithUrls);
+    setFormData({
+      ...colegio
+    });
     setEditMode(false);
     
     // Actualizar preview con los datos actuales del contexto
@@ -717,8 +698,8 @@ const ConfiguracionList = () => {
     }
     
     console.log('🔄 Datos cancelados y recargados desde contexto:', {
-      logo: formDataWithUrls.logo,
-      background_imagen: formDataWithUrls.background_imagen
+      logo: colegio.logo,
+      background_imagen: colegio.background_imagen
     });
   };
 
