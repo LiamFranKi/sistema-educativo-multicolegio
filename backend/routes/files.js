@@ -218,7 +218,7 @@ router.post('/upload-cloudinary', authenticateToken, upload.single('file'), asyn
   try {
     console.log('🔍 Upload Cloudinary - Usuario autenticado:', req.user?.email);
     console.log('🔍 Upload Cloudinary - Archivo recibido:', req.file?.originalname);
-    
+
     // Verificar configuración de Cloudinary
     console.log('🔍 Cloudinary config:', {
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME ? '✅ Configurado' : '❌ Faltante',

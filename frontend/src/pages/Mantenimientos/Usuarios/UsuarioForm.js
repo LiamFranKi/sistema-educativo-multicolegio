@@ -102,7 +102,6 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
         activo: true
       });
       setPreviewImage('');
-      setCloudinaryPublicId('');
     }
     setErrors({});
   }, [open, mode, usuario]);
