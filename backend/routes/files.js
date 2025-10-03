@@ -11,24 +11,32 @@ const router = express.Router();
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const basePath = process.env.UPLOAD_PATH || './uploads';
-    
+
     console.log('🔍 Upload Debug Info:');
     console.log('req.body:', req.body);
     console.log('file.fieldname:', file.fieldname);
     console.log('file.originalname:', file.originalname);
-    
+
     // Determinar carpeta según el tipo de archivo
     let folder = 'general';
     if (req.body.type === 'logo' || file.fieldname === 'logo') {
       folder = 'configuracion/logo';
     } else if (req.body.type === 'fondo' || file.fieldname === 'background_imagen') {
       folder = 'configuracion/fondo';
-    } else if (req.body.type === 'avatar' || file.fieldname === 'foto') {
-      folder = 'avatars';
+    } else if (req.body.type === 'usuario' || req.body.type === 'avatar' || file.fieldname === 'foto') {
+      folder = 'usuarios';
+    } else if (req.body.type === 'curso' || file.fieldname === 'imagen') {
+      folder = 'cursos';
+    } else if (req.body.type === 'documento' || file.fieldname === 'documento') {
+      folder = 'documentos';
+    } else if (req.body.type === 'boleta' || file.fieldname === 'boleta') {
+      folder = 'boletas';
+    } else if (req.body.type === 'reporte' || file.fieldname === 'reporte') {
+      folder = 'reportes';
     }
-    
+
     console.log('📁 Carpeta determinada:', folder);
-    
+
     const uploadPath = path.join(basePath, folder);
 
     // Crear directorio si no existe
@@ -286,7 +294,7 @@ router.post('/upload', authenticateToken, upload.single('file'), (req, res) => {
     console.log('📤 Upload endpoint called');
     console.log('req.file:', req.file);
     console.log('req.body:', req.body);
-    
+
     if (!req.file) {
       return res.status(400).json({
         success: false,
@@ -296,7 +304,7 @@ router.post('/upload', authenticateToken, upload.single('file'), (req, res) => {
 
     const { type = 'general' } = req.body;
     const file = req.file;
-    
+
     console.log('📋 File info:', {
       filename: file.filename,
       fieldname: file.fieldname,

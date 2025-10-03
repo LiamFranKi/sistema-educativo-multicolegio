@@ -157,7 +157,7 @@ const UsuarioForm = ({ open, onClose, onSave, mode, usuario }) => {
     }
 
     try {
-      const response = await fileService.uploadFile(file, 'avatar');
+      const response = await fileService.uploadFile(file, 'usuario');
 
       if (response.success) {
         setFormData(prev => ({

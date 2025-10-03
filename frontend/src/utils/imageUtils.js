@@ -14,7 +14,12 @@ export const getImageUrl = (filename) => {
     return filename;
   }
 
-  // Construir URL completa
+  // Si ya incluye una ruta de carpeta, usar tal como está
+  if (filename.includes('/')) {
+    return `${API_BASE_URL}/uploads/${filename}`;
+  }
+
+  // Construir URL completa (asumir que está en uploads/)
   return `${API_BASE_URL}/uploads/${filename}`;
 };
 
